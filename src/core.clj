@@ -5,20 +5,40 @@
             [rclojure.core.rfn :as r]))
 
 ;TODO cat wont print to console so use clojures print or insist file output
-;TODO change rassign to take the try catch finally and put code block in try
-
-(defmacro rlet
-  "Binds a symbol to an evaluated
-   R function."
-  [binding body]
-  `(~'do
-     (~'.assign ~'(Rengine/getMainEngine) ~(str (first binding)) ~(second binding))
-     ~body))
-
 
 (defmacro rassign
   [binding val]
   `(~'.assign ~'(Rengine/getMainEngine) ~binding ~val))
+
+(defn- rfn-exec->double-array
+  ([rfn coll]
+   (let [gs (str (gensym))]
+     (try
+       (rassign gs coll)
+       (.asDoubleArray (reval (rfn gs)))
+       (finally (reval (r/remove gs))))))
+  ([rfn coll set]
+   (let [gs (str (gensym))]
+     (try
+       (rassign gs coll)
+       (.asDoubleArray (reval (rfn gs set)))
+       (finally (reval (r/remove gs)))))))
+
+
+(defn- rfn-exec->int-array
+  ([rfn coll]
+   (let [gs (str (gensym))]
+     (try
+       (rassign gs coll)
+       (.asIntArray (reval (rfn gs)))
+       (finally (reval (r/remove gs))))))
+  ([rfn coll set]
+   (let [gs (str (gensym))]
+     (try
+       (rassign gs coll)
+       (.asIntArray (reval (rfn gs set)))
+       (finally (reval (r/remove gs)))))))
+
 
 (defn rsum
   "Takes a sequence and returns the sum
@@ -28,23 +48,12 @@
    return types are 32bit integeror a
    64 bit double."
   ([col]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs (double-array col))
-       (.asDoubleArray (reval (r/sum gs)))
-       (finally (reval (r/remove gs))))))
+   (rfn-exec->double-array r/sum (double-array col)))
   ([col {:keys [integer? double? rm-na?]}]
-   (let [gs (str (gensym))]
-     (cond (= integer? true)
-           (try
-             (rassign gs (int-array col))
-             (.asIntArray (reval (r/sum gs rm-na?)))
-             (finally (reval (r/remove gs))))
-           (= double? true)
-           (try
-             (rassign gs (double-array col))
-             (.asDoubleArray (reval (r/sum gs rm-na?)))
-             (finally (reval (r/remove gs))))))))
+   (cond (= integer? true)
+         (rfn-exec->int-array r/sum (int-array col) rm-na?)
+         (= double? true)
+         (rfn-exec->double-array r/sum (double-array col) rm-na?))))
 
 
 (defn rabs
