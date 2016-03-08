@@ -2,10 +2,6 @@
 
 Work in progress. Contributors welcome.
 
-## Usage
-
-FIXME
-
 ## License
 
 Copyright © 2016 FIXME
