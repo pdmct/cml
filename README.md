@@ -1,10 +1,6 @@
 # rclojure
 
-A Clojure library designed to ... well, that part is up to you.
-
-## Usage
-
-FIXME
+Work in progress. Contributors welcome.
 
 ## License
 
