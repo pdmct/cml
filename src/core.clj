@@ -50,9 +50,9 @@
   ([col]
    (rfn-exec->double-array r/sum (double-array col)))
   ([col {:keys [integer? double? rm-na?]}]
-   (cond (= integer? true)
+   (cond integer?
          (rfn-exec->int-array r/sum (int-array col) rm-na?)
-         (= double? true)
+         double?
          (rfn-exec->double-array r/sum (double-array col) rm-na?))))
 
 
