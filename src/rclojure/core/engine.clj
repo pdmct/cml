@@ -16,8 +16,8 @@
   [binding val]
   `(~'.assign ~'(Rengine/getMainEngine) ~binding ~val))
 
-;TODO make it so dynamically set .asDoubleArray or .asIntArray to remove duplicate code
-;TODO rname functions accordingly
+;TODO make it so dynamically set .asDoubleArray or .asIntArray to remove duplicate code can then try overloding again
+;TODO rname functions accordingly (rfn-assaign-exec  and rfn-multi-assign-exec)
 
 (defn rfn-coll->double-array
   ([rfn coll]
