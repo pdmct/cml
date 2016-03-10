@@ -1,43 +1,11 @@
 (ns rclojure.core
-  (:import [org.rosuda.JRI Rengine])
-  (:require [rclojure.core.engine :refer [reval]]
+  (:require [rclojure.core.engine :refer [reval rfn-coll->double-array rfn-coll-map->double-array rfn-coll2-map->double-array
+                                                rfn-coll->int-array rfn-coll-map->int-array rfn-coll2-map->int-array
+                                                rfn-coll2->double-array rfn-coll2->int-array]]
             [rclojure.core.cols :refer [rvec]]
             [rclojure.core.rfn :as r]))
 
 ;TODO cat wont print to console so use clojures print or insist file output
-
-(defmacro rassign
-  [binding val]
-  `(~'.assign ~'(Rengine/getMainEngine) ~binding ~val))
-
-(defn- rfn-exec->double-array
-  ([rfn coll]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs coll)
-       (.asDoubleArray (reval (rfn gs)))
-       (finally (reval (r/remove gs))))))
-  ([rfn coll set]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs coll)
-       (.asDoubleArray (reval (rfn gs set)))
-       (finally (reval (r/remove gs)))))))
-
-
-(defn- rfn-exec->int-array
-  ([rfn coll]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs coll)
-       (.asIntArray (reval (rfn gs)))
-       (finally (reval (r/remove gs))))))
-  ([rfn coll set]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs coll)
-       (.asIntArray (reval (rfn gs set)))
-       (finally (reval (r/remove gs)))))))
 
 
 (defn rsum
@@ -47,13 +15,13 @@
    explicitly define the return type. The
    return types are 32bit integeror a
    64 bit double."
-  ([col]
-   (rfn-exec->double-array r/sum (double-array col)))
-  ([col {:keys [integer? double? rm-na?]}]
-   (cond integer?
-         (rfn-exec->int-array r/sum (int-array col) rm-na?)
+  ([coll]
+   (rfn-coll->double-array r/sum (double-array coll)))
+  ([coll {:keys [int? double? rm-na?]}]
+   (cond int?
+         (rfn-coll-map->int-array r/sum (int-array coll) rm-na?)
          double?
-         (rfn-exec->double-array r/sum (double-array col) rm-na?))))
+         (rfn-coll-map->double-array r/sum (double-array coll) rm-na?))))
 
 
 (defn rabs
@@ -61,47 +29,22 @@
    the absolute value of x, sqrt(x)
    computes the (principal) square
    root of x, √{x}"
-  ([col]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs (double-array col))
-       (.asDoubleArray (reval (r/abs gs)))
-       (finally (reval (r/remove gs))))))
-  ([col {:keys [integer? double?]}]
-    (let [gs (str (gensym))]
-      (cond (= integer? true)
-            (try
-              (rassign gs (int-array col))
-              (.asIntArray (reval (r/abs gs)))
-              (finally (reval (r/remove gs))))
-            (= double? true)
-            (try
-              (rassign gs (double-array col))
-              (.asDoubleArray (reval (r/abs gs)))
-              (finally (reval (r/remove gs))))))))
+  ([coll]
+   (rfn-coll->double-array r/abs (double-array coll)))
+  ([coll {:keys [int? double?]}]
+   (cond int?
+         (rfn-coll->int-array r/abs (int-array coll))
+         double?
+         (rfn-coll->double-array r/abs (double-array coll)))))
 
 
 (defn rappend
   "Takes a sequence and appends another
    sequence on to the end."
-  ([col col1]
-   (let [gs (str (gensym)) gs1 (str (gensym))]
-     (try
-       (rassign gs (double-array col))
-       (rassign gs1 (double-array col1))
-       (.asDoubleArray (reval (r/append gs gs1)))
-       (finally (reval (r/remove gs gs1))))))
-  ([col col1 {:keys [integer? double?]}]
-   (let [gs (str (gensym)) gs1 (str (gensym))]
-     (cond (= integer? true)
-           (try
-             (rassign gs (int-array col))
-             (rassign gs1 (int-array col1))
-             (.asIntArray (reval (r/append gs gs1)))
-             (finally (reval (r/remove gs gs1))))
-           (= double? true)
-           (try
-             (rassign gs (double-array col))
-             (rassign gs1 (double-array col1))
-             (.asDoubleArray (reval (r/append gs gs1)))
-             (finally (reval (r/remove gs gs1))))))))
+  ([coll1 coll2]
+   (rfn-coll2->double-array r/append (double-array coll1) (double-array coll2)))
+  ([coll1 coll2 {:keys [int? double?]}]
+   (cond int?
+         (rfn-coll2->int-array r/append (int-array coll1) (int-array coll2))
+         double?
+         (rfn-coll2->double-array r/append (double-array coll1) (double-array coll2)))))
