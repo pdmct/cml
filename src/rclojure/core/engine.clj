@@ -2,19 +2,19 @@
   (:import [org.rosuda.JRI Rengine])
   (:require [rclojure.core.rfn :as r]))
 
-(def new-thread
-  (Rengine. (into-array ["--vanilla"]) false nil))
 
-(defn reval
-  [expr]
-  (let [re (Rengine/getMainEngine)]
+(defn- engine []
+  (if (nil? (Rengine/getMainEngine))
     (try
-      (.eval re expr)
-      (finally (.end re)))))
+      (Rengine. (into-array ["--vanilla"]) false nil)
+       (Rengine/getMainEngine))
+     (Rengine/getMainEngine)))
+
+(defn- reval [expr] (.eval (engine) expr))
 
 (defmacro rassign
   [binding val]
-  `(~'.assign ~'(Rengine/getMainEngine) ~binding ~val))
+  `(~'.assign ~'(engine) ~binding ~val))
 
 ;TODO make it so dynamically set .asDoubleArray or .asIntArray to remove duplicate code can then try overloding again
 ;TODO rname functions accordingly (rfn-assaign-exec  and rfn-multi-assign-exec)
