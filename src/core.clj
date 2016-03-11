@@ -1,7 +1,7 @@
 (ns rclojure.core
-  (:require [rclojure.core.engine :refer [reval rfn-coll->double-array rfn-coll-map->double-array rfn-coll2-map->double-array
-                                                rfn-coll->int-array rfn-coll-map->int-array rfn-coll2-map->int-array
-                                                rfn-coll2->double-array rfn-coll2->int-array]]
+  (:require [rclojure.core.engine :refer [rfn-coll->double-array rfn-coll-map->double-array rfn-coll2-map->double-array
+                                          rfn-coll->int-array rfn-coll-map->int-array rfn-coll2-map->int-array
+                                          rfn-coll2->double-array rfn-coll2->int-array]]
             [rclojure.core.cols :refer [rvec]]
             [rclojure.core.rfn :as r]))
 
