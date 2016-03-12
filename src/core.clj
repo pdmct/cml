@@ -1,7 +1,5 @@
 (ns rclojure.core
-  (:require [rclojure.core.engine :refer [rfn-coll->double-array rfn-coll-map->double-array rfn-coll2-map->double-array
-                                          rfn-coll->int-array rfn-coll-map->int-array rfn-coll2-map->int-array
-                                          rfn-coll2->double-array rfn-coll2->int-array]]
+  (:require [rclojure.core.engine :refer [rfn-exec rfn-exec+]]
             [rclojure.core.cols :refer [rvec]]
             [rclojure.core.rfn :as r]))
 
@@ -16,35 +14,16 @@
    return types are 32bit integeror a
    64 bit double."
   ([coll]
-   (rfn-coll->double-array r/sum (double-array coll)))
-  ([coll {:keys [int? double? rm-na?]}]
-   (cond int?
-         (rfn-coll-map->int-array r/sum (int-array coll) rm-na?)
-         double?
-         (rfn-coll-map->double-array r/sum (double-array coll) rm-na?))))
+   (rfn-exec r/sum coll {:type :double-array}))
+  ([coll {:keys [type]}]
+   (cond (= type :int)
+         (rfn-exec r/sum coll {:type :int-array})
+         (= type :double)
+         (rfn-exec r/sum coll {:type :double-array})))
+  ([coll {:keys [type]} set]
+   (cond (= type :int)
+         (rfn-exec+ r/sum coll {:type :int-array} set)
+         (= type :double)
+         (rfn-exec+ r/sum coll {:type :double-array} set))))
 
 
-(defn rabs
-  "Takes a sequence and computes
-   the absolute value of x, sqrt(x)
-   computes the (principal) square
-   root of x, √{x}"
-  ([coll]
-   (rfn-coll->double-array r/abs (double-array coll)))
-  ([coll {:keys [int? double?]}]
-   (cond int?
-         (rfn-coll->int-array r/abs (int-array coll))
-         double?
-         (rfn-coll->double-array r/abs (double-array coll)))))
-
-
-(defn rappend
-  "Takes a sequence and appends another
-   sequence on to the end."
-  ([coll1 coll2]
-   (rfn-coll2->double-array r/append (double-array coll1) (double-array coll2)))
-  ([coll1 coll2 {:keys [int? double?]}]
-   (cond int?
-         (rfn-coll2->int-array r/append (int-array coll1) (int-array coll2))
-         double?
-         (rfn-coll2->double-array r/append (double-array coll1) (double-array coll2)))))
