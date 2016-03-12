@@ -2,9 +2,11 @@
   (:import [org.rosuda.JRI Rengine])
   (:require [rclojure.core.rfn :as r]))
 
+
 (defn- new-thread
   [thread-param]
   (Rengine. (into-array [thread-param]) false nil))
+
 
 (defn- engine
   [thread-param]
@@ -14,28 +16,37 @@
         (new-thread thread-param)
         (Rengine/getMainEngine)) re)))
 
-(defn- reval [expr] (.eval (engine "--vanilla") expr))
+
+(defn- reval
+  ([expr] (.eval (engine "--vanilla") expr))
+  ([expr {:keys [type]}]
+   (cond
+     (= type :double-array)
+     (.asDoubleArray (.eval (engine "--vanilla") expr))
+     (= type :int-array)
+     (.asIntArray (.eval (engine "--vanilla") expr)))))
+
 
 (defmacro rassign
   [binding val]
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
+;TODO have coll be incorporated into type map
 
 (defn rfn-exec
-  ([rfn coll]
-   (cond (contains? coll :coll1)
-         (let [gs (str (gensym))]
-           (try
-             (rassign gs (double-array (:coll1 coll)))
-             (.asDoubleArray (reval (rfn gs)))
-             (finally (reval (r/remove gs)))))
-         (every? coll [:coll1 :coll2])
-         (let [gs1 (str (gensym)) gs2 (str (gensym))]
-           (try
-             (rassign gs1 (double-array (:coll1 coll)))
-             (rassign gs1 (double-array (:coll2 coll)))
-             (.asDoubleArray (reval (rfn gs1 gs1)))
-             (finally (reval (r/remove gs1 gs2))))))))
+  ([rfn coll type]
+   (let [gs (str (gensym))]
+     (try
+       (cond (= (:type type) :double-array)
+             (try
+               (rassign gs (double-array coll))
+               (reval (rfn gs) type)
+               (finally (reval (r/remove gs))))
+             (= (:type type) :int-array)
+             (try
+               (rassign gs (int-array coll))
+               (reval (rfn gs) type)
+               (finally (reval (r/remove gs)))))))))
 
 
 #_(defn rfn-coll-map->double-array
