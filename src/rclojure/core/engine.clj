@@ -45,14 +45,13 @@
   [binding val]
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
-
 (defn rfn-exec
   "Function that executes rfn over the
    collection coll or collections coll
    and coll1. A return type can be
    explicitly defined or defaults
    to double array"
-  ([rfn coll {:keys [type]}]
+  ([rfn coll type]
    (let [gs (str (gensym))]
      (try
        (cond (= type :double-array)
@@ -65,7 +64,7 @@
                (rassign gs (int-array coll))
                (reval (rfn gs) type)
                (finally (reval (r/remove gs))))))))
-  ([rfn coll coll1 {:keys [type]}]
+  ([rfn coll coll1 type]
    (let [gs (str (gensym)) gs1 (str (gensym))]
      (try
        (cond (= type :double-array)
@@ -90,7 +89,7 @@
    applied. A return type can be
    explicitly defined or defaults
    to double array"
-  ([rfn coll {:keys [type]} set]
+  ([rfn coll type set]
    (let [gs (str (gensym))]
      (try
        (cond (= type :double-array)
@@ -103,7 +102,7 @@
                (rassign gs (int-array coll))
                (reval (rfn gs set) type)
                (finally (reval (r/remove gs))))))))
-  ([rfn coll coll1 {:keys [type]} set]
+  ([rfn coll coll1 type set]
    (let [gs (str (gensym)) gs1 (str (gensym))]
      (try
        (cond (= type :double-array)
