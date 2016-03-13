@@ -18,14 +18,20 @@
    (str "sum("coll", rm.na = FALSE)"))
   ([coll {:keys [rm-na?]}]
     (if rm-na?
-      (do (println "TRUE") (str "sum(" coll ", rm.na = TRUE)"))
-      (do (println "FALSE") (str "sum(" coll ", rm.na = FALSE)")))))
+      (str "sum(" coll ", rm.na = TRUE)")
+      (str "sum(" coll ", rm.na = FALSE)"))))
 
 
 (defn abs ([coll] (str "abs("coll")")))
 
 
-(defn append ([coll coll1] (str "append("coll","coll1")")))
+(defn append
+  ([coll coll1]
+   (str "append("coll","coll1")"))
+  ([coll coll1 {:keys [after]}]
+   (if after
+     (str "append("coll","coll1", after = "after")")
+     (str "append("coll","coll1")"))))
 
 
 (defn cat
