@@ -45,6 +45,7 @@
   [binding val]
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
+
 (defn rfn-exec
   "Function that executes rfn over the
    collection coll or collections coll

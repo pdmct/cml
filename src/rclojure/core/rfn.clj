@@ -18,8 +18,8 @@
    (str "sum("coll", rm.na = FALSE)"))
   ([coll rm-na?]
     (if (:rm-na? rm-na?)
-      (do (println "TRUE") (str "sum(" coll ", rm.na = TRUE)"))
-      (do (println "FALSE") (str "sum(" coll ", rm.na = FALSE)")))))
+       (str "sum(" coll ", rm.na = TRUE)")
+       (str "sum(" coll ", rm.na = FALSE)"))))
 
 
 (defn abs ([coll] (str "abs("coll")")))

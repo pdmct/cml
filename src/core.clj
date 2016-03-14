@@ -19,31 +19,13 @@
   "Function rabs(coll) computes the
    absolute value of the contents
    of coll"
-  ([coll]
-   (rfn-exec r/abs coll :double-array))
-  ([coll type]
-   (cond (= type :int-array)
-         (rfn-exec r/abs coll type)
-         (= type :double-array)
-         (rfn-exec r/abs coll type))))
+  ([{:keys [coll type]}]
+   (rfn-exec r/abs coll type)))
 
 
 (defn rappend
   "Appendss coll1 on to coll. If set
    is applied, appends coll1 at the
    position of set"
-  ([coll]
-   (fn [coll1]
-     (rfn-exec r/append coll coll1 :double-array)))
-  ([coll type]
-   (fn [coll1]
-     (cond (= type :int-array)
-           (rfn-exec r/append coll coll1 type)
-           (= type :double-array)
-           (rfn-exec r/append coll coll1 type))))
-  ([coll type set]
-   (fn [coll1]
-     (cond (= type :int-array)
-           (rfn-exec+ r/append coll coll1 type set)
-           (= type :double-array)
-           (rfn-exec+ r/append coll coll1 type set)))))
+  ([{:keys [coll coll1 type set]}]
+   (rfn-exec+ r/append coll coll1 type set)))
