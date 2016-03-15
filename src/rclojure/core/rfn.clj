@@ -36,12 +36,8 @@
 
 (defn cat
   ([coll] (str "cat("coll")"))
-  ([coll {:keys [file sep fill? labels]}]
-   (cond (and file sep (not= fill? nil) labels)
-         (str "cat("coll", file = "file", sep = "sep", fill = "(.toUpperCase (str fill?))", "labels")")
-         (and file sep (not= fill? nil))
-         (str "cat("coll", file = "file", sep = "sep", fill = "fill?")")
-         (and file sep)
-         (str "cat("coll", file = "file", sep = "sep")")
-         file
-         (str "cat("coll", file = " "\"file"\"")"))))
+  ([coll {:keys [file]}]
+   (cond true
+         (str "cat("coll", file = \""file"\")"))))
+
+
