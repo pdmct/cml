@@ -29,3 +29,8 @@
    position of set"
   ([{:keys [coll coll1 type set]}]
    (rfn-exec+ r/append coll coll1 type set)))
+
+(defn rcat
+  [{:keys [coll type set]}]
+  (rfn-exec+ r/cat coll type set))
+
