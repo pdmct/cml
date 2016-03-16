@@ -46,7 +46,7 @@
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
 
-(defn rfn-exec
+(defn <-
   "Function that executes rfn over the
    collection coll or collections coll
    and coll1. A return type can be
@@ -82,7 +82,7 @@
                (finally (reval (r/remove gs gs1)))))))))
 
 
-(defn rfn-exec+
+(defn <<-
   "Function that executes rfn over the
    collection coll or collections coll
    and coll1. Applys an extra arg to

@@ -1,5 +1,5 @@
 (ns rclojure.core
-  (:require [rclojure.core.engine :refer [rfn-exec rfn-exec+]]
+  (:require [rclojure.core.engine :refer [<- <<-]]
             [rclojure.core.cols :refer [rvec]]
             [rclojure.core.rfn :as r]))
 
@@ -12,7 +12,7 @@
    return types are 32bit integeror a
    64 bit double"
   ([{:keys [coll type set]}]
-   (rfn-exec+ r/sum coll type set)))
+   (<<- r/sum coll type set)))
 
 
 (defn rabs
@@ -20,7 +20,7 @@
    absolute value of the contents
    of coll"
   ([{:keys [coll type]}]
-   (rfn-exec r/abs coll type)))
+   (<- r/abs coll type)))
 
 
 (defn rappend
@@ -28,9 +28,10 @@
    is applied, appends coll1 at the
    position of set"
   ([{:keys [coll coll1 type set]}]
-   (rfn-exec+ r/append coll coll1 type set)))
+   (<<- r/append coll coll1 type set)))
+
 
 (defn rcat
   [{:keys [coll type set]}]
-  (rfn-exec+ r/cat coll type set))
+  (<<- r/cat coll type set))
 
