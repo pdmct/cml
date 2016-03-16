@@ -1,5 +1,6 @@
 (ns rclojure.core.rfn
-  (:refer-clojure :exclude [remove cat]))
+  (:refer-clojure :exclude [remove cat])
+  (:require [rclojure.core.cols :refer [rvec]]))
 
 
 (defn c
@@ -36,8 +37,8 @@
 
 (defn cat
   ([coll] (str "cat("coll")"))
-  ([coll {:keys [file]}]
-   (cond true
-         (str "cat("coll", file = \""file"\")"))))
+  ([coll {:keys [file sep fill labels]}]
+   (cond (and file sep (instance? Boolean fill) (or (nil? labels) (string? labels)))
+         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" labels)")"))))
 
 
