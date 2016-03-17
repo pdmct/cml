@@ -1,21 +1,17 @@
 (ns rclojure.core.rfn
   (:refer-clojure :exclude [remove cat]))
 
-;; Define the "shape" of a Shape object
+
 (defprotocol rvec-type
   (string [s] "Vector or strings")
   (integer [s] "Vector of ints"))
 
-;; Define a concrete Shape, the Rectangle
+
 (defrecord rvec [coll]
   rvec-type
   (string [this] (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")"))
   (integer [this] (str "c(" (reduce str (interpose "," coll)) ")")))
 
-;(->Rectangle 2 4)
-;; -> #user.Rectangle{:length 2, :width 4}
-
-;(area (->Rectangle 2 4))
 
 (defn c
   "Takes a clojure sequential coll
