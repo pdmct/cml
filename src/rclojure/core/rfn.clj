@@ -7,18 +7,10 @@
   (integer [s] "Vector of ints"))
 
 
-(defrecord rvec [coll]
+(defrecord ^{:private true} c [coll]
   rvec-type
   (string [this] (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")"))
   (integer [this] (str "c(" (reduce str (interpose "," coll)) ")")))
-
-
-(defn c
-  "Takes a clojure sequential coll
-   and returns an R vector
-   representation to be evaluated"
-  ([coll]
-   (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")")))
 
 
 (defn remove
@@ -53,6 +45,6 @@
   ([coll] (str "cat("coll")"))
   ([coll {:keys [file sep fill labels]}]
    (cond (and file sep (instance? Boolean fill) labels)
-         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" (string (->rvec labels)))")"))))
+         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" (string (->c labels)))")"))))
 
 
