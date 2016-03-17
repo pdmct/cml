@@ -2,13 +2,13 @@
   (:refer-clojure :exclude [remove cat]))
 
 
-(defprotocol rvec-type
+(defprotocol type
   (string [s] "Vector or strings")
   (integer [s] "Vector of ints"))
 
 
 (defrecord ^{:private true} c [coll]
-  rvec-type
+  type
   (string [this] (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")"))
   (integer [this] (str "c(" (reduce str (interpose "," coll)) ")")))
 
