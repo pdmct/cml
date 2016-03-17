@@ -1,10 +1,28 @@
 (ns rclojure.core.rfn
-  (:refer-clojure :exclude [remove cat])
-  (:require [rclojure.core.cols :refer [rvec]]))
+  (:refer-clojure :exclude [remove cat]))
 
+;; Define the "shape" of a Shape object
+(defprotocol rvec-type
+  (string [s] "Vector or strings")
+  (integer [s] "Vector of ints"))
+
+;; Define a concrete Shape, the Rectangle
+(defrecord rvec [coll]
+  rvec-type
+  (string [this] (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")"))
+  (integer [this] (str "c(" (reduce str (interpose "," coll)) ")")))
+
+;(->Rectangle 2 4)
+;; -> #user.Rectangle{:length 2, :width 4}
+
+;(area (->Rectangle 2 4))
 
 (defn c
-  ([& vals] (str "c(" (reduce str (interpose "," vals)) ")")))
+  "Takes a clojure sequential coll
+   and returns an R vector
+   representation to be evaluated"
+  ([coll]
+   (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")")))
 
 
 (defn remove
@@ -38,7 +56,7 @@
 (defn cat
   ([coll] (str "cat("coll")"))
   ([coll {:keys [file sep fill labels]}]
-   (cond (and file sep (instance? Boolean fill) (or (nil? labels) (string? labels)))
-         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" labels)")"))))
+   (cond (and file sep (instance? Boolean fill) labels)
+         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" (string (->rvec labels)))")"))))
 
 

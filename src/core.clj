@@ -1,6 +1,5 @@
 (ns rclojure.core
   (:require [rclojure.core.engine :refer [<- <<-]]
-            [rclojure.core.cols :refer [rvec]]
             [rclojure.core.rfn :as r]))
 
 
@@ -34,4 +33,5 @@
 (defn rcat
   [{:keys [coll type set]}]
   (<<- r/cat coll type set))
+
 
