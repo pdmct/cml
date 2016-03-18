@@ -1,5 +1,5 @@
 (ns rclojure.core
-  (:require [rclojure.core.engine :refer [<- <<-]]
+  (:require [rclojure.core.engine :refer [<- <<- graphics-off]]
             [rclojure.core.rfn :as r]))
 
 
@@ -31,7 +31,14 @@
 
 
 (defn rcat
+  "Outputs the objects, concatenating
+   the representations"
   [{:keys [coll type set]}]
   (<<- r/cat coll type set))
+
+
+(defn rplot
+  [{:keys [coll type]}]
+  (<- r/plot coll type))
 
 
