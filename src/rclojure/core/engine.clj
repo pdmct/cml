@@ -46,6 +46,10 @@
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
 
+(defn graphics-off
+  []
+  (reval "graphics.off()"))
+
 (defn <-
   "Function that executes rfn over the
    collection coll or collections coll

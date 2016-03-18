@@ -2,13 +2,13 @@
   (:refer-clojure :exclude [remove cat]))
 
 
-(defprotocol type
+(defprotocol rvec-type
   (string [s] "Vector or strings")
   (integer [s] "Vector of ints"))
 
 
 (defrecord ^{:private true} c [coll]
-  type
+  rvec-type
   (string [this] (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")"))
   (integer [this] (str "c(" (reduce str (interpose "," coll)) ")")))
 
@@ -45,6 +45,15 @@
   ([coll] (str "cat("coll")"))
   ([coll {:keys [file sep fill labels]}]
    (cond (and file sep (instance? Boolean fill) labels)
-         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" (string (->c labels)))")"))))
+         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" (string (->c labels)))")")
+         (and file sep (instance? Boolean fill))
+         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))")")
+         (and file sep)
+         (str "cat("coll", file = \""file"\", sep = \""sep"\")")
+         file
+         (str "cat("coll", file = \""file"\")"))))
+
+
+(defn plot ([coll] (str "plot("coll")")))
 
 
