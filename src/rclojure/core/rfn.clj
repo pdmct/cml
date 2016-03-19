@@ -57,3 +57,15 @@
 (defn plot ([coll] (str "plot("coll")")))
 
 
+(defn jpg
+  ([{:keys [fname]}]
+   (if (or (.endsWith fname "jpg") (.endsWith  fname "JPG"))
+     (str "jpeg(\""fname"\")"))))
+
+
+(defn pdf
+  ([{:keys [fname]}]
+   (if (or (.endsWith fname "pdf") (.endsWith  fname "PDF"))
+     (str "pdf(\""fname"\")"))))
+
+
