@@ -2,6 +2,8 @@
   (:import [org.rosuda.JRI Rengine])
   (:require [rclojure.core.rfn :as r]))
 
+;TODO allow user to set gs in rfn-exec-graph as this is displayed in the plot x axis
+;TODO start looking at more complex data type eg multi dim arrays and data frames
 
 (defn- new-thread
   "Starts a single thread that manages
@@ -45,8 +47,6 @@
   [binding val]
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
-
-(defn graphics-off [] (evaluate "graphics.off()"))
 
 (defn rfn-exec
   "Function that executes rfn over the
@@ -128,12 +128,22 @@
    and coll1. A return type can be
    explicitly defined or defaults
    to double array"
-  ([rfn coll type]
+  ([rfn rfn2 coll type set]
    (let [gs (str (gensym))]
      (try
        (cond (= type :double-array)
              (try
                (rassign gs (double-array coll))
-               (evaluate (str "jpeg(\"/Users/gra11/qwerty.jpg\")"))
-               (evaluate (rfn gs))
-               (evaluate "dev.off()")))))))
+               (evaluate (rfn2 set))
+               (evaluate (rfn gs) type)
+               (evaluate "dev.off()")
+               (finally (evaluate (r/remove gs))))
+             (= type :int-array)
+             (try
+               (rassign gs (int-array coll))
+               (evaluate (rfn2 set))
+               (evaluate (rfn gs) type)
+               (evaluate "dev.off()")
+               (finally (evaluate (r/remove gs)))))))))
+
+

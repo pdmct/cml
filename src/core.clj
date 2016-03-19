@@ -33,9 +33,13 @@
   [{:keys [coll type set]}] (rfn-exec-set r/cat coll type set))
 
 
-(defn rplot
-  [{:keys [coll type]}]
-  (rfn-exec-graph r/plot coll type))
+(defn rplot->jpg
+  [{:keys [coll type set]}]
+  (rfn-exec-graph r/plot r/jpg coll type set))
 
+
+(defn rplot->pdf
+  [{:keys [coll type set]}]
+  (rfn-exec-graph r/plot r/pdf coll type set))
 
 
