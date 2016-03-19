@@ -1,5 +1,5 @@
 (ns rclojure.core
-  (:require [rclojure.core.engine :refer [<- <<- graphics-off]]
+  (:require [rclojure.core.engine :refer [rfn-exec rfn-exec-set rfn-exec-graph evaluate]]
             [rclojure.core.rfn :as r]))
 
 
@@ -10,35 +10,32 @@
    explicitly define the return type. The
    return types are 32bit integeror a
    64 bit double"
-  ([{:keys [coll type set]}]
-   (<<- r/sum coll type set)))
+  ([{:keys [coll type set]}] (rfn-exec r/sum coll type set)))
 
 
 (defn rabs
   "Function rabs(coll) computes the
    absolute value of the contents
    of coll"
-  ([{:keys [coll type]}]
-   (<- r/abs coll type)))
+  ([{:keys [coll type]}] (rfn-exec r/abs coll type)))
 
 
 (defn rappend
   "Appendss coll1 on to coll. If set
    is applied, appends coll1 at the
    position of set"
-  ([{:keys [coll coll1 type set]}]
-   (<<- r/append coll coll1 type set)))
+  ([{:keys [coll coll1 type set]}] (rfn-exec-set r/append coll coll1 type set)))
 
 
 (defn rcat
   "Outputs the objects, concatenating
    the representations"
-  [{:keys [coll type set]}]
-  (<<- r/cat coll type set))
+  [{:keys [coll type set]}] (rfn-exec-set r/cat coll type set))
 
 
 (defn rplot
   [{:keys [coll type]}]
-  (<- r/plot coll type))
+  (rfn-exec-graph r/plot coll type))
+
 
 

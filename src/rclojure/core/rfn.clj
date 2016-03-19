@@ -54,6 +54,6 @@
          (str "cat("coll", file = \""file"\")"))))
 
 
-(defn plot ([coll] (str "plot("coll")")))
+(defn plot ([coll] (str"plot("coll")")))
 
 

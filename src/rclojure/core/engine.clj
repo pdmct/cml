@@ -23,7 +23,7 @@
         (Rengine/getMainEngine)) re)))
 
 
-(defn- reval
+(defn evaluate
   "Function that takes an parameterised
    R function as a parameter. The R function
    is evaluated by the R interperator. The
@@ -39,18 +39,16 @@
      (.asIntArray (.eval (engine "--vanilla") expr)))))
 
 
-(defmacro rassign
+(defmacro ^{:private true} rassign
   "Function that assigns String binding
    to a double array or an int array"
   [binding val]
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
 
-(defn graphics-off
-  []
-  (reval "graphics.off()"))
+(defn graphics-off [] (evaluate "graphics.off()"))
 
-(defn <-
+(defn rfn-exec
   "Function that executes rfn over the
    collection coll or collections coll
    and coll1. A return type can be
@@ -62,13 +60,13 @@
        (cond (= type :double-array)
              (try
                (rassign gs (double-array coll))
-               (reval (rfn gs) type)
-               (finally (reval (r/remove gs))))
+               (evaluate (rfn gs) type)
+               (finally (evaluate (r/remove gs))))
              (= type :int-array)
              (try
                (rassign gs (int-array coll))
-               (reval (rfn gs) type)
-               (finally (reval (r/remove gs))))))))
+               (evaluate (rfn gs) type)
+               (finally (evaluate (r/remove gs))))))))
   ([rfn coll coll1 type]
    (let [gs (str (gensym)) gs1 (str (gensym))]
      (try
@@ -76,17 +74,17 @@
              (try
                (rassign gs (double-array coll))
                (rassign gs1 (double-array coll1))
-               (reval (rfn gs gs1) type)
-               (finally (reval (r/remove gs gs1))))
+               (evaluate (rfn gs gs1) type)
+               (finally (evaluate (r/remove gs gs1))))
              (= type :int-array)
              (try
                (rassign gs (int-array coll))
                (rassign gs1 (int-array coll1))
-               (reval (rfn gs gs1) type)
-               (finally (reval (r/remove gs gs1)))))))))
+               (evaluate (rfn gs gs1) type)
+               (finally (evaluate (r/remove gs gs1)))))))))
 
 
-(defn <<-
+(defn rfn-exec-set
   "Function that executes rfn over the
    collection coll or collections coll
    and coll1. Applys an extra arg to
@@ -100,13 +98,13 @@
        (cond (= type :double-array)
              (try
                (rassign gs (double-array coll))
-               (reval (rfn gs set) type)
-               (finally (reval (r/remove gs))))
+               (evaluate (rfn gs set) type)
+               (finally (evaluate (r/remove gs))))
              (= type :int-array)
              (try
                (rassign gs (int-array coll))
-               (reval (rfn gs set) type)
-               (finally (reval (r/remove gs))))))))
+               (evaluate (rfn gs set) type)
+               (finally (evaluate (r/remove gs))))))))
   ([rfn coll coll1 type set]
    (let [gs (str (gensym)) gs1 (str (gensym))]
      (try
@@ -114,14 +112,28 @@
              (try
                (rassign gs (double-array coll))
                (rassign gs1 (double-array coll1))
-               (reval (rfn gs gs1 set) type)
-               (finally (reval (r/remove gs gs1))))
+               (evaluate (rfn gs gs1 set) type)
+               (finally (evaluate (r/remove gs gs1))))
              (= type :int-array)
              (try
                (rassign gs (int-array coll))
                (rassign gs1 (int-array coll1))
-               (reval (rfn gs gs1 set) type)
-               (finally (reval (r/remove gs gs1)))))))))
+               (evaluate (rfn gs gs1 set) type)
+               (finally (evaluate (r/remove gs gs1)))))))))
 
 
-
+(defn rfn-exec-graph
+  "Function that executes rfn over the
+   collection coll or collections coll
+   and coll1. A return type can be
+   explicitly defined or defaults
+   to double array"
+  ([rfn coll type]
+   (let [gs (str (gensym))]
+     (try
+       (cond (= type :double-array)
+             (try
+               (rassign gs (double-array coll))
+               (evaluate (str "jpeg(\"/Users/gra11/qwerty.jpg\")"))
+               (evaluate (rfn gs))
+               (evaluate "dev.off()")))))))
