@@ -1,5 +1,6 @@
 (ns rclojure.core
-  (:require [rclojure.core.engine :refer [rfn-exec rfn-exec-set rfn-exec-graph evaluate]]
+  (:require [rclojure.core.engine :refer [rfn->double-array rfn->int-array rfn-set->int-array
+                                          rfn-set->double-array rfn-exec-graph evaluate]]
             [rclojure.core.rfn :as r]))
 
 
@@ -10,27 +11,43 @@
    explicitly define the return type. The
    return types are 32bit integeror a
    64 bit double"
-  ([{:keys [coll type set]}] (rfn-exec-set r/sum coll type set)))
+  ([{:keys [coll type set]}]
+   (cond (= type :double-array)
+         (rfn-set->double-array r/sum coll set)
+         (= type :int-array)
+         (rfn-set->int-array r/sum coll set))))
 
 
 (defn rabs
   "Function rabs(coll) computes the
    absolute value of the contents
    of coll"
-  ([{:keys [coll type]}] (rfn-exec r/abs coll type)))
+  ([{:keys [coll type]}]
+   (cond (= type :double-array)
+         (rfn->double-array r/abs coll)
+         (= type :int-array)
+         (rfn->int-array r/abs coll))))
 
 
 (defn rappend
   "Appendss coll1 on to coll. If set
    is applied, appends coll1 at the
    position of set"
-  ([{:keys [coll coll1 type set]}] (rfn-exec-set r/append coll coll1 type set)))
+  ([{:keys [coll coll1 type set]}]
+   (cond (= type :double-array)
+         (rfn-set->double-array r/append coll coll1 set)
+         (= type :int-array)
+         (rfn-set->int-array r/append coll coll1 set))))
 
 
 (defn rcat
   "Outputs the objects, concatenating
    the representations"
-  [{:keys [coll type set]}] (rfn-exec-set r/cat coll type set))
+  [{:keys [coll type set]}]
+  (cond (= type :double-array)
+        (rfn-set->double-array r/cat coll set)
+        (= type :int-array)
+        (rfn-set->int-array r/cat coll set)))
 
 
 (defn rplot->jpg
