@@ -116,6 +116,39 @@
        (finally (evaluate-expr (r/remove gs gs1)))))))
 
 
+(defn rfn-set-double-array->file
+  "Function that executes rfn over the
+   collection coll or collections coll
+   and coll1. A return type can be
+   explicitly defined or defaults
+   to double array"
+  ([rfn rfn2 coll set]
+   (let [gs (str (gensym))]
+     (try
+       (rassign gs (double-array coll))
+       (evaluate-expr (rfn2 set))
+       (double-vec (->evaluate-coll (rfn gs)))
+       (evaluate-expr "dev.off()")
+       (finally (evaluate-expr (r/remove gs)))))))
+
+
+(defn rfn-set-int-array->file
+  "Function that executes rfn over the
+   collection coll or collections coll
+   and coll1. A return type can be
+   explicitly defined or defaults
+   to double array"
+  ([rfn rfn2 coll set]
+   (let [gs (str (gensym))]
+     (try
+       (rassign gs (int-array coll))
+       (evaluate-expr (rfn2 set))
+       (int-vec (->evaluate-coll (rfn gs)))
+       (evaluate-expr "dev.off()")
+       (finally (evaluate-expr (r/remove gs)))))))
+
+
+
 (defn rfn-exec-graph
   "Function that executes rfn over the
    collection coll or collections coll

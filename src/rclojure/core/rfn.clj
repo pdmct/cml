@@ -59,13 +59,17 @@
 
 (defn jpg
   ([{:keys [fname]}]
-   (if (or (.endsWith fname "jpg") (.endsWith  fname "JPG"))
-     (str "jpeg(\""fname"\")"))))
+   (if
+     (or (.endsWith fname ".jpg") (.endsWith  fname ".JPG"))
+     (str "jpeg(\""fname"\")")
+     (throw (IllegalArgumentException. (str fname "must have the prefix .jpg or .JPG"))))))
 
 
 (defn pdf
   ([{:keys [fname]}]
-   (if (or (.endsWith fname "pdf") (.endsWith  fname "PDF"))
-     (str "pdf(\""fname"\")"))))
+   (if
+     (or (.endsWith fname ".pdf") (.endsWith  fname ".PDF"))
+     (str "pdf(\""fname"\")")
+     (throw (IllegalArgumentException. (str fname "must have the prefix .pdf or .PDF"))))))
 
 
