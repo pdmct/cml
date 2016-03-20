@@ -53,6 +53,13 @@
          file
          (str "cat("coll", file = \""file"\")"))))
 
+"matrix(one, nrow = 2, ncol = 3, byrow = TRUE)"
+
+(defn matrix
+  ([coll {:keys [nrow ncol byrow]}]
+    (cond (and nrow ncol byrow)
+          (str "matrix("coll",nrow = "nrow",ncol ="ncol",byrow = "(.toUpperCase (str byrow))")"))))
+
 
 (defn plot ([coll] (str "plot("coll")")))
 
