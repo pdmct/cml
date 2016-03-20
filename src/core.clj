@@ -1,7 +1,7 @@
 (ns rclojure.core
   (:require [rclojure.core.engine :refer [rfn->double-array rfn->int-array rfn-set->int-array
                                           rfn-set->double-array rfn-set-double-array->file
-                                          rfn-set-int-array->file]]
+                                          rfn-set-int-array->file rfn-set->matrix]]
             [rclojure.core.rfn :as r]))
 
 
@@ -43,6 +43,11 @@
         (rfn-set->double-array r/cat coll set)
         (= type :int-array)
         (rfn-set->int-array r/cat coll set)))
+
+
+(defn rmatrix
+  [{:keys [coll set]}]
+  (rfn-set->matrix r/matrix coll set))
 
 
 (defn rplot->jpg

@@ -46,11 +46,13 @@
    R function as a parameter."
   ([expr] (.eval (engine "--vanilla") expr)))
 
+
 (defmacro ^{:private true} rassign
   "Function that assigns String binding
    to a double array or an int array"
   [binding val]
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
+
 
 (defn rfn->double-array
   ([rfn coll]
@@ -82,6 +84,23 @@
        (rassign gs1 (int-array coll1))
        (int-vec (->evaluate-coll (rfn gs gs1)))
        (finally (evaluate-expr (r/remove gs gs1)))))))
+
+
+(defn rfn-set->matrix
+  ([rfn coll set]
+   (let [gs (str (gensym))]
+     (try
+       (rassign gs coll)
+       (matrix (->evaluate-coll (rfn gs set)))
+       (finally (evaluate-expr (r/remove gs))))))
+  ([rfn coll coll1 set]
+   (let [gs (str (gensym)) gs1 (str (gensym))]
+     (try
+       (rassign gs  coll)
+       (rassign gs1  coll1)
+       (matrix (->evaluate-coll (rfn gs gs1 set)))
+       (finally (evaluate-expr (r/remove gs gs1)))))))
+
 
 
 (defn rfn-set->double-array
@@ -117,11 +136,6 @@
 
 
 (defn rfn-set-double-array->file
-  "Function that executes rfn over the
-   collection coll or collections coll
-   and coll1. A return type can be
-   explicitly defined or defaults
-   to double array"
   ([rfn rfn2 coll set]
    (let [gs (str (gensym))]
      (try
@@ -133,11 +147,6 @@
 
 
 (defn rfn-set-int-array->file
-  "Function that executes rfn over the
-   collection coll or collections coll
-   and coll1. A return type can be
-   explicitly defined or defaults
-   to double array"
   ([rfn rfn2 coll set]
    (let [gs (str (gensym))]
      (try
@@ -146,31 +155,5 @@
        (int-vec (->evaluate-coll (rfn gs)))
        (evaluate-expr "dev.off()")
        (finally (evaluate-expr (r/remove gs)))))))
-
-
-
-(defn rfn-exec-graph
-  "Function that executes rfn over the
-   collection coll or collections coll
-   and coll1. A return type can be
-   explicitly defined or defaults
-   to double array"
-  ([rfn rfn2 coll type set]
-   (let [gs (str (gensym))]
-     (try
-       (cond (= type :double-array)
-             (try
-               (rassign gs (double-array coll))
-               (evaluate-expr (rfn2 set))
-               (double-vec (->evaluate-coll (rfn gs)))
-               (evaluate-expr "dev.off()")
-               (finally (evaluate-expr (r/remove gs))))
-             (= type :int-array)
-             (try
-               (rassign gs (int-array coll))
-               (evaluate-expr (rfn2 set))
-               (int-vec (->evaluate-coll (rfn gs)))
-               (evaluate-expr "dev.off()")
-               (finally (evaluate-expr (r/remove gs)))))))))
 
 
