@@ -2,15 +2,15 @@
   (:refer-clojure :exclude [remove cat]))
 
 
-(defprotocol rvec-type
-  (string [s] "Vector or strings")
-  (integer [s] "Vector of ints"))
+(defprotocol ^{:private true} rcoll-type
+  (string-vec [s] "Vector or strings")
+  (int-vec [s] "Vector of ints"))
 
 
 (defrecord ^{:private true} c [coll]
-  rvec-type
-  (string [this] (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")"))
-  (integer [this] (str "c(" (reduce str (interpose "," coll)) ")")))
+  rcoll-type
+  (string-vec [this] (str "c(\"" (reduce str (interpose "\",\"" coll)) "\")"))
+  (int-vec [this] (str "c(" (reduce str (interpose "," coll)) ")")))
 
 
 (defn remove
@@ -45,7 +45,7 @@
   ([coll] (str "cat("coll")"))
   ([coll {:keys [file sep fill labels]}]
    (cond (and file sep (instance? Boolean fill) labels)
-         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" (string (->c labels)))")")
+         (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))", labels = " (if (nil? labels) "NULL" (string-vec (->c labels)))")")
          (and file sep (instance? Boolean fill))
          (str "cat("coll", file = \""file"\", sep = \""sep"\", fill = "(.toUpperCase (str fill))")")
          (and file sep)
