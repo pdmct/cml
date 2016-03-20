@@ -10,7 +10,7 @@
    explicitly define the return type. The
    return types are 32bit integeror a
    64 bit double"
-  ([{:keys [coll type set]}] (rfn-exec r/sum coll type set)))
+  ([{:keys [coll type set]}] (rfn-exec-set r/sum coll type set)))
 
 
 (defn rabs
