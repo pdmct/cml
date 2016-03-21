@@ -4,9 +4,8 @@
 
 ;TODO allow user to set gs in rfn-exec-graph as this is displayed in the plot x axis
 ;TODO start looking at more complex data type eg multi dim arrays and data frames
+;TODO add coll to rfn "and" conditions as in matrix
 
-;(evaluate "matrix(one, nrow = 2, ncol = 3, byrow = TRUE)")
-;(.asMatrix (evaluate "matrix(one, nrow = 2, ncol = 3, byrow = TRUE)"))
 
 (defn- new-thread
   "Starts a single thread that manages
@@ -28,14 +27,14 @@
         (Rengine/getMainEngine)) re)))
 
 
-(defprotocol rcoll-type
+(defprotocol coll-type
   (double-vec [c] "R vector of double")
   (int-vec [c] "R vector of double int")
   (matrix [c] "R matrix"))
 
 
 (defrecord evaluate-coll [expr]
-  rcoll-type
+   coll-type
   (double-vec [this] (.asDoubleArray (.eval (engine "--vanilla") expr)))
   (int-vec [this] (.asIntArray (.eval (engine "--vanilla") expr)))
   (matrix [this] (.asMatrix (.eval (engine "--vanilla") expr))))

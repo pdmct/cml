@@ -1,7 +1,8 @@
 (ns rclojure.core
-  (:require [rclojure.core.engine :refer [rfn->double-array rfn->int-array rfn-set->int-array
-                                          rfn-set->double-array rfn-set-double-array->file
-                                          rfn-set-int-array->file rfn-set->matrix]]
+  (:require [rclojure.core.engine
+             :refer [rfn->double-array rfn->int-array rfn-set->int-array
+                     rfn-set->double-array rfn-set-double-array->file
+                     rfn-set-int-array->file rfn-set->matrix]]
             [rclojure.core.rfn :as r]))
 
 
@@ -50,7 +51,7 @@
   (rfn-set->matrix r/matrix coll set))
 
 
-(defn rplot->jpg
+(defn rplot-jpg
   "Plots a collection to a jpeg file"
   [{:keys [coll type set]}]
   (cond (= type :double-array)
@@ -59,7 +60,7 @@
         (rfn-set-int-array->file r/plot r/jpg coll set)))
 
 
-(defn rplot->pdf
+(defn rplot-pdf
   "Plots a collection to a pdf file"
   [{:keys [coll type set]}]
   (cond (= type :double-array)
