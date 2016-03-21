@@ -45,3 +45,10 @@
 
 (rcat {:coll (range 1 1000) :type :int-array :set {:file "foo.txt" :sep "," :fill true :labels ["APPLE" "CAKE" "BANANA"]}})
 
+(rmatrix {:coll (double-array [1 2 3 11 12 13])
+          :set  {
+                 :nrow  2
+                 :ncol  3
+                 :byrow true
+                 :rows  ["row1" "row2"]
+                 :cols  ["C.1" "C.2" "C.3"]}})

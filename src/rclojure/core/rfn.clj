@@ -53,12 +53,21 @@
          file
          (str "cat("coll", file = \""file"\")"))))
 
-"matrix(one, nrow = 2, ncol = 3, byrow = TRUE)"
 
 (defn matrix
-  ([coll {:keys [nrow ncol byrow]}]
-    (cond (and nrow ncol byrow)
-          (str "matrix("coll",nrow = "nrow",ncol ="ncol",byrow = "(.toUpperCase (str byrow))")"))))
+  ([coll {:keys [nrow ncol byrow rows cols]}]
+   (cond (and coll nrow ncol (instance? Boolean byrow) rows cols)
+         (str "matrix("coll", nrow = "nrow", ncol = "ncol", byrow = "(.toUpperCase (str byrow))", dimnames = list("(string-vec (->c rows))","(string-vec (->c cols))"))")
+         (and coll nrow ncol (instance? Boolean byrow) rows)
+         (str "matrix("coll", nrow = "nrow", ncol = "ncol", byrow = "(.toUpperCase (str byrow))", dimnames = list("(string-vec (->c rows))"))")
+         (and coll nrow ncol (instance? Boolean byrow))
+         (str "matrix("coll", nrow = "nrow", ncol = "ncol", byrow = "(.toUpperCase (str byrow))")")
+         (and coll nrow ncol)
+         (str "matrix("coll", nrow = "nrow", ncol = "ncol")")
+         (and coll nrow)
+         (str "matrix("coll", nrow = "nrow")")
+         coll
+         (str "matrix("coll")"))))
 
 
 (defn plot ([coll] (str "plot("coll")")))
