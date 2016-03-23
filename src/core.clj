@@ -1,8 +1,8 @@
 (ns rclojure.core
   (:require [rclojure.core.engine
-             :refer [rfn->double-array rfn->int-array rfn-set->int-array
-                     rfn-set->double-array rfn-set-double-array->file
-                     rfn-set-int-array->file rfn-set->matrix]]
+             :refer [as-double-array as-int-array as-int-array-set
+                     as-double-array-set double-array->file int-array->file
+                     as-matrix]]
             [rclojure.core.rfn :as r]))
 
 
@@ -10,9 +10,9 @@
   "Returns the sum of a collection"
   ([{:keys [coll type set]}]
    (cond (= type :double-array)
-         (rfn-set->double-array r/sum coll set)
+         (as-double-array-set r/sum coll set)
          (= type :int-array)
-         (rfn-set->int-array r/sum coll set))))
+         (as-int-array-set r/sum coll set))))
 
 
 (defn rabs
@@ -20,9 +20,9 @@
    value of the contents of coll"
   ([{:keys [coll type]}]
    (cond (= type :double-array)
-         (rfn->double-array r/abs coll)
+         (as-double-array r/abs coll)
          (= type :int-array)
-         (rfn->int-array r/abs coll))))
+         (as-int-array r/abs coll))))
 
 
 (defn rappend
@@ -31,9 +31,9 @@
    position of set"
   ([{:keys [coll coll1 type set]}]
    (cond (= type :double-array)
-         (rfn-set->double-array r/append coll coll1 set)
+         (as-double-array-set r/append coll coll1 set)
          (= type :int-array)
-         (rfn-set->int-array r/append coll coll1 set))))
+         (as-int-array-set r/append coll coll1 set))))
 
 
 (defn rcat
@@ -41,31 +41,31 @@
    the representations"
   [{:keys [coll type set]}]
   (cond (= type :double-array)
-        (rfn-set->double-array r/cat coll set)
+        (as-double-array-set r/cat coll set)
         (= type :int-array)
-        (rfn-set->int-array r/cat coll set)))
+        (as-int-array-set r/cat coll set)))
 
 
 (defn rmatrix
   [{:keys [coll set]}]
-  (rfn-set->matrix r/matrix coll set))
+  (as-matrix r/matrix coll set))
 
 
 (defn rplot-jpg
   "Plots a collection to a jpeg file"
   [{:keys [coll type set]}]
   (cond (= type :double-array)
-        (rfn-set-double-array->file r/plot r/jpg coll set)
+        (double-array->file r/plot r/jpg coll set)
         (= type :int-array)
-        (rfn-set-int-array->file r/plot r/jpg coll set)))
+        (int-array->file r/plot r/jpg coll set)))
 
 
 (defn rplot-pdf
   "Plots a collection to a pdf file"
   [{:keys [coll type set]}]
   (cond (= type :double-array)
-        (rfn-set-double-array->file r/plot r/pdf coll set)
+        (double-array->file r/plot r/pdf coll set)
         (= type :int-array)
-        (rfn-set-int-array->file r/plot r/pdf coll set)))
+        (int-array->file r/plot r/pdf coll set)))
 
 

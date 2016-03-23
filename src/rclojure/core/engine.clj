@@ -3,8 +3,7 @@
   (:require [rclojure.core.rfn :as r]))
 
 ;TODO allow user to set gs in rfn-exec-graph as this is displayed in the plot x axis
-;TODO start looking at more complex data type eg multi dim arrays and data frames
-;TODO add coll to rfn "and" conditions as in matrix
+;TODO start looking at data frames
 
 
 (defn- new-thread
@@ -33,14 +32,14 @@
   (matrix [c] "R matrix"))
 
 
-(defrecord evaluate-coll [expr]
+(defrecord ^{:private true} evaluate-coll [expr]
    coll-type
   (double-vec [this] (.asDoubleArray (.eval (engine "--vanilla") expr)))
   (int-vec [this] (.asIntArray (.eval (engine "--vanilla") expr)))
   (matrix [this] (.asMatrix (.eval (engine "--vanilla") expr))))
 
 
-(defn evaluate-expr
+(defn- evaluate-expr
   "Function that takes an parameterised
    R function as a parameter."
   ([expr] (.eval (engine "--vanilla") expr)))
@@ -53,7 +52,7 @@
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
 
-(defn rfn->double-array
+(defn as-double-array
   ([rfn coll]
    (let [gs (str (gensym))]
      (try
@@ -69,7 +68,7 @@
        (finally (evaluate-expr (r/remove gs gs1)))))))
 
 
-(defn rfn->int-array
+(defn as-int-array
   ([rfn coll]
    (let [gs (str (gensym))]
      (try
@@ -85,7 +84,7 @@
        (finally (evaluate-expr (r/remove gs gs1)))))))
 
 
-(defn rfn-set->matrix
+(defn as-matrix
   ([rfn coll set]
    (let [gs (str (gensym))]
      (try
@@ -102,7 +101,7 @@
 
 
 
-(defn rfn-set->double-array
+(defn as-double-array-set
   ([rfn coll set]
    (let [gs (str (gensym))]
      (try
@@ -118,7 +117,7 @@
        (finally (evaluate-expr (r/remove gs gs1)))))))
 
 
-(defn rfn-set->int-array
+(defn as-int-array-set
   ([rfn coll set]
    (let [gs (str (gensym))]
      (try
@@ -134,7 +133,7 @@
        (finally (evaluate-expr (r/remove gs gs1)))))))
 
 
-(defn rfn-set-double-array->file
+(defn double-array->file
   ([rfn rfn2 coll set]
    (let [gs (str (gensym))]
      (try
@@ -145,7 +144,7 @@
        (finally (evaluate-expr (r/remove gs)))))))
 
 
-(defn rfn-set-int-array->file
+(defn int-array->file
   ([rfn rfn2 coll set]
    (let [gs (str (gensym))]
      (try
