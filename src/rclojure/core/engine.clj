@@ -3,8 +3,7 @@
   (:require [rclojure.core.rfn :as r]))
 
 ;TODO allow user to set gs in rfn-exec-graph as this is displayed in the plot x axis
-;TODO start looking at more complex data type eg multi dim arrays and data frames
-;TODO add coll to rfn "and" conditions as in matrix
+;TODO start looking at data frames
 
 
 (defn- new-thread
@@ -134,7 +133,7 @@
        (finally (evaluate-expr (r/remove gs gs1)))))))
 
 
-(defn as-double-array->file
+(defn double-array->file
   ([rfn rfn2 coll set]
    (let [gs (str (gensym))]
      (try
@@ -145,7 +144,7 @@
        (finally (evaluate-expr (r/remove gs)))))))
 
 
-(defn as-int-array->file
+(defn int-array->file
   ([rfn rfn2 coll set]
    (let [gs (str (gensym))]
      (try
