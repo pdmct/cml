@@ -1,67 +1,56 @@
 (ns rclojure.core
   (:require [rclojure.core.engine
-             :refer [evaluate-coll]]
+             :refer [eval-double-array eval-matrix]]
             [rclojure.core.rfn :as r]))
 
 
 (defn rsum
-  "Returns the sum of a collection"
   ([{:keys [coll type set]}]
    (if (nil? set)
      (cond (= type :double-array)
-           (evaluate-coll (r/sum coll))
+           (eval-double-array (r/sum coll))
            (= type :int-array)
-           (int-array (evaluate-coll (r/sum coll))))
+           (int-array (eval-double-array (r/sum coll))))
      (cond (= type :double-array)
-           (evaluate-coll (r/sum coll set))
+           (eval-double-array (r/sum coll set))
            (= type :int-array)
-           (int-array (evaluate-coll (r/sum coll set)))))))
+           (int-array (eval-double-array (r/sum coll set)))))))
 
 
 (defn rabs
-  "Returns the sum of a collection"
   ([{:keys [coll type]}]
    (cond (= type :double-array)
-         (evaluate-coll (r/abs coll))
+         (eval-double-array (r/abs coll))
          (= type :int-array)
-         (int-array (evaluate-coll (r/abs coll))))))
+         (int-array (eval-double-array (r/abs coll))))))
 
 
-
-#_(defn rabs
-  "Function computes the absolute
-   value of the contents of coll"
-  ([{:keys [coll type]}]
-   (cond (= type :double-array)
-         (as-double-array r/abs coll)
-         (= type :int-array)
-         (as-int-array r/abs coll))))
-
-
-#_(defn rappend
-  "Appendss coll1 on to coll. If set
-   is applied, appends coll1 at the
-   position of set"
+(defn rappend
   ([{:keys [coll coll1 type set]}]
-   (cond (= type :double-array)
-         (as-double-array-set r/append coll coll1 set)
-         (= type :int-array)
-         (as-int-array-set r/append coll coll1 set))))
+   (if (nil? set)
+     (cond (= type :double-array)
+           (eval-double-array (r/append coll coll1))
+           (= type :int-array)
+           (int-array (eval-double-array (r/append coll coll1))))
+     (cond (= type :double-array)
+           (eval-double-array (r/append coll coll1 set))
+           (= type :int-array)
+           (int-array (eval-double-array (r/append coll coll1 set)))))))
 
 
-#_(defn rcat
-  "Outputs the objects, concatenating
-   the representations"
-  [{:keys [coll type set]}]
-  (cond (= type :double-array)
-        (as-double-array-set r/cat coll set)
-        (= type :int-array)
-        (as-int-array-set r/cat coll set)))
+(defn rcat
+  ([{:keys [coll type set]}]
+   (if (nil? set)
+     (cond (= type :double-array)
+           (eval-double-array (r/cat coll))
+           (= type :int-array)
+           (int-array (eval-double-array (r/cat coll))))
+     (cond (= type :double-array)
+           (eval-double-array (r/cat coll set))
+           (= type :int-array)
+           (int-array (eval-double-array (r/cat coll set)))))))
 
-
-#_(defn rmatrix
-  [{:keys [coll set]}]
-  (as-matrix r/matrix coll set))
+(defn rmatrix [{:keys [coll set]}] (eval-matrix (r/matrix coll set)))
 
 
 #_(defn rplot-jpg

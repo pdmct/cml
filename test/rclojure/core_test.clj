@@ -43,12 +43,12 @@
   (is (double-array? (rappend {:coll (int-array [1 2 3]) :coll1 (int-array [4 5 6]) :type :double-array}))))
 
 
-#_(rcat {:coll (range 1 1000) :type :int-array :set {:file "foo.txt" :sep "," :fill true :labels ["APPLE" "CAKE" "BANANA"]}})
+(rcat {:coll (range 1 1000) :type :int-array :set {:file "foo.txt" :sep "," :fill true :labels ["APPLE" "CAKE" "BANANA"]}})
 
-#_(rmatrix {:coll (double-array [1 2 3 11 12 13])
-          :set  {
-                 :nrow  2
-                 :ncol  3
-                 :byrow true
-                 :rows  ["row1" "row2"]
-                 :cols  ["C.1" "C.2" "C.3"]}})
+(rmatrix {:coll [1 2 3 11 12 13]
+          :set {
+                      :nrow  2
+                      :ncol  3
+                      :byrow true
+                      :rows  ["row1" "row2"]
+                      :cols  ["C.1" "C.2" "C.3"]}})

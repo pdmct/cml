@@ -26,9 +26,13 @@
         (Rengine/getMainEngine)) re)))
 
 
-(defn evaluate-coll
+(defn eval-double-array
   [expr]
   (.asDoubleArray (.eval (engine "--vanilla") expr)))
+
+(defn eval-matrix
+  [expr]
+  (.asMatrix (.eval (engine "--vanilla") expr)))
 
 
 (defn evaluate-expr
@@ -48,7 +52,7 @@
 #_(evaluate-expr "plot(matrix(c(1,2,3,11,12,13), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c(\"foo\",\"bar\"),c(\"mss\",\"poo\",\"wae\"))))")
 #_(evaluate-expr "dev.off()")
 
-#_(defn matrix->file
+(defn matrix->file
   ([coll]
    (let [gs (str (gensym))]
      (try
