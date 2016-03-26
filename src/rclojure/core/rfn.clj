@@ -74,8 +74,13 @@
          (str "matrix(" (c coll) ")"))))
 
 
-(defn plot ([coll] (str "plot("coll")")))
+(defn plot [coll] (str "plot("coll")"))
 
+
+(defn plot-vec ([coll] (str "plot(" (c coll) ")")))
+
+
+(defn dev-off [] (str "dev.off()"))
 
 (defn jpg
   ([{:keys [fname]}]
@@ -91,5 +96,6 @@
      (or (.endsWith fname ".pdf") (.endsWith  fname ".PDF"))
      (str "pdf(\""fname"\")")
      (throw (IllegalArgumentException. (str fname "must have the prefix .pdf or .PDF"))))))
+
 
 
