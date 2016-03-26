@@ -20,16 +20,16 @@
 
 
 (defn sum
-  ([coll] (str "sum("coll", na.rm = FALSE)"))
+  ([coll] (do (println "foo") (str "sum(" (c coll) ", na.rm = FALSE)")))
   ([coll {:keys [na-rm?]}]
     (cond
       (and coll (instance? Boolean na-rm?))
-      (str "sum(" coll ", na.rm = "(.toUpperCase (str na-rm?))")")
+      (do (println "true") (str "sum(" (c coll) ", na.rm = " (.toUpperCase (str na-rm?)) ")"))
       coll
-      (str "sum("coll")"))))
+      (do (println "false") (str "sum("(c coll)")")))))
 
 
-(defn abs ([coll] (str "abs("coll")")))
+(defn abs ([coll] (str "abs("(c coll)")")))
 
 
 (defn append

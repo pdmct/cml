@@ -26,132 +26,33 @@
         (Rengine/getMainEngine)) re)))
 
 
-(defprotocol coll-type
-  (double-vec [c] "R vector of double")
-  (int-vec [c] "R vector of double int")
-  (matrix [c] "R matrix"))
+(defn evaluate-coll
+  [expr]
+  (.asDoubleArray (.eval (engine "--vanilla") expr)))
 
 
-(defrecord ^{:private true} evaluate-coll [expr]
-   coll-type
-  (double-vec [this] (.asDoubleArray (.eval (engine "--vanilla") expr)))
-  (int-vec [this] (.asIntArray (.eval (engine "--vanilla") expr)))
-  (matrix [this] (.asMatrix (.eval (engine "--vanilla") expr))))
-
-
-(defn- evaluate-expr
+(defn evaluate-expr
   "Function that takes an parameterised
    R function as a parameter."
   ([expr] (.eval (engine "--vanilla") expr)))
 
 
-(defmacro ^{:private true} rassign
+(defmacro  rassign
   "Function that assigns String binding
    to a double array or an int array"
   [binding val]
   `(~'.assign ~'(engine "--vanilla") ~binding ~val))
 
 
-(defn as-double-array
-  ([rfn coll]
+#_(evaluate-expr "jpeg(\"/Users/gra11/foo.jpg\")")
+#_(evaluate-expr "plot(matrix(c(1,2,3,11,12,13), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c(\"foo\",\"bar\"),c(\"mss\",\"poo\",\"wae\"))))")
+#_(evaluate-expr "dev.off()")
+
+#_(defn matrix->file
+  ([coll]
    (let [gs (str (gensym))]
      (try
-       (rassign gs (double-array coll))
-       (double-vec (->evaluate-coll (rfn gs)))
-       (finally (evaluate-expr (r/remove gs))))))
-  ([rfn coll coll1]
-   (let [gs (str (gensym)) gs1 (str (gensym))]
-     (try
-       (rassign gs (double-array coll))
-       (rassign gs1 (double-array coll1))
-       (double-vec (->evaluate-coll (rfn gs gs1)))
-       (finally (evaluate-expr (r/remove gs gs1)))))))
-
-
-(defn as-int-array
-  ([rfn coll]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs (int-array coll))
-       (int-vec (->evaluate-coll (rfn gs)))
-       (finally (evaluate-expr (r/remove gs))))))
-  ([rfn coll coll1]
-   (let [gs (str (gensym)) gs1 (str (gensym))]
-     (try
-       (rassign gs (int-array coll))
-       (rassign gs1 (int-array coll1))
-       (int-vec (->evaluate-coll (rfn gs gs1)))
-       (finally (evaluate-expr (r/remove gs gs1)))))))
-
-
-(defn as-matrix
-  ([rfn coll set]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs coll)
-       (matrix (->evaluate-coll (rfn gs set)))
-       (finally (evaluate-expr (r/remove gs))))))
-  ([rfn coll coll1 set]
-   (let [gs (str (gensym)) gs1 (str (gensym))]
-     (try
-       (rassign gs  coll)
-       (rassign gs1  coll1)
-       (matrix (->evaluate-coll (rfn gs gs1 set)))
-       (finally (evaluate-expr (r/remove gs gs1)))))))
-
-
-
-(defn as-double-array-set
-  ([rfn coll set]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs (double-array coll))
-       (double-vec (->evaluate-coll (rfn gs set)))
-       (finally (evaluate-expr (r/remove gs))))))
-  ([rfn coll coll1 set]
-   (let [gs (str (gensym)) gs1 (str (gensym))]
-     (try
-       (rassign gs (double-array coll))
-       (rassign gs1 (double-array coll1))
-       (double-vec (->evaluate-coll (rfn gs gs1 set)))
-       (finally (evaluate-expr (r/remove gs gs1)))))))
-
-
-(defn as-int-array-set
-  ([rfn coll set]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs (int-array coll))
-       (int-vec (->evaluate-coll (rfn gs set)))
-       (finally (evaluate-expr (r/remove gs))))))
-  ([rfn coll coll1 set]
-   (let [gs (str (gensym)) gs1 (str (gensym))]
-     (try
-       (rassign gs (int-array coll))
-       (rassign gs1 (int-array coll1))
-       (int-vec (->evaluate-coll (rfn gs gs1 set)))
-       (finally (evaluate-expr (r/remove gs gs1)))))))
-
-
-(defn double-array->file
-  ([rfn rfn2 coll set]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs (double-array coll))
-       (evaluate-expr (rfn2 set))
-       (double-vec (->evaluate-coll (rfn gs)))
-       (evaluate-expr "dev.off()")
-       (finally (evaluate-expr (r/remove gs)))))))
-
-
-(defn int-array->file
-  ([rfn rfn2 coll set]
-   (let [gs (str (gensym))]
-     (try
-       (rassign gs (int-array coll))
-       (evaluate-expr (rfn2 set))
-       (int-vec (->evaluate-coll (rfn gs)))
-       (evaluate-expr "dev.off()")
-       (finally (evaluate-expr (r/remove gs)))))))
-
+       (evaluate-expr "jpeg(\"/Users/gra11/foo.jpg\")")
+       (evaluate-expr (str "plot(matrix(" coll ", nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c(\"foo\",\"bar\"),c(\"mss\",\"poo\",\"wae\"))))"))
+       (evaluate-expr "dev.off()")))))
 
