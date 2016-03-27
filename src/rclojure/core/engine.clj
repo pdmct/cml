@@ -2,8 +2,6 @@
   (:import [org.rosuda.JRI Rengine])
   (:require [rclojure.core.rfn :as r]))
 
-;TODO allow user to set gs in rfn-exec-graph as this is displayed in the plot x axis
-;TODO start looking at data frames
 
 (defn- new-thread
   "Starts a single thread that manages
@@ -26,6 +24,9 @@
 
 
 (defn eval-double-array [expr] (.asDoubleArray (.eval (engine "--vanilla") expr)))
+
+
+(defn eval-int-array [expr] (.asIntArray (.eval (engine "--vanilla") expr)))
 
 
 (defn eval-matrix [expr] (.asMatrix (.eval (engine "--vanilla") expr)))
