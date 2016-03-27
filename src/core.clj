@@ -1,6 +1,6 @@
 (ns rclojure.core
   (:require [rclojure.core.engine
-             :refer [eval-double-array eval-matrix eval-expr]]
+             :refer [eval-double-array eval-int-array eval-matrix eval-expr]]
             [rclojure.core.rfn :as r]))
 
 
@@ -10,11 +10,11 @@
      (cond (= type :double-array)
            (seq (eval-double-array (r/sum coll)))
            (= type :int-array)
-           (seq (int-array (eval-double-array (r/sum coll)))))
+           (seq (eval-int-array (r/sum coll))))
      (cond (= type :double-array)
            (seq (eval-double-array (r/sum coll set)))
            (= type :int-array)
-           (seq (int-array (eval-double-array (r/sum coll set))))))))
+           (seq (eval-int-array (r/sum coll set)))))))
 
 
 (defn rabs
@@ -22,7 +22,7 @@
    (cond (= type :double-array)
          (seq (eval-double-array (r/abs coll)))
          (= type :int-array)
-         (seq (int-array (eval-double-array (r/abs coll)))))))
+         (seq (eval-int-array (r/abs coll))))))
 
 
 (defn rappend
@@ -31,11 +31,11 @@
      (cond (= type :double-array)
            (seq (eval-double-array (r/append coll coll1)))
            (= type :int-array)
-           (seq (int-array (eval-double-array (r/append coll coll1)))))
+           (seq (eval-int-array (r/append coll coll1))))
      (cond (= type :double-array)
            (seq (eval-double-array (r/append coll coll1 set)))
            (= type :int-array)
-           (seq (int-array (eval-double-array (r/append coll coll1 set))))))))
+           (seq (eval-int-array (r/append coll coll1 set)))))))
 
 
 (defn rcat
@@ -48,7 +48,7 @@
      (cond (= type :double-array)
            (seq (eval-double-array (r/cat coll set)))
            (= type :int-array)
-           (seq (int-array (eval-double-array (r/cat coll set))))))))
+           (seq (eval-int-array (r/cat coll set)))))))
 
 
 (defn rmatrix [{:keys [coll set]}] (eval-matrix (r/matrix coll set)))

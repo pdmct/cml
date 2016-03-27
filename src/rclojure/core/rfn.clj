@@ -8,8 +8,8 @@
     (some string? coll)
     (str "c(\""(reduce str (interpose "\",\"" coll))"\")")
     (some #(instance? Double %) coll)
-    (str "c("(reduce str (interpose "," (double-array coll)))")")
-    :else (str "c("(reduce str (interpose "," coll))")")))
+    (str "as.vector(c("(reduce str (interpose "," (double-array coll)))"), mode = \"double\")")
+    :else (str "as.vector(c("(reduce str (interpose "," coll))"), mode = \"integer\")")))
 
 
 (defn remove
@@ -81,6 +81,7 @@
 
 
 (defn dev-off [] (str "dev.off()"))
+
 
 (defn jpg
   ([{:keys [fname]}]
