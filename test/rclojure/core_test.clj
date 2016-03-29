@@ -26,7 +26,7 @@
   (is (= (into [] (rsum {:coll (int-array [1 2 3]) :type :int-array})) [6]))
   (is (seq? (rsum {:coll (int-array [1 2 3]) :type :int-array})))
   (is (seq? (rsum {:coll (int-array [1 2 3]) :type :int-array})))
-  (is (seq? (rsum {:coll  (int-array [1 2 3]) :type :double-array}))))
+  (is (seq? (rsum {:coll (int-array [1 2 3]) :type :double-array}))))
 
 
 (deftest rabs-test
@@ -45,29 +45,35 @@
 
 (rcat {:coll (range 1 1000)
        :type :int-array
-       :set {:file "foo.txt"
-             :sep ","
-             :fill true
-             :labels ["APPLE" "CAKE" "BANANA"]}})
+       :set  {:file   "foo.txt"
+              :sep    ","
+              :fill   true
+              :labels ["APPLE" "CAKE" "BANANA"]}})
 
 
 (rmatrix {:coll [1 2 3 11 12 13]
-          :set {
-                :nrow  2
-                :ncol  3
-                :byrow true
-                :rows  ["row1" "row2"]
-                :cols  ["C.1" "C.2" "C.3"]}})
+          :set  {
+                 :nrow  2
+                 :ncol  3
+                 :byrow true
+                 :rows  ["row1" "row2"]
+                 :cols  ["C.1" "C.2" "C.3"]}})
 
 
 (rplot-matrix {:coll [1 2 3 11 12 13]
                :file :jpg
-               :set {
-                     :fname "/Users/gra11/lemon3.jpg"
-                     :nrow  2
-                     :ncol  3
-                     :byrow true
-                     :rows  ["row1" "row2"]
-                     :cols  ["C.1" "C.2" "C.3"]}})
+               :set  {
+                      :fname "/Users/gra11/lemon3.jpg"
+                      :nrow  2
+                      :ncol  3
+                      :byrow true
+                      :rows  ["row1" "row2"]
+                      :cols  ["C.1" "C.2" "C.3"]}})
+
+;(.assign (engine "--vanilla") "x" (eval-expr "as.matrix(c(1,2,3))"))
+;(eval-expr "mdat <- matrix(c(1,2,3, 11,12,13), nrow = 12, ncol = 7, byrow = TRUE)")
+; (defn foo [x] (second (re-find #"\$(.*)$" (str (class foo)))))
+;(defmacro <- [binding] `(~'def 'binding (second (re-find #"\$(.*)$" (str (class foo))))))
 
 
+;(defmacro <- [binding expr] `(~'def 'binding (~'eval-expr (~'str 'binding "<-" ~'expr))))

@@ -2,6 +2,8 @@
   (:import [org.rosuda.JRI Rengine])
   (:require [rclojure.core.rfn :as r]))
 
+;To solve matrix problem change project so bing expressions to variables so r can deal with
+; computations
 
 (defn- new-thread
   "Starts a single thread that manages

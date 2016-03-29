@@ -38,6 +38,7 @@
            (seq (eval-int-array (r/append coll coll1 set)))))))
 
 
+
 (defn rcat
   ([{:keys [coll type set]}]
    (if (nil? set)
@@ -51,7 +52,7 @@
            (seq (eval-int-array (r/cat coll set)))))))
 
 
-(defn rmatrix [{:keys [coll set]}] (eval-matrix (r/matrix coll set)))
+(defn rmatrix [{:keys [coll set]}] (map seq (eval-matrix (r/matrix coll set))))
 
 
 (defn rplot-vec
