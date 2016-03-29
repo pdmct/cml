@@ -77,3 +77,4 @@
 
 
 ;(defmacro <- [binding expr] `(~'def 'binding (~'eval-expr (~'str 'binding "<-" ~'expr))))
+;(eval-expr "mdat <- matrix(c(1,2,3, 11,12,13), nrow = 12, ncol = 7, byrow = TRUE)")
