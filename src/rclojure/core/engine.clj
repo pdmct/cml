@@ -1,9 +1,6 @@
 (ns rclojure.core.engine
-  (:import [org.rosuda.JRI Rengine])
-  (:require [rclojure.core.rfn :as r]))
+  (:import [org.rosuda.JRI Rengine]))
 
-;To solve matrix problem change project so bing expressions to variables so r can deal with
-; computations
 
 (defn- new-thread
   "Starts a single thread that manages
@@ -35,6 +32,9 @@
 
 
 (defn eval-expr ([expr] (.eval (engine "--vanilla") expr)))
+
+
+(defn contents ([expr] (.getContent (.eval (engine "--vanilla") expr))))
 
 
 (defmacro assign [binding val] `(~'.assign ~'(engine "--vanilla") ~binding ~val))
