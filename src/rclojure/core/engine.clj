@@ -1,6 +1,5 @@
 (ns rclojure.core.engine
-  (:import [org.rosuda.JRI Rengine])
-  (:require [rclojure.core.rfn :as r]))
+  (:import [org.rosuda.JRI Rengine]))
 
 
 (defn- new-thread
@@ -33,6 +32,9 @@
 
 
 (defn eval-expr ([expr] (.eval (engine "--vanilla") expr)))
+
+
+(defn contents ([expr] (.getContent (.eval (engine "--vanilla") expr))))
 
 
 (defmacro assign [binding val] `(~'.assign ~'(engine "--vanilla") ~binding ~val))

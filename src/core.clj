@@ -1,74 +1,64 @@
 (ns rclojure.core
   (:require [rclojure.core.engine
-             :refer [eval-double-array eval-int-array eval-matrix eval-expr]]
-            [rclojure.core.rfn :as r]))
+             :refer [eval-double-array eval-int-array eval-matrix eval-expr contents]]
+            [rclojure.core.coll-expression :refer :all]
+            [rclojure.core.fn-expression :as fn]))
 
 
 (defn rsum
   ([{:keys [coll type set]}]
    (if (nil? set)
-     (cond (= type :double-array)
-           (seq (eval-double-array (r/sum coll)))
-           (= type :int-array)
-           (seq (eval-int-array (r/sum coll))))
-     (cond (= type :double-array)
-           (seq (eval-double-array (r/sum coll set)))
-           (= type :int-array)
-           (seq (eval-int-array (r/sum coll set)))))))
+     (if (= type :double)
+       (seq (contents (fn/sum (as-vec coll {:mode :double}))))
+       (seq (contents (fn/sum (as-vec coll {:mode :integer})))))
+     (if (= type :double)
+       (seq (contents (fn/sum (as-vec coll {:mode :double}) set)))
+       (seq (contents (fn/sum (as-vec coll {:mode :integer}) set)))))))
 
 
-(defn rabs
-  ([{:keys [coll type]}]
-   (cond (= type :double-array)
-         (seq (eval-double-array (r/abs coll)))
-         (= type :int-array)
-         (seq (eval-int-array (r/abs coll))))))
+(defn rabs ([coll] (seq (contents (fn/abs coll)))))
 
 
 (defn rappend
   ([{:keys [coll coll1 type set]}]
    (if (nil? set)
-     (cond (= type :double-array)
-           (seq (eval-double-array (r/append coll coll1)))
-           (= type :int-array)
-           (seq (eval-int-array (r/append coll coll1))))
-     (cond (= type :double-array)
-           (seq (eval-double-array (r/append coll coll1 set)))
-           (= type :int-array)
-           (seq (eval-int-array (r/append coll coll1 set)))))))
+     (if (= type :double)
+       (seq
+         (contents
+           (fn/append
+             (as-vec coll {:mode :double})
+             (as-vec coll1 {:mode :double}))))
+       (seq
+         (contents
+           (fn/append
+             (as-vec coll {:mode :integer})
+             (as-vec coll1 {:mode :integer}) set)))))))
+
+   (defn rcat
+     ([{:keys [coll set]}]
+      (if (nil? set)
+        (println coll)
+        (seq (contents (fn/cat (as-vec coll) set))))))
 
 
-(defn rcat
-  ([{:keys [coll type set]}]
-   (if (nil? set)
-     (cond (= type :double-array)
-           (println coll)
-           (= type :int-array)
-           (println coll))
-     (cond (= type :double-array)
-           (seq (eval-double-array (r/cat coll set)))
-           (= type :int-array)
-           (seq (eval-int-array (r/cat coll set)))))))
-
-
-(defn rmatrix [{:keys [coll set]}] (eval-matrix (r/matrix coll set)))
+(defn rmatrix [{:keys [coll set]}] (map seq (eval-matrix (fn/matrix coll set))))
 
 
 (defn rplot-vec
   [{:keys [coll file set]}]
-  (cond (= file :jpg)
+  (if (= file :jpg)
         (do
-          (eval-expr (r/jpg set))
-          (eval-expr (r/plot-vec coll))
-          (eval-expr (r/dev-off)))))
+          (eval-expr (fn/jpg set))
+          (eval-expr (fn/plot-vec (as-vec coll)))
+          (eval-expr (fn/dev-off)))))
 
 
 (defn rplot-matrix
-  [{:keys [coll file set]}]
-  (cond (= file :jpg)
-        (do
-          (eval-expr (r/jpg set))
-          (eval-expr (r/plot (r/matrix coll set)))
-          (eval-expr (r/dev-off)))))
+  [{:keys [coll file type set]}]
+  (if (= file :jpg)
+    (do
+      (eval-expr (fn/jpg set))
+      (eval-expr (fn/plot (fn/matrix (as-vec coll) set)))
+      (eval-expr (fn/dev-off)))))
 
 

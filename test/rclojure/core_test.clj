@@ -23,51 +23,44 @@
 
 
 (deftest rsum-test
-  (is (= (into [] (rsum {:coll (int-array [1 2 3]) :type :int-array})) [6]))
-  (is (seq? (rsum {:coll (int-array [1 2 3]) :type :int-array})))
-  (is (seq? (rsum {:coll (int-array [1 2 3]) :type :int-array})))
-  (is (seq? (rsum {:coll  (int-array [1 2 3]) :type :double-array}))))
+  (is (= (into [] (rsum [1 2 3])) [6]))
+  (is (seq? (rsum [1 2 3]))))
 
 
 (deftest rabs-test
-  (is (= (into [] (rabs {:coll (int-array [1 2 -3 -4 5]) :type :int-array})) [1 2 3 4 5]))
-  (is (seq? (rabs {:coll (int-array [1 2 3]) :type :int-array})))
-  (is (seq? (rabs {:coll (int-array [1 2 3]) :type :int-array})))
-  (is (seq? (rabs {:coll (int-array [1 2 3]) :type :double-array}))))
+  (is (= (into [] (rabs [1 2 -3 -4 5])) [1 2 3 4 5]))
+  (is (seq? (rabs [1 2 3]))))
 
 
 (deftest rappend-test
-  (is (= (into [] (rappend {:coll (int-array [1 2 3 4 5]) :coll1 (int-array [6 7 8 9 10]) :type :int-array})) [1 2 3 4 5 6 7 8 9 10]))
-  (is (seq? (rappend {:coll (int-array [1 2 3]) :coll1 (int-array [4 5 6]) :type :int-array})))
-  (is (seq? (rappend {:coll (int-array [1 2 3]) :coll1 (int-array [4 5 6]) :type :int-array})))
-  (is (seq? (rappend {:coll (int-array [1 2 3]) :coll1 (int-array [4 5 6]) :type :double-array}))))
+  (is (= (into [] (rappend [1 2 3 4 5] [6 7 8 9 10])) [1 2 3 4 5 6 7 8 9 10]))
+  (is (seq? (rappend (int-array [1 2 3]) (int-array [4 5 6])))))
 
 
 (rcat {:coll (range 1 1000)
-       :type :int-array
-       :set {:file "foo.txt"
-             :sep ","
-             :fill true
-             :labels ["APPLE" "CAKE" "BANANA"]}})
+           :set {:file "foo.txt"
+                   :sep    ","
+                   :fill   true
+                   :labels ["APPLE" "CAKE" "BANANA"]}})
 
 
 (rmatrix {:coll [1 2 3 11 12 13]
-          :set {
-                :nrow  2
-                :ncol  3
-                :byrow true
-                :rows  ["row1" "row2"]
-                :cols  ["C.1" "C.2" "C.3"]}})
+          :set  {
+                 :nrow  2
+                 :ncol  3
+                 :byrow true
+                 :rows  ["row1" "row2"]
+                 :cols  ["C.1" "C.2" "C.3"]}})
 
 
 (rplot-matrix {:coll [1 2 3 11 12 13]
                :file :jpg
-               :set {
-                     :fname "/Users/gra11/lemon3.jpg"
-                     :nrow  2
-                     :ncol  3
-                     :byrow true
-                     :rows  ["row1" "row2"]
-                     :cols  ["C.1" "C.2" "C.3"]}})
+               :set  {
+                      :fname "/Users/gra11/lemon1.jpg"
+                      :nrow  2
+                      :ncol  3
+                      :byrow true
+                      :rows  ["row1" "row2"]
+                      :cols  ["C.1" "C.2" "C.3"]}})
 
 
