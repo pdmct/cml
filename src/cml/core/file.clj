@@ -1,18 +1,17 @@
 (ns cml.core.file
   (:require [clojure.java.io :as io])
-  (:import [com.datumbox.framework.common Configuration]
-           [com.datumbox.framework.common.dataobjects Dataframe Record TypeInference]
-           [com.datumbox.framework.common.utilities PHPMethods RandomGenerator]
-           [com.datumbox.framework.core.machinelearning.classification SoftMaxRegression]
-           [com.datumbox.framework.core.machinelearning.datatransformation XMinMaxNormalizer]
-           [com.datumbox.framework.core.machinelearning.featureselection.continuous PCA]
-           (java.io BufferedReader InputStreamReader FileInputStream File)
-           (java.util.zip GZIPInputStream)
-           (java.nio.file Paths)))
+  (:import (java.io BufferedReader InputStreamReader FileInputStream)
+           (java.util.zip GZIPInputStream)))
 
 
-(defn read-file
-  [file]
-  (try (InputStreamReader. (FileInputStream. (io/file file)))))
+(defmulti read-file (fn [x _] (:file x)))
 
 
+(defmethod read-file :csv
+  [_ {:keys [path]}]
+  (InputStreamReader. (FileInputStream. (io/file path)) "UTF-8"))
+
+
+(defmethod read-file :gzip
+  [_ {:keys [path]}]
+  (BufferedReader. (InputStreamReader. (GZIPInputStream. (FileInputStream. (io/file path))))))
