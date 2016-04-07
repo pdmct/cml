@@ -1,18 +1,18 @@
 (ns cml.core.correlation)
 
-(def sample {:x [1 4 7 3 55 87 4 3 66 5 4 3 2 66] :y [6 5 44 2 4 88 7 5 2 1 3 4 6 3]})
+(def sample {:x [490 500 530 550 580 590 600 600 650 700]
+             :y [560 500 510 600 600 620 550 630 650 750 ]})
 
 
-;Independent variable goes on the x-axis
-;Dependant on the y axis
-;The steps to calculate the sum of squares for x are as follows:
+(defn- mean [sample] (quot (reduce + sample) (count sample)))
 
-(defn pearson [{:keys [independant dependant]}])
+(defn- deviation-score [mean sample] (map (fn [x]  (- (mean sample) x)) sample))
 
-;1) For each x score, subtract the mean of x as calculated from the sample. This is called the deviation score.
+(defn- deviation-score-squared [sample] (map (fn [x] (* x x)) (deviation-score mean sample)))
 
-(def mean (/ (reduce + (:x sample)) (count (:x sample))))
+(defn- deviation-score-sum [sample] (reduce + (deviation-score-squared sample)))
 
-(map #(- mean %) (:x sample))
+(defn pearson-correlation [{:keys [x y]}]
+  (/ (reduce + (map * (deviation-score mean x) (deviation-score mean y))) (Math/sqrt (* (deviation-score-sum x) (deviation-score-sum y)))))
 
 
