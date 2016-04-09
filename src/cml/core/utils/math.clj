@@ -1,4 +1,5 @@
-(ns cml.core.stats.utils)
+(ns cml.core.utils.math)
+
 
 (defn squared
   ([coll] (map #(* % %) coll))
@@ -8,5 +9,4 @@
   ([coll] (reduce + coll))
   ([f coll] (reduce + (f coll))))
 
-(defn mean [sample] (quot (reduce + sample) (count sample)))
 
