@@ -1,6 +1,8 @@
 (ns cml.core.correlation
   (:require [cml.core.utils.stats :refer :all]
-            [cml.core.utils.math :refer :all]))
+            [cml.core.utils.math :refer :all]
+            [cml.core.utils.samples :refer :all]
+            [cml.core.accuracy :refer :all]))
 
 
 
