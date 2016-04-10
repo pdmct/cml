@@ -1,8 +1,8 @@
 (ns cml.core.correlation
   (:require [cml.core.utils.stats :refer :all]
             [cml.core.utils.math :refer :all]
-            [cml.core.utils.samples :refer :all]
             [cml.core.accuracy :refer :all]))
+
 
 
 
@@ -19,5 +19,9 @@
 (defn significance [correlation sample-size]
   (/ (* correlation (Math/sqrt sample-size))
      (Math/sqrt (- 1 (* correlation correlation)))))
+
+
+(def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
+              :y-axis (deviation-score mean [560 500 510 600 600 620 550 630 650 750])})
 
 
