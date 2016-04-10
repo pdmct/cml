@@ -3,4 +3,6 @@
 
 (defn mean [sample] (quot (reduce + sample) (count sample)))
 
+(defn coefficient-determination [rho] (* rho rho))
+
 
