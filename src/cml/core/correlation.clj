@@ -1,13 +1,12 @@
 (ns cml.core.correlation
   (:require [cml.core.utils.stats :refer :all]
             [cml.core.utils.math :refer :all]
-            [cml.core.utils.samples :refer :all]
             [cml.core.accuracy :refer :all]))
 
 
 
 (defn deviation-score [mean sample]
-  (map (fn [x]  (- (mean sample) x)) sample))
+  (map (fn [x] (- (mean sample) x)) sample))
 
 
 (defn pearson-correlation [{:keys [x-axis y-axis]}]

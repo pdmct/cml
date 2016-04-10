@@ -1,9 +1,11 @@
-(ns cml.core.utils.math)
+(ns cml.core.utils.math
+  (:require [clojure.core.reducers :as r]))
 
 
 (defn squared
   ([coll] (map #(* % %) coll))
   ([f coll] (map #(* % %) (f coll))))
+
 
 (defn sum
   ([coll] (reduce + coll))
