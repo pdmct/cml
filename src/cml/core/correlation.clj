@@ -15,8 +15,3 @@
                    (reduce + (squared y-axis))))))
 
 
-(defn significance [correlation sample-size]
-  (/ (* correlation (Math/sqrt sample-size))
-     (Math/sqrt (- 1 (* correlation correlation)))))
-
-

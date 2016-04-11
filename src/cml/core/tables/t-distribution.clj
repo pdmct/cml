@@ -3,9 +3,21 @@
 
 
 
-(def one-tail-alpha-values {0.05   0 0.025  1 0.01   2 0.005  3 0.0025 4 0.001  5 0.0005 6})
+(def one-tail-alpha-values {0.05 0
+                            0.025 1
+                            0.01 2
+                            0.005 3
+                            0.0025 4
+                            0.001 5
+                            0.0005 6})
 
-(def two-tail-alpha-values {0.1   0 0.05  1 0.02  2 0.01  3 0.005 4 0.002 5 0.001 6})
+(def two-tail-alpha-values {0.1 0
+                            0.05 1
+                            0.02 2
+                            0.01 3
+                            0.005 4
+                            0.002 5
+                            0.001 6})
 
 
 (defn t-distribution-matrix []
@@ -211,7 +223,7 @@
            [1.6525 1.9719 2.3451 2.6007 2.8385 3.1315 3.3398]]))
 
 
-(defn t-distribution-value [f matrix freedom alpha-value] (mget matrix freedom (f alpha-value)))
+(defn t-distribution-value [f matrix freedom alpha-value] (mget matrix (dec freedom) (f alpha-value)))
 
 
 (defn t-table [freedom alpha-value tail]
