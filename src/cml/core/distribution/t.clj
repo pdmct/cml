@@ -1,4 +1,5 @@
-(ns cml.core.tables.t-distribution)
+(ns cml.core.distribution.t
+  (:require [cml.core.utils.stats :as s]))
 (use 'clojure.core.matrix)
 
 
@@ -223,7 +224,7 @@
            [1.6525 1.9719 2.3451 2.6007 2.8385 3.1315 3.3398]]))
 
 
-(defn t-distribution-value [f matrix freedom alpha-value] (mget matrix (dec freedom) (f alpha-value)))
+(defn- t-distribution-value [f matrix freedom alpha-value] (mget matrix (dec freedom) (f alpha-value)))
 
 
 (defn t-table [freedom alpha-value tail]
@@ -236,5 +237,10 @@
     (t-distribution-value two-tail-alpha-values
                           (t-distribution-matrix)
                           freedom alpha-value)))
+
+
+(defn t-distribution [population sample]
+  (/ (- (s/sample-mean sample) (s/mean population))
+     (/ (s/standard-deviation population) (Math/sqrt (count sample)))))
 
 

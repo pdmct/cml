@@ -3,6 +3,7 @@
             [bigml.sampling.reservoir :as reservoir]
             [bigml.sampling.stream :as stream]))
 
+;TODO turn into multi method and call function sample
 
 (defn rand-sample
   ([population]

@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [cml.core.correlation :refer :all]
             [cml.core.utils.stats :refer :all]
-            [cml.core.tables.t-distribution :refer :all]
+            [cml.core.distribution.t :refer :all]
             [cml.core.hypothesis.test :refer :all]))
 
 
