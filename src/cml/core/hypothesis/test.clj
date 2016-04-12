@@ -1,4 +1,5 @@
-(ns cml.core.hypothesis.test)
+(ns cml.core.hypothesis.test
+  (:require [cml.core.utils.stats ]))
 
 
 
@@ -7,7 +8,7 @@
      (Math/sqrt (- 1 (* correlation correlation)))))
 
 
-(defn t-test [])
-
+(defn t-test [population sample]
+  ())
 
 
