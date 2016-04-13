@@ -241,6 +241,7 @@
 
 (defn t-distribution [population sample]
   (/ (- (s/sample-mean sample) (s/mean population))
-     (/ (s/standard-deviation population) (Math/sqrt (count sample)))))
+     (/ (s/standard-deviation {:type :population} population) (Math/sqrt (count sample)))))
+
 
 
