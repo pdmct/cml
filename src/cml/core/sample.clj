@@ -3,12 +3,22 @@
             [bigml.sampling.reservoir :as reservoir]
             [bigml.sampling.stream :as stream]))
 
-;TODO turn into multi method and call function sample
 
-(defn rand-sample
+
+(defn random-dummy-sample
   ([population]
    (simple/sample population))
   ([population size]
     (stream/sample (range) size population)))
+
+
+(defn random-population-sample [population size]
+  (let [a (atom population)]
+    (loop [x [] y size]
+      (if (= y 0)
+        x
+        (do
+          (swap! a pop)
+          (recur (conj x (last (swap! a shuffle))) (dec y)))))))
 
 
