@@ -4,7 +4,6 @@
             [bigml.sampling.stream :as stream]))
 
 
-
 (defn random-dummy-sample
   ([population]
    (simple/sample population))
@@ -13,12 +12,11 @@
 
 
 (defn random-population-sample [population size]
-  (let [a (atom population)]
-    (loop [x [] y size]
-      (if (= y 0)
-        x
-        (do
-          (swap! a pop)
-          (recur (conj x (last (swap! a shuffle))) (dec y)))))))
+  (let [x (atom []) p (atom population) s (atom size)]
+    (while (not= @s 0)
+      (do
+        (swap! x conj (last (swap! p shuffle)))
+        (swap! p pop)
+        (swap! s dec))) @x))
 
 
