@@ -1,5 +1,5 @@
 (ns cml.core.hypothesis.test
-  (:require [cml.core.utils.stats ]))
+  (:require [cml.core.utils.stats :as s]))
 
 
 
@@ -8,7 +8,8 @@
      (Math/sqrt (- 1 (* correlation correlation)))))
 
 
-(defn t-test [population sample]
-  ())
+(defn one-sample-t-test [est-population-mean sample]
+  (/ (- (s/mean sample) est-population-mean)
+     (/ (s/standard-deviation {:type :sample} sample) (Math/sqrt (count sample)))))
 
 

@@ -21,6 +21,9 @@
 (coefficient-determination (pearson-correlation sample))
 
 
-(t-distribution sample-one [490 500 530 550])
+(def a (random-population-sample sample-one 4))
+
+
+(one-sample-t-test sample-one a)
 
 

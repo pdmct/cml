@@ -22,7 +22,7 @@
                             0.001 6})
 
 
-(defn t-distribution-matrix []
+(defn critical-values []
   (matrix [[6.3138 12.7065 31.8193 63.6551 127.3447 318.4930 636.0450]
            [2.9200 4.3026 6.9646 9.9247 14.0887 22.3276 31.5989]
            [2.3534 3.1824 4.5407 5.8408 7.4534 10.2145 12.9242]
@@ -232,17 +232,11 @@
   (cond
     (= tail :one-tail)
     (t-distribution-value one-tail-alpha-values
-                          (t-distribution-matrix)
+                          (critical-values)
                           freedom alpha-value)
     (= tail :two-tail)
     (t-distribution-value two-tail-alpha-values
-                          (t-distribution-matrix)
+                          (critical-values)
                           freedom alpha-value)))
-
-
-(defn t-distribution [population sample]
-  (/ (- (s/sample-mean sample) (s/mean population))
-     (/ (s/standard-deviation {:type :population} population) (Math/sqrt (count sample)))))
-
 
 
