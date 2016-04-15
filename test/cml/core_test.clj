@@ -6,7 +6,7 @@
             [cml.core.hypothesis.test :refer :all]
             [cml.core.sample :refer :all]))
 
-(def sample-one [490 500 530 550 580 590 600 600 650 700])
+(def population-one [490 500 530 550 580 590 600 600 650 700])
 (def sample-two [560 500 510 600 600 620 550 630 650 750])
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -21,6 +21,15 @@
 (coefficient-determination (pearson-correlation sample))
 
 
-(t-distribution sample-one [490 500 530 550])
+(def a (random-population-sample population-one 4))
+
+(one-sample-t-test population-one a)
+
+(count a)
+
+
+(t-table 3 0.05 :one-tail)
+
+(variance {:type :sample} [490,500,530,550,580,590,600,600,650,700])
 
 
