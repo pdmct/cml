@@ -227,16 +227,23 @@
 
 (defn- t-distribution-value [f matrix freedom alpha-value] (mget matrix (dec freedom) (f alpha-value)))
 
+(defn table [dof alpha test critical-val]
+  {:dof dof
+   :alpha alpha
+   :test test
+   :critical-val critical-val})
 
-(defn t-table [freedom alpha-value tail]
+(defn t-table [{:keys [dof alpha test]}]
   (cond
-    (= tail :one-tail)
-    (t-distribution-value one-tail-alpha-values
-                          (critical-values)
-                          freedom alpha-value)
-    (= tail :two-tail)
-    (t-distribution-value two-tail-alpha-values
-                          (critical-values)
-                          freedom alpha-value)))
+    (= test :one-tail)
+    (table dof alpha test
+           (t-distribution-value
+             one-tail-alpha-values
+             (critical-values) dof alpha))
+    (= test :two-tail)
+    (table dof alpha test
+           (t-distribution-value
+             two-tail-alpha-values
+             (critical-values) dof alpha))))
 
 
