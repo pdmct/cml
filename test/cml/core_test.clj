@@ -16,19 +16,17 @@
 
 (significance (pearson-correlation sample) 8)
 
-(t-table 8 0.05 :two-tail)
+(t-table {:dof 8 :alpha 0.05 :test :two-tail})
 
 (coefficient-determination (pearson-correlation sample))
 
-
 (def a (random-population-sample population-one 4))
 
-(one-sample-t-test population-one a)
+(one-sample-t-test {:sample population-one :hypothetical-mean [400] :alpha 0.05})
 
 (count a)
 
-
-(t-table 3 0.05 :one-tail)
+(t-table {:dof 9 :alpha 0.05 :test :one-tail})
 
 (variance {:type :sample} [490,500,530,550,580,590,600,600,650,700])
 

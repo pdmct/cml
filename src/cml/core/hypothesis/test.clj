@@ -7,16 +7,16 @@
      (Math/sqrt (- 1 (* correlation correlation)))))
 
 
-(defn t-test [mean hm variance ss sig]
+(defn t-test [mean hm variance ss alpha]
   {:mean       mean
    :hypothetical-mean hm
    :sample-variance   variance
    :sample-size       ss
    :dof (dec ss)
-   :significance sig})
+   :alpha alpha})
 
 
-(defn one-sample-t-test [{:keys [sample hypothetical-mean significance]}]
+(defn one-sample-t-test [{:keys [sample hypothetical-mean alpha]}]
   ((comp (fn [x]
            (assoc x :t (/ (- (:mean x) (:hypothetical-mean x))
                           (/ (:sample-variance x) (Math/sqrt (:sample-size x)))))))
@@ -24,7 +24,7 @@
             (s/mean hypothetical-mean)
             (s/variance {:type :sample} sample)
             (count sample)
-            significance)))
+            alpha)))
 
 
 ;(defn one-sample-t-test :one-tail)
