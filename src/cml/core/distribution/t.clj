@@ -4,19 +4,19 @@
 
 
 
-(def one-tail-alpha-values {0.05 0
-                            0.025 1
-                            0.01 2
-                            0.005 3
+(def one-tail-alpha-values {0.05   0
+                            0.025  1
+                            0.01   2
+                            0.005  3
                             0.0025 4
-                            0.001 5
+                            0.001  5
                             0.0005 6})
 
 
-(def two-tail-alpha-values {0.1 0
-                            0.05 1
-                            0.02 2
-                            0.01 3
+(def two-tail-alpha-values {0.1   0
+                            0.05  1
+                            0.02  2
+                            0.01  3
                             0.005 4
                             0.002 5
                             0.001 6})
@@ -227,9 +227,9 @@
 (defn- t-distribution-value [f matrix freedom alpha-value] (mget matrix (dec freedom) (f alpha-value)))
 
 (defn table [dof alpha test critical-val]
-  {:dof dof
-   :alpha alpha
-   :test test
+  {:dof          dof
+   :alpha        alpha
+   :test         test
    :critical-val critical-val})
 
 
