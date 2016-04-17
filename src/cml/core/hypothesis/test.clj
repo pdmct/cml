@@ -7,28 +7,42 @@
      (Math/sqrt (- 1 (* correlation correlation)))))
 
 
-(defn t-test [mean hm variance ss alpha]
+(defn t-test [mean hypo-mean variance size alpha]
   {:mean       mean
-   :hypothetical-mean hm
-   :sample-variance   variance
-   :sample-size       ss
-   :dof (dec ss)
+   :hypo-mean hypo-mean
+   :variance   variance
+   :sample-size       size
+   :dof (dec size)
    :alpha alpha})
 
 
-(defn one-sample-t-test [{:keys [sample hypothetical-mean alpha]}]
+(defn one-sample-t-test [{:keys [sample variance hypo-mean size alpha]}]
   ((comp (fn [x]
-           (assoc x :t (/ (- (:mean x) (:hypothetical-mean x))
-                          (/ (:sample-variance x) (Math/sqrt (:sample-size x)))))))
-    (t-test (s/mean sample)
-            (s/mean hypothetical-mean)
-            (s/variance {:type :sample} sample)
-            (count sample)
-            alpha)))
+           (assoc x :t (/ (- (:mean x) (:hypo-mean x))
+                          (/ (:variance x) (Math/sqrt (:sample-size x)))))))
+    (t-test  sample
+             hypo-mean
+             variance
+             size
+             alpha)))
 
 
-;(defn one-sample-t-test :one-tail)
-;(defn two-sample-t-test :one-tail)
-;(defn one-sample-t-test :two-tail)
-;(defn two-sample-t-test :two-tail)
+(defn conf-inter
+  [mean variance size alpha cv]
+  {:mean mean
+   :variance variance
+   :sample-size size
+   :dof (dec size)
+   :alpha alpha
+   :critical-val cv})
+
+
+(defn one-sample-conf-inter
+  []
+  (conf-inter 90 10 15 0.05 2.145))
+
+
+
+{:plus (+ 90 (* 2.145 (/ 10 (Math/sqrt 15))))  :minus (- 90 (* 2.145 (/ 10 (Math/sqrt 15))))}
+
 
