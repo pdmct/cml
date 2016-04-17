@@ -224,7 +224,6 @@
            [1.6525 1.9720 2.3452 2.6008 2.8387 3.1317 3.3401]
            [1.6525 1.9719 2.3451 2.6007 2.8385 3.1315 3.3398]]))
 
-
 (defn- t-distribution-value [f matrix freedom alpha-value] (mget matrix (dec freedom) (f alpha-value)))
 
 (defn table [dof alpha test critical-val]
@@ -232,6 +231,7 @@
    :alpha alpha
    :test test
    :critical-val critical-val})
+
 
 (defn t-table [{:keys [dof alpha test]}]
   (cond

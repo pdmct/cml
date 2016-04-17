@@ -7,28 +7,36 @@
      (Math/sqrt (- 1 (* correlation correlation)))))
 
 
-(defn t-test [mean hm variance ss alpha]
-  {:mean       mean
-   :hypothetical-mean hm
-   :sample-variance   variance
-   :sample-size       ss
-   :dof (dec ss)
-   :alpha alpha})
+(defn t-test [mean variance hypo-mean size alpha]
+  {:mean      mean
+   :hypo-mean hypo-mean
+   :variance  variance
+   :size      size
+   :alpha     alpha})
 
 
-(defn one-sample-t-test [{:keys [sample hypothetical-mean alpha]}]
+(defn one-sample-t-test [{:keys [mean variance hypo-mean size alpha]}]
   ((comp (fn [x]
-           (assoc x :t (/ (- (:mean x) (:hypothetical-mean x))
-                          (/ (:sample-variance x) (Math/sqrt (:sample-size x)))))))
-    (t-test (s/mean sample)
-            (s/mean hypothetical-mean)
-            (s/variance {:type :sample} sample)
-            (count sample)
-            alpha)))
+           (assoc x :t (/ (- (:mean x) (:hypo-mean x))
+                          (/ (:variance x) (Math/sqrt (:size x)))))))
+    (t-test  mean
+             variance
+             hypo-mean
+             size
+             alpha)))
 
 
-;(defn one-sample-t-test :one-tail)
-;(defn two-sample-t-test :one-tail)
-;(defn one-sample-t-test :two-tail)
-;(defn two-sample-t-test :two-tail)
+(defn conf-inter [mean variance size t]
+  {:mean mean
+   :variance variance
+   :size size
+   :t t})
+
+
+(defn one-sample-conf-inter [{:keys [mean variance size t]}]
+  ((comp (fn [x]
+           (assoc x :plus (+ mean (* t (/ variance (Math/sqrt size))))
+                    :minus  (- mean (* t (/ variance (Math/sqrt size)))))))
+    (conf-inter mean variance size t)))
+
 

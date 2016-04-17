@@ -22,12 +22,17 @@
 
 (def a (random-population-sample population-one 4))
 
-(one-sample-t-test {:sample population-one :hypothetical-mean [400] :alpha 0.05})
-
+(one-sample-t-test {:mean (mean population-one)
+                    :variance (variance {:type :sample} population-one)
+                    :hypo-mean 400
+                    :size (count population-one)
+                    :alpha 0.05})
 (count a)
 
 (t-table {:dof 9 :alpha 0.05 :test :one-tail})
 
 (variance {:type :sample} [490,500,530,550,580,590,600,600,650,700])
+
+(conf-inter 90 10 15 0.05 2.145)
 
 
