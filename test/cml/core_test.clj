@@ -22,7 +22,7 @@
 
 (def a (random-population-sample population-one 4))
 
-(one-sample-t-test {:sample (mean population-one)
+(one-sample-t-test {:mean (mean population-one)
                     :variance (variance {:type :sample} population-one)
                     :hypo-mean 400
                     :size (count population-one)
