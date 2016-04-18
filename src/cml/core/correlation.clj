@@ -15,4 +15,3 @@
                    (reduce + (squared y-axis))))))
 
 
-(partial + 1)
