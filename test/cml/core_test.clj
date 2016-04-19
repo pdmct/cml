@@ -22,16 +22,22 @@
 
 (def a (random-population-sample population-one 4))
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (one-sample-t-test {:mean      (mean population-one)
                     :sd        (standard-deviation {:type :sample} population-one)
                     :hypo-mean 400
                     :size      (count population-one)
-                    :alpha     0.05})
+                    :alpha     0.05})                       ; => critical-val = 1.8331
 
 (t-table {:dof 9 :alpha 0.05 :test :one-tail})
 
 (one-sample-conf-inter {:mean (mean population-one)
                         :sd   (standard-deviation {:type :sample} population-one)
                         :size (count population-one)
-                        :t    1.833})
+                        :critical-val   1.8331})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

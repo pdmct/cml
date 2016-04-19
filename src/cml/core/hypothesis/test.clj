@@ -17,7 +17,7 @@
 
 (defn one-sample-t-test [{:keys [mean sd hypo-mean size alpha]}]
   ((comp (fn [x]
-           (assoc x :test-stat
+           (assoc x :t-value
                     (/ (- (:mean x) (:hypo-mean x))
                        (/ (:sd x) (Math/sqrt (:size x)))))))
     (t-test mean
@@ -27,17 +27,25 @@
             alpha)))
 
 
-(defn conf-inter [mean sd size t]
+(defn two-sample-t-test [{:keys [s1-p-mean s1-s-mean]} {:keys [s2-p-mean s2-s-mean]}]
+  (- (- (mean {:type :sample} s1-s-mean)
+        (mean {:type :sample} s2-s-mean))
+     (- (mean {:type :population} s1-p-mean)
+        (mean {:type :population} s2-p-mean))))
+
+
+
+(defn conf-inter [mean sd size critical-val]
   {:mean mean
    :sd   sd
    :size size
-   :t    t})
+   :critical-val    critical-val})
 
 
-(defn one-sample-conf-inter [{:keys [mean sd size t]}]
+(defn one-sample-conf-inter [{:keys [mean sd size critical-val]}]
   ((comp (fn [x]
-           (assoc x :plus (+ mean (* t (/ sd (Math/sqrt size))))
-                    :minus (- mean (* t (/ sd (Math/sqrt size)))))))
-    (conf-inter mean sd size t)))
+           (assoc x :plus (+ mean (* critical-val (/ sd (Math/sqrt size))))
+                    :minus (- mean (* critical-val (/ sd (Math/sqrt size)))))))
+    (conf-inter mean sd size critical-val)))
 
 
