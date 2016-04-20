@@ -4,24 +4,30 @@
             [cml.core.utils.stats :refer :all]
             [cml.core.distribution.t :refer :all]
             [cml.core.hypothesis.test :refer :all]
+            [cml.core.utils.samples :refer :all]
             [cml.core.sample :refer :all]))
-
-(def population-one [490 500 530 550 580 590 600 600 650 700])
-(def sample-two [560 500 510 600 600 620 550 630 650 750])
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
              :y-axis (deviation-score mean [560 500 510 600 600 620 550 630 650 750])})
 
-(pearson-correlation sample)
+(def rand-ballet (random-population-sample ballet-dancers 4))
+(def rand-football (random-population-sample football-players 4))
 
-(significance (pearson-correlation sample) 8)
 
-(t-table {:dof 8 :alpha 0.05 :test :two-tail})
+(deftest pearson-correlation-test
+  (is (= (pearson-correlation sample) 0.8702620996632292)))
 
-(coefficient-determination (pearson-correlation sample))
 
-(def a (random-population-sample population-one 4))
+(deftest sig-pearson-correlation-test
+  (is (= (significance (pearson-correlation sample) 8))))
 
+
+(deftest t-table-test
+  (is (= (:critical-val (t-table {:dof 8 :alpha 0.05 :test :two-tail})) 2.306)))
+
+
+(deftest coefficient-determination-pearson-test
+  (is (= (coefficient-determination (pearson-correlation sample)) 0.7573561221102523)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
