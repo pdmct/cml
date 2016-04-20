@@ -9,7 +9,6 @@
 
 (defmulti standard-deviation (fn [x data] (:type x)))
 
-
 (defmethod standard-deviation :population [x population]
   (let [m (mean population)]
     (Math/sqrt (mean (map (fn [x] (* (- m x) (- m x))) population)))))
@@ -22,7 +21,6 @@
 
 (defmulti variance (fn [x data] (:type x)))
 
-
 (defmethod variance :population [x population]
   (let [m (mean population)]
     (/ (reduce + (map (fn [x] (* (- x m) (- x m))) population)) (count population))))
@@ -32,6 +30,11 @@
   (let [m (mean sample)]
     (/ (reduce + (map (fn [x] (* (- x m) (- x m))) sample))
        (dec (count sample)))))
+
+
+(defmethod variance :pooled [x sample]
+  (let [c (- (count sample) 1)]
+    (/ (* c (variance {:type :sample} sample)) c)))
 
 
 (defn permutations
