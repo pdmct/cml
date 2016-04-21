@@ -40,10 +40,26 @@
 
 (t-table {:dof 9 :alpha 0.05 :test :one-tail})
 
-(one-sample-conf-inter {:mean (mean population-one)
-                        :sd   (standard-deviation {:type :sample} population-one)
-                        :size (count population-one)
-                        :critical-val   1.8331})
+(one-sample-conf-inter {:mean         (mean population-one)
+                        :sd           (standard-deviation {:type :sample} population-one)
+                        :size         (count population-one)
+                        :critical-val 1.8331})
+
+
+(two-sample-t-test {:s1-mean            (mean ballet-dancers)
+                    :s1-pooled-variance (variance {:type :pooled} ballet-dancers)
+                    :s1-size            (count ballet-dancers)}
+
+                   {:s2-mean            (mean football-players)
+                    :s2-pooled-variance (variance {:type :pooled} football-players)
+                    :s2-size            (count football-players)})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+
+#_(Math/abs (/ (- (mean ballet-dancers) (mean football-players))
+               (Math/sqrt (* (/ (+ (variance {:type :pooled} football-players)
+                                   (variance {:type :pooled} ballet-dancers)) 2)
+                             (+ (/ 1 (count ballet-dancers))
+                                (/ 1 (count football-players)))))))
