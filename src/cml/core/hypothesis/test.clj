@@ -26,8 +26,7 @@
                 alpha)))
 
 
-(defn- two-sample [s1-mean s2-mean s1-pool-var
-                   s2-pool-var s1-size s2-size]
+(defn- two-sample [s1-mean s2-mean s1-pool-var s2-pool-var s1-size s2-size]
   {:s1-mean     s1-mean
    :s2-mean     s2-mean
    :s1-pool-var s1-pool-var
@@ -36,9 +35,7 @@
    :s2-size     s2-size})
 
 
-
-(defn two-sample-t-test [{:keys [s1-mean s1-pool-var s1-size]}
-                         {:keys [s2-mean s2-pool-var s2-size]}]
+(defn two-sample-t-test [{:keys [s1-mean s1-pool-var s1-size]} {:keys [s2-mean s2-pool-var s2-size]}]
 
   ((comp (fn [x]
            (assoc x :t (Math/abs (/ (- (:s1-mean x) (:s2-mean x))
