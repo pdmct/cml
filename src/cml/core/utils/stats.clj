@@ -7,34 +7,39 @@
 
 (defn coefficient-determination [rho] (* rho rho))
 
-(defmulti standard-deviation (fn [x data] (:type x)))
+(defmulti standard-deviation (fn [x _] (:standard-deviation x)))
 
 (defmethod standard-deviation :population [x population]
   (let [m (mean population)]
-    (Math/sqrt (mean (map (fn [x] (* (- m x) (- m x))) population)))))
+    (assoc x :val
+             (Math/sqrt (mean (map (fn [x] (* (- m x) (- m x))) population))))))
 
 
 (defmethod standard-deviation :sample [x sample]
   (let [m (mean sample)]
-    (Math/sqrt (mean-1 (map (fn [x] (* (- m x) (- m x))) sample)))))
+    (assoc x :val
+             (Math/sqrt (mean-1 (map (fn [x] (* (- m x) (- m x))) sample))))))
 
 
-(defmulti variance (fn [x data] (:type x)))
+(defmulti variance (fn [x _] (:variance x)))
 
 (defmethod variance :population [x population]
-  (let [m (mean population)]
-    (/ (reduce + (map (fn [x] (* (- x m) (- x m))) population)) (count population))))
+  (assoc x :val
+           (let [m (mean population)]
+             (/ (reduce + (map (fn [x] (* (- x m) (- x m))) population)) (count population)))))
 
 
 (defmethod variance :sample [x sample]
   (let [m (mean sample)]
-    (/ (reduce + (map (fn [x] (* (- x m) (- x m))) sample))
-       (dec (count sample)))))
+    (assoc x :val
+             (/ (reduce + (map (fn [x] (* (- x m) (- x m))) sample))
+                (dec (count sample))))))
 
 
 (defmethod variance :pooled [x sample]
   (let [c (- (count sample) 1)]
-    (/ (* c (variance {:type :sample} sample)) c)))
+    (assoc x :val
+             (/ (* c (:val (variance {:variance :sample} sample))) c))))
 
 
 (defn permutations
