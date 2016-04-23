@@ -10,6 +10,7 @@
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
              :y-axis (deviation-score mean [560 500 510 600 600 620 550 630 650 750])})
 
+
 (def rand-ballet (random-population-sample ballet-dancers 4))
 (def rand-football (random-population-sample football-players 4))
 
@@ -33,36 +34,36 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (one-sample-t-test {:mean      (mean population-one)
-                    :sd        (standard-deviation {:type :sample} population-one)
+                    :sd        (:val (standard-deviation {:standard-deviation :sample} population-one))
                     :hypo-mean 400
-                    :size      (count population-one)
-                    :alpha     0.05})                       ; => critical-val = 1.8331
+                    :size      (count population-one)})     ; => critical-val = 1.8331
 
 (t-table {:dof 9 :alpha 0.05 :test :one-tail})
 
 (one-sample-conf-inter {:mean         (mean population-one)
-                        :sd           (standard-deviation {:type :sample} population-one)
+                        :sd           (:val (standard-deviation {:standard-deviation :sample} population-one))
                         :size         (count population-one)
                         :critical-val 1.8331})
 
 
-(two-sample-t-test {:s1-mean     (mean ballet-dancers)
-                    :s1-pool-var (variance {:type :pooled} ballet-dancers)
+(two-sample-t-test {:two-sample-t-test :equal-variance}
+                   {:s1-mean     (mean ballet-dancers)
+                    :s1-pool-var (:val (variance {:variance :pooled} ballet-dancers))
                     :s1-size     (count ballet-dancers)}
 
                    {:s2-mean     (mean football-players)
-                    :s2-pool-var (variance {:type :pooled} football-players)
+                    :s2-pool-var (:val (variance {:variance :pooled} football-players))
                     :s2-size     (count football-players)})
 
+
+(two-sample-t-test {:two-sample-t-test :unequal-variance}
+                   {:s1-mean     (mean ballet-dancers)
+                    :s1-pool-var (:val (variance {:variance :pooled} ballet-dancers))
+                    :s1-size     (count ballet-dancers)}
+
+                   {:s2-mean     (mean football-players)
+                    :s2-pool-var (:val (variance {:variance :pooled} football-players))
+                    :s2-size     (count football-players)})
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;two sample ttest variances not assumed
-(/ (- (mean ballet-dancers) (mean football-players))
-   (Math/sqrt
-     (+
-       (/ (variance {:type :pooled} ballet-dancers)
-          (count ballet-dancers))
-       (/ (variance {:type :pooled} football-players)
-          (count football-players)))))
-
-
