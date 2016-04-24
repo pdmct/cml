@@ -50,7 +50,7 @@
 
 
 (deftest one-sample-conf-inter-test
-  (is (= (one-sample-conf-inter {:mean               (mean population-one)
+  (is (= (one-sample-confidence-interval {:mean      (mean population-one)
                                  :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
                                  :size               (count population-one)
                                  :critical-val       1.8331})
@@ -110,10 +110,10 @@
 (t-table {:dof 9 :alpha 0.05 :test :one-tail})
 
 
-(one-sample-conf-inter {:mean               (mean population-one)
-                        :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
-                        :size               (count population-one)
-                        :critical-val       1.8331})
+(one-sample-confidence-interval {:mean               (mean population-one)
+                                 :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
+                                 :size               (count population-one)
+                                 :critical-val       1.8331})
 
 
 (two-sample-t-test {:two-sample-t-test :equal-variance}
@@ -134,5 +134,9 @@
                    {:s2-mean            (mean football-players)
                     :s2-pooled-variance (:val (variance {:variance :pooled} football-players))
                     :s2-size            (count football-players)})
+
+
+(- 8 (* 2.0452 (Math/sqrt (+ (/ 4 30) (/ 9 30)))))
+(+ 8 (* 2.0452 (Math/sqrt (+ (/ 4 30) (/ 9 30)))))
 
 
