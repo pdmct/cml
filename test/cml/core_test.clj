@@ -3,7 +3,8 @@
             [cml.core.correlation :refer :all]
             [cml.core.utils.stats :refer :all]
             [cml.core.distribution.t :refer :all]
-            [cml.core.hypothesis.test :refer :all]
+            [cml.core.inference.estimation.confidence :refer :all]
+            [cml.core.inference.hypothesis.ttest :refer :all]
             [cml.core.sample :refer :all]))
 
 
@@ -41,7 +42,13 @@
                              :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
                              :hypo-mean          400
                              :size               (count population-one)})
-         {:mean 579.0, :standard-deviation 65.05553183413554, :hypo-mean 400, :size 10, :dof 9, :t-statistic 8.700992601418207})))
+         {:mean               579.0,
+          :standard-deviation 65.05553183413554,
+          :hypo-mean          400,
+          :size               10,
+          :dof                9,
+          :type               :one-sample,
+          :t-statistic        8.700992601418207})))
 
 
 (deftest t-table-test
@@ -56,6 +63,7 @@
                                  :critical-val       1.8331})
          {:mean 579.0, :standard-deviation 65.05553183413554, :size 10, :critical-val 1.8331, :plus 616.7112031961178, :minus 541.2887968038822})))
 
+
 (deftest two-sample-t-test-equal-variance
   (is (= (two-sample-t-test {:two-sample-t-test :equal-variance}
                             {:s1-mean            (mean ballet-dancers)
@@ -65,15 +73,16 @@
                             {:s2-mean            (mean football-players)
                              :s2-pooled-variance (:val (variance {:variance :pooled} football-players))
                              :s2-size            (count football-players)})
-         {:s1-mean            87.94999999999999,
+         {:dof                18,
+          :exec               {:two-sample-t-test :equal-variance},
+          :t-statistic        1.094722972460392,
           :s2-mean            85.19,
-          :s1-pooled-variance 32.382777777777775,
-          :s2-pooled-variance 31.181000000000015,
+          :s1-mean            87.94999999999999,
           :s1-size            10,
           :s2-size            10,
-          :dof                18,
-          :t-statistic        1.094722972460392,
-          :exec               {:two-sample-t-test :equal-variance}})))
+          :type               :two-sample,
+          :s1-pooled-variance 32.382777777777775,
+          :s2-pooled-variance 31.181000000000015})))
 
 
 (deftest two-sample-t-test-unequal-variance
@@ -85,15 +94,16 @@
                             {:s2-mean            (mean football-players)
                              :s2-pooled-variance (:val (variance {:variance :pooled} football-players))
                              :s2-size            (count football-players)})
-         {:s1-mean            87.94999999999999,
+         {:dof                18,
+          :exec               {:two-sample-t-test :unequal-variance},
+          :t-statistic        1.0947229724603922,
           :s2-mean            85.19,
-          :s1-pooled-variance 32.382777777777775,
-          :s2-pooled-variance 31.181000000000015,
+          :s1-mean            87.94999999999999,
           :s1-size            10,
           :s2-size            10,
-          :dof                18,
-          :t-statistic        1.0947229724603922,
-          :exec               {:two-sample-t-test :unequal-variance}})))
+          :type               :two-sample,
+          :s1-pooled-variance 32.382777777777775,
+          :s2-pooled-variance 31.181000000000015})))
 
 
 
@@ -118,7 +128,7 @@
 
 (two-sample-t-test {:two-sample-t-test :equal-variance}
                    {:s1-mean            (mean ballet-dancers)
-                    :s1-pooled-variance (:val (variance {:variance :pooled} ballet-dancers))
+                    :s1-pooled-variance (:val (variance {:variance :pooled} ballet-dancers)) ;TODO converge to one map
                     :s1-size            (count ballet-dancers)}
 
                    {:s2-mean            (mean football-players)
@@ -136,7 +146,24 @@
                     :s2-size            (count football-players)})
 
 
+(two-sample-confidence-interval {:s1-mean     (mean ballet-dancers)
+                                 :s1-variance (:val (variance {:variance :pooled} ballet-dancers))
+                                 :s1-size     (count ballet-dancers)}
+                                {:s2-mean     (mean football-players)
+                                 :s2-variance (:val (variance {:variance :pooled} football-players))
+                                 :s2-size     (count football-players)}
+                                1.8331)
+
+
 (- 8 (* 2.0452 (Math/sqrt (+ (/ 4 30) (/ 9 30)))))
 (+ 8 (* 2.0452 (Math/sqrt (+ (/ 4 30) (/ 9 30)))))
+
+
+(defn null-hypothesis
+  [test critical-val]
+  (if (> (Math/abs (:t-statistic test)) (:critical-val critical-val))
+    (assoc {} :hypothesis :reject :difference (- (:t-statistic test) (:critical-val critical-val)))
+    (assoc {} :hypothesis :accept :difference (- (:t-statistic test) (:critical-val critical-val)))))
+
 
 
