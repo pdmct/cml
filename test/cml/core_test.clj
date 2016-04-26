@@ -4,14 +4,18 @@
             [cml.core.utils.stats :refer :all]
             [cml.core.distribution.t :refer :all]
             [cml.core.inference.estimation.confidence :refer :all]
-            [cml.core.inference.hypothesis.ttest :refer :all]
+            [cml.core.inference.hypothesis.critical-value :refer :all]
             [cml.core.sample :refer :all]))
 
 
 (def population-one [490 500 530 550 580 590 600 600 650 700])
 (def sample-two [560 500 510 600 600 620 550 630 650 750])
+
 (def ballet-dancers [89.2 78.2 89.3 88.3 87.3 90.1 95.2 94.3 78.3 89.3])
 (def football-players [79.3 78.3 85.3 79.3 88.9 91.2 87.2 89.2 93.3 79.9])
+
+(def pre-college [104 106 105 100 110 100 110 108 103 101])
+(def post-college [113 105 105 114 109 113 109 108 113 106])
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
              :y-axis (deviation-score mean [560 500 510 600 600 620 550 630 650 750])})
@@ -117,7 +121,7 @@
                     :hypo-mean          400
                     :size               (count population-one)})
 
-(t-table {:dof 9 :alpha 0.05 :test :one-tail})
+(t-table {:dof 18 :alpha 0.05 :test :two-tail})
 
 
 (one-sample-confidence-interval {:mean               (mean population-one)
@@ -152,11 +156,19 @@
                                 {:s2-mean     (mean football-players)
                                  :s2-variance (:val (variance {:variance :pooled} football-players))
                                  :s2-size     (count football-players)}
-                                1.8331)
+                                2.1009)
+
+(two-sample-confidence-interval {:s1-mean     (mean pre-college)
+                                 :s1-variance (:val (variance {:variance :pooled} pre-college))
+                                 :s1-size     (count pre-college)}
+                                {:s2-mean     (mean post-college)
+                                 :s2-variance (:val (variance {:variance :pooled} post-college))
+                                 :s2-size     (count post-college)}
+                                2.1009)
 
 
-(- 8 (* 2.0452 (Math/sqrt (+ (/ 4 30) (/ 9 30)))))
-(+ 8 (* 2.0452 (Math/sqrt (+ (/ 4 30) (/ 9 30)))))
+(- (- 28 20) (* 2.0452 (Math/sqrt (+ (/ 4 30) (/ 9 30)))))
+(+ (- 28 20) (* 2.0452 (Math/sqrt (+ (/ 4 30) (/ 9 30)))))
 
 
 (defn null-hypothesis

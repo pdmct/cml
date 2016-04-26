@@ -20,7 +20,7 @@
    :s2-variance  s2-variance
    :s1-size      s1-size
    :s2-size      s2-size
-   :critical-val critical-val})                             ;TODO Better construct than overloading
+   :critical-val critical-val})
 
 
 (defn one-sample-confidence-interval [{:keys [mean standard-deviation size critical-val]}]
@@ -31,12 +31,12 @@
     (one-sample mean standard-deviation size critical-val)))
 
 
-(defn two-sample-confidence-interval [{:keys [s1-mean s1-variance s1-size]}
-                                      {:keys [s2-mean s2-variance s2-size]} ;TODO Design structure so multi sample fn's take one map
-                                      critical-val]
+(defn two-sample-confidence-interval [{:keys [s1-mean s1-variance s1-size]} {:keys [s2-mean s2-variance s2-size]} critical-val]
   ((comp (fn [x]
-           (assoc x :plus (+ (+ (:s1-mean x) (:s2-mean x))
-                             (* (:critical-val x) (Math/sqrt (+ (/ (:s1-variance x) (:s1-size x)) (/ (:s2-variance x) (:s2-size x)))))))))
+           (assoc x :plus (+ (- (:s1-mean x) (:s2-mean x))
+                             (* (:critical-val x) (Math/sqrt (+ (/ (:s1-variance x) (:s1-size x)) (/ (:s2-variance x) (:s2-size x))))))
+                    :minus (- (- (:s1-mean x) (:s2-mean x))
+                              (* (:critical-val x) (Math/sqrt (+ (/ (:s1-variance x) (:s1-size x)) (/ (:s2-variance x) (:s2-size x)))))))))
     (two-sample s1-mean s2-mean s1-variance s2-variance s1-size s2-size critical-val)))
 
 

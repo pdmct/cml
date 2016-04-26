@@ -1,5 +1,4 @@
-(ns cml.core.inference.hypothesis.ttest)
-
+(ns cml.core.inference.hypothesis.critical-value)
 
 (defn- one-sample [mean standard-deviation hypo-mean size dof]
   {:mean               mean
