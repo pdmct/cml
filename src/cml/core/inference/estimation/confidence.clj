@@ -10,7 +10,8 @@
   {:mean               mean
    :standard-deviation sd
    :size               size
-   :critical-val       critical-val})
+   :critical-val       critical-val
+   :type               :one-sample})
 
 
 (defn- two-sample [s1-mean s2-mean s1-variance s2-variance s1-size s2-size critical-val]
@@ -20,7 +21,8 @@
    :s2-variance  s2-variance
    :s1-size      s1-size
    :s2-size      s2-size
-   :critical-val critical-val})
+   :critical-val critical-val
+   :type         :two-sample})
 
 
 (defn one-sample-confidence-interval [{:keys [mean standard-deviation size critical-val]}]
