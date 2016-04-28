@@ -1,5 +1,7 @@
 (ns cml.core.inference.hypothesis.critical-value)
 
+
+
 (defn- one-sample [mean standard-deviation hypo-mean size dof]
   {:mean               mean
    :standard-deviation standard-deviation
@@ -7,6 +9,7 @@
    :size               size
    :dof                dof
    :type               :one-sample})
+
 
 (defn- two-sample [mean pooled-variance size dof]
   {:mean            mean
@@ -17,10 +20,10 @@
 
 
 (defn one-sample-t-test [{:keys [mean standard-deviation hypo-mean size]}]
-  ((comp (fn [x]
-           (assoc x :t-statistic
-                    (/ (- (:mean x) (:hypo-mean x))
-                       (/ (:standard-deviation x) (Math/sqrt (:size x)))))))
+  ((comp (fn [one-sample]
+           (assoc one-sample :t-statistic
+                             (/ (- (:mean one-sample) (:hypo-mean one-sample))
+                                (/ (:standard-deviation one-sample) (Math/sqrt (:size one-sample)))))))
     (one-sample mean
                 standard-deviation
                 hypo-mean
@@ -32,20 +35,20 @@
 
 
 (defmethod two-sample-t-test :equal-variance [exec {:keys [mean pooled-variance size]}]
-  ((comp (fn [m]
-           (assoc m :t-statistic (/ (- (first (:mean m)) (second (:mean m)))
-                                    (Math/sqrt (* (/ (+ (first (:pooled-variance m)) (second (:pooled-variance m))) 2)
-                                                  (+ (/ 1 (first (:size m)))
-                                                     (/ 1 (second (:size m))))))) :exec exec)))
-    (two-sample mean pooled-variance size (- (+ (first size) (second size)) 2))))
+  ((comp (fn [two-sample]
+           (assoc two-sample :t-statistic (/ (- ((:mean two-sample) 0) ((:mean two-sample) 1))
+                                             (Math/sqrt (*
+                                                          (/ (+ ((:pooled-variance two-sample) 0) ((:pooled-variance two-sample) 1)) 2)
+                                                          (+ (/ 1 ((:size two-sample) 0)) (/ 1 ((:size two-sample) 1)))))) :exec exec)))
+    (two-sample mean pooled-variance size (- (+ (size 0) (size 1)) 2))))
 
 
 (defmethod two-sample-t-test :unequal-variance [exec {:keys [mean pooled-variance size]}]
-  ((comp (fn [m]
-           (assoc m :t-statistic (/ (- (first (:mean m)) (second (:mean m)))
+  ((comp (fn [two-sample]
+           (assoc two-sample :t-statistic (/ (- ((:mean two-sample) 0) ((:mean two-sample) 1))
                                     (Math/sqrt (+
-                                                 (/ (first (:pooled-variance m)) (first (:size m)))
-                                                 (/ (second (:pooled-variance m)) (second (:size m)))))) :exec exec)))
-    (two-sample mean pooled-variance size (- (+ (first size) (second size)) 2)))) ;TODO remove this step and call to first & second
+                                                 (/ ((:pooled-variance two-sample) 0) ((:size two-sample) 0))
+                                                 (/ ((:pooled-variance two-sample) 1) ((:size two-sample) 1))))) :exec exec)))
+    (two-sample mean pooled-variance size (- (+ (size 0) (size 1)) 2))))
 
 
