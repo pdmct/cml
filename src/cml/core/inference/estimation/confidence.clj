@@ -29,7 +29,11 @@
                                                   (Math/sqrt (:size one-sample)))))
                              :lower (- mean (* (:critical-val one-sample)
                                                (/ (:standard-deviation one-sample) (Math/sqrt (:size one-sample))))))))
-    (one-sample mean standard-deviation size critical-val)))
+    (one-sample
+      mean
+      standard-deviation
+      size
+      critical-val)))
 
 
 (defn two-sample-confidence-interval [{:keys [mean variance size critical-val]}]
@@ -44,6 +48,10 @@
                                  (Math/sqrt (+
                                               (/ ((:variance x) 0) ((:size x) 0))
                                               (/ ((:variance x) 1) ((:size x) 1)))))))))
-    (two-sample mean variance size critical-val)))
+    (two-sample
+      mean
+      variance
+      size
+      critical-val)))
 
 
