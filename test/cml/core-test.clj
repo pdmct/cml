@@ -42,18 +42,19 @@
 
 
 (deftest one-sample-t-test-test
-  (is (= (one-sample-t-test {:mean               (mean population-one)
-                             :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
-                             :hypo-mean          400
-                             :size               (count population-one)})
+  (is (= (t-test {:mean               (mean population-one)
+                  :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
+                  :hypo-mean          400
+                  :size               (count population-one)
+                  :type               :one-sample})
 
          {:mean               579.0,
           :standard-deviation 65.05553183413554,
           :hypo-mean          400,
           :size               10,
-          :dof                9,
           :type               :one-sample,
-          :t-statistic        8.700992601418207})))
+          :t-statistic        8.700992601418207,
+          :dof                9})))
 
 
 (deftest t-table-test
@@ -62,33 +63,31 @@
 
 
 (deftest two-sample-t-test-equal-variance
-  (is (= (two-sample-t-test {:two-sample-t-test :equal-variance}
-                            {:mean            [(mean ballet-dancers) (mean football-players)]
-                             :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
-                             :size            [(count ballet-dancers) (count football-players)]})
+  (is (= (t-test {:mean            [(mean ballet-dancers) (mean football-players)]
+                  :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
+                  :size            [(count ballet-dancers) (count football-players)]
+                  :type            :two-sample-equal-variance}))
 
-         {:mean            [87.94999999999999 85.19],
-          :pooled-variance [32.382777777777775 31.181000000000015],
-          :size            [10 10],
-          :dof             18,
-          :type            :two-sample,
-          :t-statistic     1.094722972460392,
-          :exec            {:two-sample-t-test :equal-variance}}))) ;TODO test in SPSS
+      {:mean            [87.94999999999999 85.19],
+       :pooled-variance [32.382777777777775 31.181000000000015],
+       :size            [10 10],
+       :type            :two-sample-equal-variance,
+       :t-statistic     1.094722972460392,
+       :dof             18}))
 
 
 (deftest two-sample-t-test-unequal-variance
-  (is (= (two-sample-t-test {:two-sample-t-test :unequal-variance}
-                            {:mean            [(mean ballet-dancers) (mean football-players)]
-                             :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
-                             :size            [(count ballet-dancers) (count football-players)]})
+  (is (= (t-test {:mean            [(mean ballet-dancers) (mean football-players)]
+                  :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
+                  :size            [(count ballet-dancers) (count football-players)]
+                  :type            :two-sample-unequal-variance})
 
          {:mean            [87.94999999999999 85.19],
           :pooled-variance [32.382777777777775 31.181000000000015],
           :size            [10 10],
-          :dof             18,
-          :type            :two-sample,
+          :type            :two-sample-unequal-variance,
           :t-statistic     1.0947229724603922,
-          :exec            {:two-sample-t-test :unequal-variance}}))) ;TODO test in SPSS
+          :dof             18})))
 
 
 (deftest two-sample-confidence-interval-test
@@ -125,10 +124,11 @@
 
 ;If t-statistic is greater than critical value we can reject the null hypothesis
 
-(one-sample-t-test {:mean               (mean population-one)
-                    :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
-                    :hypo-mean          400
-                    :size               (count population-one)})
+(t-test {:mean               (mean population-one)
+         :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
+         :hypo-mean          400
+         :size               (count population-one)
+         :type               :one-sample})
 
 (t-table {:dof 18 :alpha 0.05 :test :two-tail})
 
@@ -141,7 +141,7 @@
 
 (two-sample-t-test {:two-sample-t-test :equal-variance}
                    {:mean            [(mean ballet-dancers) (mean football-players)]
-                    :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))] ;TODO converge to one map
+                    :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
                     :size            [(count ballet-dancers) (count football-players)]})
 
 
@@ -161,4 +161,12 @@
   (if (> (Math/abs (:t-statistic test)) (:critical-val critical-val))
     (assoc {} :hypothesis :reject :difference (- (:t-statistic test) (:critical-val critical-val)))
     (assoc {} :hypothesis :accept :difference (- (:t-statistic test) (:critical-val critical-val)))))
+
+(defmulti repeated-measure-t-test (fn [type] (:type type)))
+
+(defmethod repeated-measure-t-test :repeated-measure-t-test [type]
+  (println type))
+
+(repeated-measure-t-test {:type :repeated-measure-t-test :mean 33 :difference-mean 55 :standard-deviation 566})
+
 
