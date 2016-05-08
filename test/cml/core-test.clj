@@ -151,17 +151,14 @@
 ;---------------------------------------------------------------------------------------------------------------------------------
 
 
-(defn null-hypothesis
-  [test critical-val]
-  (if (> (Math/abs (:t-statistic test)) (:critical-val critical-val))
-    (assoc {} :hypothesis :reject :difference (- (:t-statistic test) (:critical-val critical-val)))
-    (assoc {} :hypothesis :accept :difference (- (:t-statistic test) (:critical-val critical-val)))))
+(def before [220 240 225 180 210 190 195 200 210 240])
+(def after [200 210 210 170 220 180 190 190 220 210])
 
-(defmulti repeated-measure-t-test (fn [type] (:type type)))
 
-(defmethod repeated-measure-t-test :repeated-measure-t-test [type]
-  (println type))
-
-(repeated-measure-t-test {:type :repeated-measure-t-test :mean 33 :difference-mean 55 :standard-deviation 566})
+(t-test {:difference-mean    (mean (difference {:s1 after :s2 before}))
+         :mean               [0 0]                          ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
+         :standard-deviation (:val (standard-deviation {:standard-deviation :sample} (difference {:s1 after :s2 before})))
+         :size               (/ (+ (count after) (count before)) 2)
+         :type               :two-sample-repeated-measure})
 
 
