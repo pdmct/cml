@@ -90,11 +90,28 @@
           :dof             18})))
 
 
+(deftest one-sample-conf-inter-test
+  (is (= (confidence-interval {:mean               (mean population-one)
+                               :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
+                               :size               (count population-one)
+                               :critical-val       1.8331
+                               :type               :one-sample})
+
+         {:mean               579.0,
+          :standard-deviation 65.05553183413554,
+          :size               10,
+          :critical-val       1.8331,
+          :type               :one-sample,
+          :upper              616.7112031961178,
+          :lower              541.2887968038822})))
+
+
 (deftest two-sample-confidence-interval-test
-  (is (= (two-sample-confidence-interval {:mean         [(mean ballet-dancers) (mean football-players)]
-                                          :variance     [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
-                                          :size         [(count ballet-dancers) (count football-players)]
-                                          :critical-val 2.1009})
+  (is (= (confidence-interval {:mean         [(mean ballet-dancers) (mean football-players)]
+                               :variance     [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
+                               :size         [(count ballet-dancers) (count football-players)]
+                               :critical-val 2.1009
+                               :type         :two-sample})
 
          {:mean         [87.94999999999999 85.19],
           :variance     [32.382777777777775 31.181000000000015],
@@ -104,20 +121,6 @@
           :upper        8.05675922207777,
           :lower        -2.536759222077789})))
 
-
-(deftest one-sample-conf-inter-test
-  (is (= (one-sample-confidence-interval {:mean               (mean population-one)
-                                          :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
-                                          :size               (count population-one)
-                                          :critical-val       1.8331})
-
-         {:mean               579.0,
-          :standard-deviation 65.05553183413554,
-          :size               10,
-          :critical-val       1.8331,
-          :type               :one-sample,
-          :upper              616.7112031961178,
-          :lower              541.2887968038822})))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;WORKSPACE
@@ -130,31 +133,23 @@
          :size               (count population-one)
          :type               :one-sample})
 
-(t-table {:dof 18 :alpha 0.05 :test :two-tail})
+(t-table {:dof 9 :alpha 0.05 :test :one-tail})
 
 
-(one-sample-confidence-interval {:mean               (mean population-one)
-                                 :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
-                                 :size               (count population-one)
-                                 :critical-val       1.8331})
+(confidence-interval {:mean               (mean population-one)
+                      :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
+                      :size               (count population-one)
+                      :critical-val       1.8331
+                      :type               :one-sample})
 
+(confidence-interval {:mean         [(mean ballet-dancers) (mean football-players)]
+                      :variance     [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
+                      :size         [(count ballet-dancers) (count football-players)]
+                      :critical-val 2.1009
+                      :type         :two-sample})
 
-(two-sample-t-test {:two-sample-t-test :equal-variance}
-                   {:mean            [(mean ballet-dancers) (mean football-players)]
-                    :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
-                    :size            [(count ballet-dancers) (count football-players)]})
+;---------------------------------------------------------------------------------------------------------------------------------
 
-
-(two-sample-t-test {:two-sample-t-test :unequal-variance}
-                   {:mean            [(mean ballet-dancers) (mean football-players)]
-                    :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
-                    :size            [(count ballet-dancers) (count football-players)]})
-
-
-(two-sample-confidence-interval {:mean         [(mean ballet-dancers) (mean football-players)]
-                                 :variance     [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
-                                 :size         [(count ballet-dancers) (count football-players)]
-                                 :critical-val 2.1009})
 
 (defn null-hypothesis
   [test critical-val]

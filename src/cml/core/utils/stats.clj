@@ -53,3 +53,8 @@
     (catch Exception e nil)))
 
 
+(defn significance [correlation sample-size]
+  (/ (* correlation (Math/sqrt sample-size))
+     (Math/sqrt (- 1 (* correlation correlation)))))
+
+
