@@ -1,9 +1,12 @@
 (ns cml.core.utils.stats)
 
+;TODO change functions to multi methids where appropriate
 
 (defn mean [x] (double (/ (reduce + x) (count x))))
 
 (defn mean-1 [x] (double (/ (reduce + x) (dec (count x)))))
+
+(defn difference [{:keys [s1 s2]}] (map - s1 s2))
 
 (defn coefficient-determination [rho] (* rho rho))
 
@@ -56,5 +59,4 @@
 (defn significance [correlation sample-size]
   (/ (* correlation (Math/sqrt sample-size))
      (Math/sqrt (- 1 (* correlation correlation)))))
-
 
