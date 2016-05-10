@@ -43,7 +43,7 @@
 
 (deftest one-sample-t-test-test
   (is (= (t-test {:mean               (mean population-one)
-                  :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
+                  :standard-deviation (standard-deviation {:val population-one :type :sample})
                   :hypo-mean          400
                   :size               (count population-one)
                   :type               :one-sample})
@@ -64,7 +64,7 @@
 
 (deftest two-sample-t-test-equal-variance
   (is (= (t-test {:mean            [(mean ballet-dancers) (mean football-players)]
-                  :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
+                  :pooled-variance [(variance {:val ballet-dancers :type :pooled}) (variance {:val football-players :type :pooled})]
                   :size            [(count ballet-dancers) (count football-players)]
                   :type            :two-sample-equal-variance}))
 
@@ -78,7 +78,7 @@
 
 (deftest two-sample-t-test-unequal-variance
   (is (= (t-test {:mean            [(mean ballet-dancers) (mean football-players)]
-                  :pooled-variance [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
+                  :pooled-variance [(variance {:val ballet-dancers :type :pooled}) (variance {:val football-players :type :pooled})]
                   :size            [(count ballet-dancers) (count football-players)]
                   :type            :two-sample-unequal-variance})
 
@@ -92,7 +92,7 @@
 
 (deftest one-sample-conf-inter-test
   (is (= (confidence-interval {:mean               (mean population-one)
-                               :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
+                               :standard-deviation (standard-deviation {:val population-one :type :sample})
                                :size               (count population-one)
                                :critical-val       1.8331
                                :type               :one-sample})
@@ -108,7 +108,7 @@
 
 (deftest two-sample-confidence-interval-test
   (is (= (confidence-interval {:mean         [(mean ballet-dancers) (mean football-players)]
-                               :variance     [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
+                               :variance     [(variance {:val ballet-dancers :type :pooled}) (variance {:val football-players :type :pooled})]
                                :size         [(count ballet-dancers) (count football-players)]
                                :critical-val 2.1009
                                :type         :two-sample})
@@ -122,43 +122,22 @@
           :lower        -2.536759222077789})))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;WORKSPACE
-
-;If t-statistic is greater than critical value we can reject the null hypothesis
-
-(t-test {:mean               (mean population-one)
-         :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
-         :hypo-mean          400
-         :size               (count population-one)
-         :type               :one-sample})
-
-(t-table {:dof 9 :alpha 0.05 :test :one-tail})
+(deftest two-sample-repeated-measure-test
+  (let [before [220 240 225 180 210 190 195 200 210 240]
+        after [200 210 210 170 220 180 190 190 220 210]]
+    (is (= (t-test {:difference-mean    (mean (difference {:s1 after :s2 before}))
+                    :mean               [0 0]               ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
+                    :standard-deviation (standard-deviation {:val (difference {:s1 after :s2 before}) :type :sample})
+                    :size               (/ (+ (count after) (count before)) 2)
+                    :type               :two-sample-repeated-measure})
 
 
-(confidence-interval {:mean               (mean population-one)
-                      :standard-deviation (:val (standard-deviation {:standard-deviation :sample} population-one))
-                      :size               (count population-one)
-                      :critical-val       1.8331
-                      :type               :one-sample})
-
-(confidence-interval {:mean         [(mean ballet-dancers) (mean football-players)]
-                      :variance     [(:val (variance {:variance :pooled} ballet-dancers)) (:val (variance {:variance :pooled} football-players))]
-                      :size         [(count ballet-dancers) (count football-players)]
-                      :critical-val 2.1009
-                      :type         :two-sample})
-
-;---------------------------------------------------------------------------------------------------------------------------------
-
-
-(def before [220 240 225 180 210 190 195 200 210 240])
-(def after [200 210 210 170 220 180 190 190 220 210])
-
-
-(t-test {:difference-mean    (mean (difference {:s1 after :s2 before}))
-         :mean               [0 0]                          ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
-         :standard-deviation (:val (standard-deviation {:standard-deviation :sample} (difference {:s1 after :s2 before})))
-         :size               (/ (+ (count after) (count before)) 2)
-         :type               :two-sample-repeated-measure})
+           {:difference-mean    -11.0,
+            :mean               [0 0],
+            :standard-deviation 13.90443574307614,
+            :size               10,
+            :type               :two-sample-repeated-measure,
+            :t-statistic        -2.5017235438103813,
+            :dof                9}))))
 
 
