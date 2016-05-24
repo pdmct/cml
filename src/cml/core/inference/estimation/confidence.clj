@@ -1,7 +1,6 @@
 (ns cml.core.inference.estimation.confidence)
 
 
-
 (defmulti confidence-interval (fn [type] (:type type)))
 
 (defmethod confidence-interval :one-sample [type]

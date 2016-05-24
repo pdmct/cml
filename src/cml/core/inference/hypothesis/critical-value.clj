@@ -13,7 +13,7 @@
     :dof (dec (:size type))))
 
 
-(defmethod t-test :two-sample-equal-variance [type]
+(defmethod t-test :equal-variance [type]
   (assoc type
     :t-statistic (/ (- ((:mean type) 0)
                        ((:mean type) 1))
@@ -29,7 +29,7 @@
             2)))
 
 
-(defmethod t-test :two-sample-unequal-variance [type]
+(defmethod t-test :unequal-variance [type]
   (assoc type
     :t-statistic (/ (- ((:mean type) 0)
                        ((:mean type) 1))
@@ -42,7 +42,7 @@
             2)))
 
 
-(defmethod t-test :two-sample-repeated-measure [type]
+(defmethod t-test :repeated-measure [type]
   (assoc type
     :t-statistic (/ (- (:difference-mean type)
                        (- ((:mean type) 0)

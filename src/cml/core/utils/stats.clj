@@ -13,31 +13,31 @@
 (defmulti standard-deviation (fn [type] (:type type)))
 
 (defmethod standard-deviation :population [type]
-  (let [m (mean (:val type))]
-    (Math/sqrt (mean (map (fn [x] (* (- m x) (- m x))) (:val type))))))
+  (let [m (mean (:data type))]
+    (Math/sqrt (mean (map (fn [x] (* (- m x) (- m x))) (:data type))))))
 
 
 (defmethod standard-deviation :sample [type]
-  (let [m (mean (:val type))]
-    (Math/sqrt (mean-1 (map (fn [x] (* (- m x) (- m x))) (:val type))))))
+  (let [m (mean (:data type))]
+    (Math/sqrt (mean-1 (map (fn [x] (* (- m x) (- m x))) (:data type))))))
 
 
 (defmulti variance (fn [type] (:type type)))
 
 (defmethod variance :population [type]
-  (let [m (mean (:val type))]
-    (/ (reduce + (map (fn [x] (* (- x m) (- x m))) (:val type))) (count (:val type)))))
+  (let [m (mean (:data type))]
+    (/ (reduce + (map (fn [x] (* (- x m) (- x m))) (:data type))) (count (:data type)))))
 
 
 (defmethod variance :sample [type]
-  (let [m (mean (:val type))]
-    (/ (reduce + (map (fn [x] (* (- x m) (- x m))) (:val type)))
-       (dec (count (:val type))))))
+  (let [m (mean (:data type))]
+    (/ (reduce + (map (fn [x] (* (- x m) (- x m))) (:data type)))
+       (dec (count (:data type))))))
 
 
 (defmethod variance :pooled [type]
-  (let [c (- (count (:val type)) 1)]
-    (/ (* c (variance {:val (:val type) :type :sample})) c)))
+  (let [c (- (count (:data type)) 1)]
+    (/ (* c (variance {:data (:data type) :type :sample})) c)))
 
 
 (defn permutations
