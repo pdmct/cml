@@ -1,28 +1,9 @@
-(ns cml.core.distribution.t
-  (:require [cml.core.utils.stats :as s]))
+(ns cml.core.distribution.table)
 (use 'clojure.core.matrix)
 
 
 
-(def one-tail-alpha-values {0.05   0
-                            0.025  1
-                            0.01   2
-                            0.005  3
-                            0.0025 4
-                            0.001  5
-                            0.0005 6})
-
-
-(def two-tail-alpha-values {0.1   0
-                            0.05  1
-                            0.02  2
-                            0.01  3
-                            0.005 4
-                            0.002 5
-                            0.001 6})
-
-
-(defn critical-values []
+(def t-table
   (matrix [[6.3138 12.7065 31.8193 63.6551 127.3447 318.4930 636.0450]
            [2.9200 4.3026 6.9646 9.9247 14.0887 22.3276 31.5989]
            [2.3534 3.1824 4.5407 5.8408 7.4534 10.2145 12.9242]
@@ -224,26 +205,29 @@
            [1.6525 1.9720 2.3452 2.6008 2.8387 3.1317 3.3401]
            [1.6525 1.9719 2.3451 2.6007 2.8385 3.1315 3.3398]]))
 
-(defn- t-distribution-value [f matrix freedom alpha-value] (mget matrix (dec freedom) (f alpha-value)))
+(defmulti t-test-condition (fn [type] (:type type)))
 
-(defn table [dof alpha test critical-val]
-  {:dof          dof
-   :alpha        alpha
-   :test         test
-   :critical-val critical-val})
-
-
-(defn t-table [{:keys [dof alpha test]}]
-  (cond
-    (= test :one-tail)
-    (table dof alpha test
-           (t-distribution-value
-             one-tail-alpha-values
-             (critical-values) dof alpha))
-    (= test :two-tail)
-    (table dof alpha test
-           (t-distribution-value
-             two-tail-alpha-values
-             (critical-values) dof alpha))))
+(defmethod t-test-condition :one-tail [type]
+  (assoc type
+    :critical-value (mget t-table
+                          (dec (:dof type))
+                          ({0.05   0
+                            0.025  1
+                            0.01   2
+                            0.005  3
+                            0.0025 4
+                            0.001  5
+                            0.0005 6} (:alpha type)))))
 
 
+(defmethod t-test-condition :two-tail [type]
+  (assoc type
+    :critical-value (mget t-table
+                          (dec (:dof type))
+                          ({0.1   0
+                            0.05  1
+                            0.02  2
+                            0.01  3
+                            0.005 4
+                            0.002 5
+                            0.001 6} (:alpha type)))))
