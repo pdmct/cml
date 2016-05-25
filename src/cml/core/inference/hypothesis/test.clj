@@ -207,7 +207,7 @@
 
 
 
-(defn one-tail-t-test [type]
+(defn one-tail [type]
   (assoc type
     :critical-value (mget t-table
                           (dec (:dof type))
@@ -221,7 +221,7 @@
 
 
 
-(defn two-tail-t-test [type]
+(defn two-tail [type]
   (assoc type
     :critical-value (mget t-table
                           (dec (:dof type))

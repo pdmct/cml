@@ -124,12 +124,12 @@
 
 
 (deftest one-tail-test-test
-  (is (= (one-tail-t-test (t-test {:mean               (mean population-one)
-                                   :standard-deviation (standard-deviation {:data population-one :type :sample})
-                                   :hypo-mean          400
-                                   :size               (count population-one)
-                                   :type               :one-sample
-                                   :alpha              0.05}))
+  (is (= (one-tail (t-test {:mean               (mean population-one)
+                            :standard-deviation (standard-deviation {:data population-one :type :sample})
+                            :hypo-mean          400
+                            :size               (count population-one)
+                            :type               :one-sample
+                            :alpha              0.05}))
          {:mean               579.0,
           :standard-deviation 65.05553183413554,
           :hypo-mean          400,
@@ -142,12 +142,13 @@
 
 
 (deftest two-tail-test-test
-  (is (= (two-tail-t-test (t-test {:mean               (mean population-one)
-                                   :standard-deviation (standard-deviation {:data population-one :type :sample})
-                                   :hypo-mean          400
-                                   :size               (count population-one)
-                                   :type               :one-sample
-                                   :alpha              0.05}))
+  (is (= (two-tail (t-test {:mean               (mean population-one)
+                            :standard-deviation (standard-deviation {:data population-one :type :sample})
+                            :hypo-mean          400
+                            :size               (count population-one)
+                            :type               :one-sample
+                            :alpha              0.05}))
+
          {:mean               579.0,
           :standard-deviation 65.05553183413554,
           :hypo-mean          400,
