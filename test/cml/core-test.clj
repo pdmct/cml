@@ -5,7 +5,9 @@
             [cml.core.inference.estimation.confidence :refer :all]
             [cml.core.inference.hypothesis.critical-value :refer :all]
             [cml.core.sample :refer :all]
-            [cml.core.utils.samples :refer :all]))
+            [cml.core.utils.samples :refer :all]
+            [cml.core.distribution.table :refer :all]
+            [cml.core.inference.hypothesis.test :refer :all]))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -37,21 +39,23 @@
           :size               10,
           :type               :one-sample,
           :t-statistic        8.700992601418207,
-          :dof                9})))
+          :dof                9
+          :alpha              nil})))
 
 
 (deftest two-sample-t-test-equal-variance
   (is (= (t-test {:mean            [(mean ballet-dancers) (mean football-players)]
                   :pooled-variance [(variance {:data ballet-dancers :type :pooled}) (variance {:data football-players :type :pooled})]
                   :size            [(count ballet-dancers) (count football-players)]
-                  :type            :equal-variance}))
+                  :type            :equal-variance})
 
-      {:mean            [87.94999999999999 85.19],
-       :pooled-variance [32.382777777777775 31.181000000000015],
-       :size            [10 10],
-       :type            :equal-variance,
-       :t-statistic     1.094722972460392,
-       :dof             18}))
+         {:mean            [87.94999999999999 85.19],
+          :pooled-variance [32.382777777777775 31.181000000000015],
+          :size            [10 10],
+          :type            :equal-variance,
+          :t-statistic     1.094722972460392,
+          :dof             18
+          :alpha           nil})))
 
 
 (deftest two-sample-t-test-unequal-variance
@@ -65,7 +69,8 @@
           :size            [10 10],
           :type            :unequal-variance,
           :t-statistic     1.0947229724603922,
-          :dof             18})))
+          :dof             18
+          :alpha           nil})))
 
 
 (deftest one-sample-conf-inter-test
@@ -105,15 +110,52 @@
                   :mean               [0 0]                 ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
                   :standard-deviation (standard-deviation {:data (difference {:s1 after :s2 before}) :type :sample})
                   :size               (/ (+ (count after) (count before)) 2)
-                  :type               :two-sample-repeated-measure})
+                  :type               :repeated-measure})
 
 
          {:difference-mean    -11.0,
           :mean               [0 0],
           :standard-deviation 13.90443574307614,
           :size               10,
-          :type               :two-sample-repeated-measure,
+          :type               :repeated-measure,
           :t-statistic        -2.5017235438103813,
-          :dof                9})))
+          :dof                9
+          :alpha              nil})))
+
+
+(deftest one-tail-test-test
+  (is (= (one-tail-t-test (t-test {:mean               (mean population-one)
+                                   :standard-deviation (standard-deviation {:data population-one :type :sample})
+                                   :hypo-mean          400
+                                   :size               (count population-one)
+                                   :type               :one-sample
+                                   :alpha              0.05}))
+         {:mean               579.0,
+          :standard-deviation 65.05553183413554,
+          :hypo-mean          400,
+          :size               10,
+          :type               :one-sample,
+          :alpha              0.05,
+          :t-statistic        8.700992601418207,
+          :dof                9,
+          :critical-value     1.8331})))
+
+
+(deftest two-tail-test-test
+  (is (= (two-tail-t-test (t-test {:mean               (mean population-one)
+                                   :standard-deviation (standard-deviation {:data population-one :type :sample})
+                                   :hypo-mean          400
+                                   :size               (count population-one)
+                                   :type               :one-sample
+                                   :alpha              0.05}))
+         {:mean               579.0,
+          :standard-deviation 65.05553183413554,
+          :hypo-mean          400,
+          :size               10,
+          :type               :one-sample,
+          :alpha              0.05,
+          :t-statistic        8.700992601418207,
+          :dof                9,
+          :critical-value     2.2621})))
 
 

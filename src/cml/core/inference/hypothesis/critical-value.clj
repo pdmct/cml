@@ -1,7 +1,6 @@
 (ns cml.core.inference.hypothesis.critical-value)
 
 
-
 (defmulti t-test (fn [type] (:type type)))
 
 (defmethod t-test :one-sample [type]
@@ -10,7 +9,8 @@
                        (:hypo-mean type))
                     (/ (:standard-deviation type)
                        (Math/sqrt (:size type))))
-    :dof (dec (:size type))))
+    :dof (dec (:size type))
+    :alpha (:alpha type)))
 
 
 (defmethod t-test :equal-variance [type]
@@ -26,7 +26,8 @@
                                         ((:size type) 1))))))
     :dof (- (+ ((:size type) 0)
                ((:size type) 1))
-            2)))
+            2)
+    :alpha (:alpha type)))
 
 
 (defmethod t-test :unequal-variance [type]
@@ -39,7 +40,8 @@
                                      ((:size type) 1)))))
     :dof (- (+ ((:size type) 0)
                ((:size type) 1))
-            2)))
+            2)
+    :alpha (:alpha type)))
 
 
 (defmethod t-test :repeated-measure [type]
@@ -50,5 +52,7 @@
                     (/ (:standard-deviation type)
                        (Math/sqrt (:size type))))
     :dof (- (:size type)
-            1)))
+            1)
+    :alpha (:alpha type)))
+
 
