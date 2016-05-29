@@ -65,13 +65,13 @@
                   :size            [(count ballet-dancers) (count football-players)]
                   :type            :welch})
 
-         {:mean            [87.94999999999999 85.19],
+         {:mean [87.94999999999999 85.19],
           :sample-variance [32.382777777777775 31.181000000000015],
-          :size            [10 10],
-          :type            :welch,
-          :t-statistic     1.0947229724603922,
-          :dof             18
-          :alpha           nil})))
+          :size [10 10],
+          :type :welch,
+          :t-statistic 1.0947229724603922,
+          :dof 17.993567997176537,
+          :alpha nil})))
 
 
 (deftest one-sample-conf-inter-test

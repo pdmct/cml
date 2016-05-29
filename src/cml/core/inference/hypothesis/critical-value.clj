@@ -31,7 +31,6 @@
             2)
     :alpha (:alpha type)))
 
-
 (defmethod t-test :welch [type]
   (assoc type
     :t-statistic (/ (- ((:mean type) 0)
@@ -40,9 +39,26 @@
                                      ((:size type) 0))
                                   (/ ((:sample-variance type) 1)
                                      ((:size type) 1)))))
-    :dof (- (+ ((:size type) 0)
-               ((:size type) 1))
-            2)
+    :dof (/ (* (+ (/ ((:sample-variance type) 0)
+                     ((:size type) 0))
+                  (/ ((:sample-variance type) 1)
+                     ((:size type) 1)))
+               (+ (/ ((:sample-variance type) 0)
+                     ((:size type) 0))
+                  (/ ((:sample-variance type) 1)
+                     ((:size type) 1))))
+            (+ (/ (* (/ ((:sample-variance type) 0)
+                        ((:size type) 0))
+                     (/ ((:sample-variance type) 0)
+                        ((:size type) 0)))
+                  (- ((:size type) 0)
+                     1))
+               (/ (* (/ ((:sample-variance type) 1)
+                        ((:size type) 1))
+                     (/ ((:sample-variance type) 1)
+                        ((:size type) 1)))
+                  (- ((:size type) 1)
+                     1))))
     :alpha (:alpha type)))
 
 
