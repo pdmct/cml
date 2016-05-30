@@ -9,8 +9,7 @@
                        (:hypo-mean type))
                     (/ (:standard-deviation type)
                        (Math/sqrt (:size type))))
-    :dof (dec (:size type))
-    :alpha (:alpha type)))
+    :dof (dec (:size type))))
 
 
 (defmethod t-test :equal-variance [type]
@@ -28,8 +27,8 @@
                                         ((:size type) 1))))))
     :dof (- (+ ((:size type) 0)
                ((:size type) 1))
-            2)
-    :alpha (:alpha type)))
+            2)))
+
 
 (defmethod t-test :welch [type]
   (assoc type
@@ -58,8 +57,7 @@
                      (/ ((:sample-variance type) 1)
                         ((:size type) 1)))
                   (- ((:size type) 1)
-                     1))))
-    :alpha (:alpha type)))
+                     1))))))
 
 
 (defmethod t-test :repeated-measure [type]
@@ -70,7 +68,6 @@
                     (/ (:standard-deviation type)
                        (Math/sqrt (:size type))))
     :dof (- (:size type)
-            1)
-    :alpha (:alpha type)))
+            1)))
 
 

@@ -38,8 +38,7 @@
           :size               10,
           :type               :one-sample,
           :t-statistic        8.700992601418207,
-          :dof                9
-          :alpha              nil})))
+          :dof                9})))
 
 
 (deftest two-sample-t-test-equal-variance
@@ -55,8 +54,7 @@
           :size            [10 10],
           :type            :equal-variance,
           :t-statistic     1.094722972460392,
-          :dof             18
-          :alpha           nil})))
+          :dof             18})))
 
 
 (deftest two-sample-t-test-unequal-variance
@@ -65,13 +63,12 @@
                   :size            [(count ballet-dancers) (count football-players)]
                   :type            :welch})
 
-         {:mean [87.94999999999999 85.19],
+         {:mean            [87.94999999999999 85.19],
           :sample-variance [32.382777777777775 31.181000000000015],
-          :size [10 10],
-          :type :welch,
-          :t-statistic 1.0947229724603922,
-          :dof 17.993567997176537,
-          :alpha nil})))
+          :size            [10 10],
+          :type            :welch,
+          :t-statistic     1.0947229724603922,
+          :dof             17.993567997176537,})))
 
 
 (deftest one-sample-conf-inter-test
@@ -120,8 +117,7 @@
           :size               10,
           :type               :repeated-measure,
           :t-statistic        -2.5017235438103813,
-          :dof                9
-          :alpha              nil})))
+          :dof                9})))
 
 
 (deftest one-tail-test-test
