@@ -6,7 +6,8 @@
             [cml.core.inference.hypothesis.critical-value :refer :all]
             [cml.core.sample :refer :all]
             [cml.core.utils.samples :refer :all]
-            [cml.core.inference.hypothesis.test :refer :all]))
+            [cml.core.inference.hypothesis.test :refer :all]
+            [cml.core.dataset :refer :all]))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -155,5 +156,30 @@
           :t-statistic        8.700992601418207,
           :dof                9,
           :critical-value     2.2621})))
+
+
+(deftest data-frame-test-group
+  (is (= (group-by :isstre (data-frame "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
+                                      #"," [:color :size :isstre :human :type] []))
+        {"STRETCH" [{:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
+                    {:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
+                    {:color "YELLOW", :size "LARGE", :isstre "STRETCH", :human "ADULT", :type "T"}
+                    {:color "YELLOW", :size "LARGE", :isstre "STRETCH", :human "CHILD", :type "T"}
+                    {:color "PURPLE", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
+                    {:color "PURPLE", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
+                    {:color "PURPLE", :size "LARGE", :isstre "STRETCH", :human "ADULT", :type "T"}
+                    {:color "PURPLE", :size "LARGE", :isstre "STRETCH", :human "CHILD", :type "T"}],
+         "DIP"     [{:color "YELLOW", :size "SMALL", :isstre "DIP", :human "ADULT", :type "T"}
+                    {:color "YELLOW", :size "SMALL", :isstre "DIP", :human "CHILD", :type "F"}
+                    {:color "YELLOW", :size "SMALL", :isstre "DIP", :human "CHILD", :type "F"}
+                    {:color "YELLOW", :size "LARGE", :isstre "DIP", :human "ADULT", :type "T"}
+                    {:color "YELLOW", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}
+                    {:color "YELLOW", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}
+                    {:color "PURPLE", :size "SMALL", :isstre "DIP", :human "ADULT", :type "T"}
+                    {:color "PURPLE", :size "SMALL", :isstre "DIP", :human "CHILD", :type "F"}
+                    {:color "PURPLE", :size "SMALL", :isstre "DIP", :human "CHILD", :type "F"}
+                    {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "ADULT", :type "T"}
+                    {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}
+                    {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}]})))
 
 
