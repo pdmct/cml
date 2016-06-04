@@ -1,7 +1,7 @@
 (ns cml.core.dataset
   (:import (java.util.regex Pattern)))
 
-(defn split-str {:private true}
+(defn- split-str
   ([^CharSequence s ^Pattern re]
    (lazy-seq (.split re s))))
 
