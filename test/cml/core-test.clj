@@ -183,7 +183,7 @@
                     {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}]})))
 
 
-(time (data-frame adult-data
+#_(time (data-frame adult-data
                   #","
                   [:age :sector :code :degree-type :study-time :marital-status :industry :family-status :race :gender :n1 :n2 :n3 :country :salary-range]
                   []))
