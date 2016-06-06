@@ -15,18 +15,16 @@
 (defmethod standard-deviation :population [type]
   (let [m (mean (:data type))]
     (Math/sqrt (mean (map (fn [x] (* (- m
-                                        x)
-                                     (- m
-                                        x)))
+                                        x) (- m
+                                              x)))
                           (:data type))))))
 
 
 (defmethod standard-deviation :sample [type]
   (let [m (mean (:data type))]
     (Math/sqrt (mean-1 (map (fn [x] (* (- m
-                                          x)
-                                       (- m
-                                          x)))
+                                          x) (- m
+                                                x)))
                             (:data type))))))
 
 
@@ -36,9 +34,8 @@
   (let [m (mean (:data type))]
     (/ (reduce +
                (map (fn [x] (* (- x
-                                  m)
-                               (- x
-                                  m)))
+                                  m) (- x
+                                        m)))
                     (:data type)))
        (count (:data type)))))
 
@@ -47,9 +44,8 @@
   (let [m (mean (:data type))]
     (/ (reduce +
                (map (fn [x] (* (- x
-                                  m)
-                               (- x
-                                  m)))
+                                  m) (- x
+                                        m)))
                     (:data type)))
        (dec (count (:data type))))))
 
@@ -57,14 +53,15 @@
 (defmethod variance :pooled [type]
   (let [c (- (count (:data type)) 1)]
     (/ (* c
-          (variance {:data (:data type) :type :sample}))
-       c)))
+          (variance {:data (:data type)
+                     :type :sample})) c)))
 
 
 (defn permutations
   [x xs]
   (letfn [(factorial [x]
-            (loop [cnt (if (coll? x) (count x) x) acc 1]
+            (loop [cnt (if (coll? x)
+                         (count x) x) acc 1]
               (if (zero? cnt)
                 acc (recur (dec cnt)
                            (*' cnt
