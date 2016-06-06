@@ -2,6 +2,7 @@
   (:import (java.util.regex Pattern)
            (clojure.lang PersistentVector)))
 
+;TODO turn functions into transducers
 
 (defn- split-str [^CharSequence s ^Pattern re]
   (lazy-seq (.split re
@@ -18,36 +19,6 @@
        (helper (clojure.java.io/reader file))))
 
 
-(defn- zipmap-types
-  [keys vals]
-  (loop [map {}
-         ks (seq keys)
-         vs (seq vals)]
-    (if (and ks
-             vs)
-      (recur (assoc map
-               ((first ks) 0) (cond (= ((first ks)
-                                         1) :string)
-                                    (first vs)
-                                    (= ((first ks)
-                                         1) :integer)
-                                    (Integer/parseInt (first vs))
-                                    (= ((first ks)
-                                         1) :long)
-                                    (Long/parseLong (first vs))
-                                    (= ((first ks)
-                                         1) :double)
-                                    (Double/parseDouble (first vs))
-                                    (= ((first ks)
-                                         1) :character)
-                                    (.charAt (first vs)
-                                             0)
-                                    :else (first vs)))
-             (next ks)
-             (next vs))
-      map)))
-
-
 (defn data-frame [^String file-path
                   ^Pattern re
                   ^PersistentVector column-names]
@@ -60,9 +31,35 @@
 (defn data-frame-types [^String file-path
                         ^Pattern re
                         ^PersistentVector column-names]
-  (map (fn [x] (zipmap-types column-names
-                       (split-str x
-                                  re)))
-       (file-lines file-path)))
+  (letfn [(zipmap-types [keys vals]
+            (loop [map {}
+                   ks (seq keys)
+                   vs (seq vals)]
+              (if (and ks
+                       vs)
+                (recur (assoc map
+                         ((first ks) 0)
+                         (cond (= (second (first ks))
+                                  :string)
+                               (first vs)
+                               (= (second (first ks))
+                                  :integer)
+                               (Integer/parseInt (first vs))
+                               (= (second (first ks))
+                                  :long)
+                               (Long/parseLong (first vs))
+                               (= (second (first ks))
+                                  :double)
+                               (Double/parseDouble (first vs))
+                               (= (second (first ks))
+                                  :character)
+                               (.charAt (first vs) 0)
+                               :else (first vs)))
+                       (next ks)
+                       (next vs)) map)))]
+    (map (fn [x] (zipmap-types column-names
+                               (split-str x
+                                          re)))
+         (file-lines file-path))))
 
 

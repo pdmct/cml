@@ -159,7 +159,7 @@
 
 
 (deftest data-frame-test-group
-  (is (= (group-by :isstre (data-frame "/Users/gra11/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
+  (is (= (group-by :isstre (data-frame "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
                                       #"," [:color :size :isstre :human :type]))
         {"STRETCH" [{:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
                     {:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
@@ -183,9 +183,12 @@
                     {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}]})))
 
 
-#_(time (data-frame adult-data
-                  #","
-                  [:age :sector :code :degree-type :study-time :marital-status :industry :family-status :race :gender :n1 :n2 :n3 :country :salary-range]
-                  []))
+
+#_(reduce-kv (fn [m k v] (assoc m k (cond (= :int (k 1))
+                (Integer/parseInt v)
+                (= :str (k 1))
+                (= :long (k 1))
+                (Long/parseLong v)
+                :else v))) {} {[:name :string] "Greg", [:age :int] "22", [:salary :long] "231455342"})
 
 
