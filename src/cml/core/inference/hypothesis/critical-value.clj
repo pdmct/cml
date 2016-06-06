@@ -1,6 +1,5 @@
 (ns cml.core.inference.hypothesis.critical-value)
 
-;TODO remove repeated computation via let binding
 
 (defmulti t-test (fn [type] (:type type)))
 
