@@ -24,9 +24,10 @@
                                   ((:size type) 0)) (/ ((:variance type) 1)
                                                        ((:size type) 1))))))
     :lower (- (- ((:mean type) 0)
-                 ((:mean type) 1)) (* (:critical-val type)
-                                      (Math/sqrt (+ (/ ((:variance type) 0)
-                                                       ((:size type) 0)) (/ ((:variance type) 1)
-                                                                            ((:size type) 1))))))))
+                 ((:mean type) 1))
+              (* (:critical-val type)
+                 (Math/sqrt (+ (/ ((:variance type) 0)
+                                  ((:size type) 0)) (/ ((:variance type) 1)
+                                                       ((:size type) 1))))))))
 
 
