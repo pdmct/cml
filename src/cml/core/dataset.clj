@@ -18,7 +18,8 @@
   (loop [map {}
          ks (seq keys)
          vs (seq vals)]
-    (if (and ks
+    (if (and (apply hash-map
+                    ks)
              vs)
       (recur (assoc map
                 (first ks)
