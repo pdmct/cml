@@ -2,7 +2,6 @@
   (:import (java.util.regex Pattern)
            (clojure.lang PersistentVector)))
 
-;TODO turn functions into transducers
 
 (defn- file-lines [file]
      (letfn [(helper [rdr]
@@ -18,7 +17,8 @@
   (loop [map {}
          ks (seq keys)
          vs (seq vals)]
-    (if (and ks
+    (if (and (apply hash-map
+                    ks)
              vs)
       (recur (assoc map
                 (first ks)

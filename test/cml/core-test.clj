@@ -7,7 +7,8 @@
             [cml.core.sample :refer :all]
             [cml.core.utils.samples :refer :all]
             [cml.core.inference.hypothesis.test :refer :all]
-            [cml.core.dataset :refer :all]))
+            [cml.core.dataset :refer :all]
+            [cml.core.transform :refer :all]))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -159,7 +160,7 @@
 
 
 (deftest data-frame-test-group
-  (is (= (group-by :isstre (data-frame "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
+  (is (= (group-by :isstre (data-frame "/Users/gra11/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
                                       #"," [:color :size :isstre :human :type]))
         {"STRETCH" [{:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
                     {:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
@@ -181,14 +182,5 @@
                     {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "ADULT", :type "T"}
                     {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}
                     {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}]})))
-
-
-
-#_(reduce-kv (fn [m k v] (assoc m k (cond (= :int (k 1))
-                (Integer/parseInt v)
-                (= :str (k 1))
-                (= :long (k 1))
-                (Long/parseLong v)
-                :else v))) {} {[:name :string] "Greg", [:age :int] "22", [:salary :long] "231455342"})
 
 
