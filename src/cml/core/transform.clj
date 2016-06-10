@@ -1,12 +1,8 @@
 (ns cml.core.transform)
 
 
+(defmacro xform-all [m & args]
+  `(reduce-kv (fn [m1# k# v#]
+                (assoc m1# k# ((comp ~@args) v#))) {} ~m))
 
-(reduce-kv (fn [m k v] (assoc m k (cond (= :int (k 1))
-                                        (Integer/parseInt v)
-                                        (= :str (k 1))
-                                        v
-                                        (= :long (k 1))
-                                        (Long/parseLong v)
-                                        :else v))) {} {[:name :string] "Greg", [:age :int] "22", [:salary :long] "231455342"})
 

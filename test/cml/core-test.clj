@@ -7,7 +7,8 @@
             [cml.core.sample :refer :all]
             [cml.core.utils.samples :refer :all]
             [cml.core.inference.hypothesis.test :refer :all]
-            [cml.core.dataset :refer :all]))
+            [cml.core.dataset :refer :all]
+            [cml.core.transform :refer :all]))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -159,7 +160,7 @@
 
 
 (deftest data-frame-test-group
-  (is (= (group-by :isstre (data-frame "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
+  (is (= (group-by :isstre (data-frame "/Users/gra11/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
                                       #"," [:color :size :isstre :human :type]))
         {"STRETCH" [{:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
                     {:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
