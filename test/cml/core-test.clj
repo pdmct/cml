@@ -184,3 +184,19 @@
                     {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}]})))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#_(map #(xform-all %
+                 (fn [x] (if (clojure.string/starts-with? x "B") (clojure.string/upper-case x) x))
+                 clojure.string/trim)
+     (data-frame dataset
+                 #","
+                 [:age :department :salary
+                  :degree :study-time :marital-status
+                  :job :family-status :race
+                  :gender :n1 :n2 :n3 :country :salary-range]))
+
+#_(pvalues (partial + 2) )
+#_((comp (fn [x] (update x :department clojure.string/upper-case))
+       (fn [x] (update x :foo clojure.string/upper-case))) {:department "fff" :foo "eee"})
+
