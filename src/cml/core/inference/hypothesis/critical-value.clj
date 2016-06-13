@@ -1,5 +1,6 @@
 (ns cml.core.inference.hypothesis.critical-value)
 
+;TODO Have functions comply with dataframes
 
 (defmulti t-test (fn [type] (:type type)))
 

@@ -1,5 +1,6 @@
 (ns cml.core.inference.estimation.confidence)
 
+;TODO Have functions comply with dataframes
 
 (defmulti confidence-interval (fn [type] (:type type)))
 

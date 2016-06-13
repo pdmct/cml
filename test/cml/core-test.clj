@@ -196,7 +196,14 @@
                   :job :family-status :race
                   :gender :n1 :n2 :n3 :country :salary-range]))
 
-#_(xform-by-key-test {:departure 11 :foo "greg"} [(:departure str)
-                                                (:foo  (comp clojure.string/upper-case str))])
+
+#_(map #(xform-by-key % [(:age (comp read-string  clojure.string/trim))
+                         (:race clojure.string/trim)])
+       (data-frame dataset
+                 #","
+                 [:age :department :salary
+                  :degree :study-time :marital-status
+                  :job :family-status :race
+                  :gender :n1 :n2 :n3 :country :salary-range]))
 
 
