@@ -160,7 +160,7 @@
 
 
 (deftest data-frame-test-group
-  (is (= (group-by :isstre (data-frame "/Users/gra11/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
+  (is (= (group-by :isstre (data-frame "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
                                       #"," [:color :size :isstre :human :type]))
         {"STRETCH" [{:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
                     {:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
@@ -196,7 +196,7 @@
                   :job :family-status :race
                   :gender :n1 :n2 :n3 :country :salary-range]))
 
-#_(pvalues (partial + 2) )
-#_((comp (fn [x] (update x :department clojure.string/upper-case))
-       (fn [x] (update x :foo clojure.string/upper-case))) {:department "fff" :foo "eee"})
+#_(xform-by-key-test {:departure 11 :foo "greg"} [(:departure str)
+                                                (:foo  (comp clojure.string/upper-case str))])
+
 
