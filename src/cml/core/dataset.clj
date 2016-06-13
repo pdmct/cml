@@ -13,7 +13,7 @@
        (helper (clojure.java.io/reader file))))
 
 
-(defn- zipmap-types [keys vals]
+(defn- zipmap-types [keys vals]                             ;TODO Add the abaility to add a transformation fn via (comp (Integr/parseInt) (xform ..) (xform.. )
   (loop [map {}
          ks (seq keys)
          vs (seq vals)]
