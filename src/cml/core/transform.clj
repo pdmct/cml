@@ -1,14 +1,14 @@
 (ns cml.core.transform)
 
 
-(defmacro xform-values [m fns]
-  `(reduce-kv (fn [m1# k# v#]
-                (assoc m1#
-                  k# ((comp ~@fns)
-                       v#))) {} ~m))
+(defn xform-values [comp]
+  (fn [map]
+    (reduce-kv (fn [m k v]
+                 (assoc m
+                   k (comp v))) {} map)))
 
 
-(defmacro xform-by-key [m fns]                             ;TODO look at (conj s v v1) instead of (cons (cons ..) ..)
+(defmacro xform-by-key [m fns]
   (cons (cons 'comp
               (for [i (range 0
                              (count fns))]
