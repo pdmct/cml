@@ -160,7 +160,7 @@
 
 
 (deftest data-frame-test-group
-  (is (= (group-by :isstre (data-frame "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
+  (is (= (group-by :isstre (data-frame "/Users/gra11/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
                                       #"," [:color :size :isstre :human :type]))
         {"STRETCH" [{:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
                     {:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
@@ -186,8 +186,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#_(map (xform-values (comp  (fn [x] (if (clojure.string/starts-with? x "W") (clojure.string/upper-case x) x))
-                            clojure.string/trim))
+#_(map (comp (transform-values clojure.string/trim))
+       (data-frame dataset
+                   #","
+                   [:age :department :salary
+                    :degree :study-time :marital-status
+                    :job :family-status :race
+                    :gender :n1 :n2 :n3 :country :salary-range]))
+
+#_(map (transform-values clojure.string/trim)
        (data-frame dataset
                    #","
                    [:age :department :salary
@@ -196,14 +203,21 @@
                     :gender :n1 :n2 :n3 :country :salary-range]))
 
 
-#_(map #(xform-by-key % [(:age (comp read-string  clojure.string/trim))
-                         (:race clojure.string/trim)])
-       (data-frame dataset
+#_(map (transform-by-key :race clojure.string/upper-case)
+     (data-frame dataset
                  #","
                  [:age :department :salary
                   :degree :study-time :marital-status
                   :job :family-status :race
                   :gender :n1 :n2 :n3 :country :salary-range]))
 
+#_(map (comp (transform-by-key :race clojure.string/upper-case)
+             (transform-by-key :degree clojure.string/upper-case))
+     (data-frame dataset
+                 #","
+                 [:age :department :salary
+                  :degree :study-time :marital-status
+                  :job :family-status :race
+                  :gender :n1 :n2 :n3 :country :salary-range]))
 
 

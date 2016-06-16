@@ -1,20 +1,29 @@
 (ns cml.core.transform)
 
 
-(defn xform-values [comp]
-  (fn [map]
-    (reduce-kv (fn [m k v]
-                 (assoc m
-                   k (comp v))) {} map)))
+(defn transform-values [f]
+  (fn [m]
+    (reduce-kv (fn [map key val]
+                 (assoc map
+                   key
+                   (f val))) {} m)))
 
 
-(defmacro xform-by-key [m fns]
-  (cons (cons 'comp
-              (for [i (range 0
-                             (count fns))]
-                `(~'fn [x#]
-                   (~'update x#
-                     ~@(fns i)))))
-        `(~m)))
+(defn transform-by-key
+  ([k f]
+   (fn [m]
+     (assoc m k (f (k m)))))
+  ([k f x]
+   (fn [m]
+     (assoc m k (f (k m) x))))
+  ([k f x y]
+   (fn [m]
+     (assoc m k (f (k m) x x y))))
+  ([k f x y z]
+   (fn [m]
+     (assoc m k (f (k m) x x y z))))
+  ([k f x y z & more]
+   (fn [m]
+     (assoc m k (apply f (k m) x x y z more)))))
 
 
