@@ -221,3 +221,10 @@
                   :gender :n1 :n2 :n3 :country :salary-range]))
 
 
+#_(map (splitter [:age :department :salary
+                :degree :study-time :marital-status
+                :job :family-status :race
+                :gender :n1 :n2 :n3 :country :salary-range])
+     (file-lines dataset))
+
+
