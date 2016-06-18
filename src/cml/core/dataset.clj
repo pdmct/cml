@@ -14,6 +14,22 @@
                                   nil))))]
        (helper (clojure.java.io/reader file))))
 
+(defn splitter                                              ;TODO Can rename splitter to data-frame
+  ([^PersistentVector column-names]
+   (fn [x]
+     (zipmap column-names
+             (clojure.string/split x
+                                   #","))))
+  ([^PersistentVector column-names ^Pattern re]
+   (fn [x]
+     (zipmap column-names
+             (clojure.string/split x
+                                   re))))
+  ([^PersistentVector column-names ^Pattern re xform-fn]
+   (fn [x]
+     (zipmap column-names
+             (xform-fn (clojure.string/split x
+                                             re))))))
 
 (defn data-frame [^String file-path
                   ^Pattern re
@@ -27,7 +43,7 @@
   ([^String file-path
     ^PersistentVector column-names]                         ;TODO pull map outside function
    (map (fn [x] (zipmap-types column-names
-                              (clojure.string/split x ",")))
+                              (clojure.string/split x #",")))
         (file-lines file-path)))
   ([^String file-path
     ^Pattern re
