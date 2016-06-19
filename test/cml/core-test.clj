@@ -8,7 +8,8 @@
             [cml.core.utils.samples :refer :all]
             [cml.core.inference.hypothesis.test :refer :all]
             [cml.core.dataset :refer :all]
-            [cml.core.transform :refer :all]))
+            [cml.core.transform :refer :all]
+            [cml.core.file :refer :all]))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -159,7 +160,7 @@
           :critical-value     2.2621})))
 
 
-(deftest data-frame-test-group
+#_(deftest data-frame-test-group
   (is (= (group-by :isstre (data-frame "/Users/gra11/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
                                       #"," [:color :size :isstre :human :type]))
         {"STRETCH" [{:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
@@ -186,45 +187,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#_(map (comp (transform-values clojure.string/trim))
-       (data-frame dataset
+
+#_(map (fn [x] (tokenize-type #"," x [:age :integer :department :string :salary :long
+                                    :degree :string :study-time :integer :marital-status :string
+                                    :job :string :family-status :string :race :string
+                                    :gender :string :n1 :integer :n2 :integer :n3 :integer
+                                    :country :string :salary-range :string]
+                              #(clojure.string/replace % #" " "")))
+       (file-lines dataset))
+
+
+#_(eduction
+    (map (comp
+           (transform-by-key :race clojure.string/upper-case)
+           (transform-by-key :degree clojure.string/upper-case)))
+    (map (fn [x] (tokenize
                    #","
+                   x
                    [:age :department :salary
                     :degree :study-time :marital-status
                     :job :family-status :race
-                    :gender :n1 :n2 :n3 :country :salary-range]))
-
-#_(map (transform-values clojure.string/trim)
-       (data-frame dataset
-                   #","
-                   [:age :department :salary
-                    :degree :study-time :marital-status
-                    :job :family-status :race
-                    :gender :n1 :n2 :n3 :country :salary-range]))
-
-
-#_(map (transform-by-key :race clojure.string/upper-case)
-     (data-frame dataset
-                 #","
-                 [:age :department :salary
-                  :degree :study-time :marital-status
-                  :job :family-status :race
-                  :gender :n1 :n2 :n3 :country :salary-range]))
-
-#_(map (comp (transform-by-key :race clojure.string/upper-case)
-             (transform-by-key :degree clojure.string/upper-case))
-     (data-frame dataset
-                 #","
-                 [:age :department :salary
-                  :degree :study-time :marital-status
-                  :job :family-status :race
-                  :gender :n1 :n2 :n3 :country :salary-range]))
-
-
-#_(map (splitter [:age :department :salary
-                :degree :study-time :marital-status
-                :job :family-status :race
-                :gender :n1 :n2 :n3 :country :salary-range])
-     (file-lines dataset))
+                    :gender :n1 :n2 :n3 :country :salary-range]
+                   #(clojure.string/replace % #" " "")))
+         (file-lines dataset)))
 
 
