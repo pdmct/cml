@@ -8,7 +8,7 @@
     (if (and (apply hash-map
                     ks)
              vs)
-      (recur (assoc map
+      (recur (assoc! map
                (first ks)
                (cond (= (second ks)
                         :string)
