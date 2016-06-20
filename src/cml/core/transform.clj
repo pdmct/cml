@@ -13,45 +13,53 @@
 
 
 (defn transform-by-key                                      ;TODO remove closure from functions
-  ([k f]
-   (fn [m]
-     (assoc m k (f (k m)))))
-  ([k f x]
-   (fn [m]
-     (assoc m k (f (k m) x))))
-  ([k f x y]
-   (fn [m]
-     (assoc m k (f (k m) x x y))))
-  ([k f x y z]
-   (fn [m]
-     (assoc m k (f (k m) x x y z))))
-  ([k f x y z & more]
-   (fn [m]
-     (assoc m k (apply f (k m) x x y z more)))))
+  ([key transform-fn]
+   (fn [map]
+     (assoc map
+       key (transform-fn (get map
+                              key)))))
+  ([key transform-fn args2]
+   (fn [map]
+     (assoc map
+       key (transform-fn (get map
+                              key) args2))))
+  ([key transform-fn args2 args3]
+   (fn [map]
+     (assoc map
+       key (transform-fn (get map
+                              key) args2 args3))))
+  ([key transform-fn args2 args3 args4]
+   (fn [map]
+     (assoc map
+       key (transform-fn (get map
+                              key) args2 args3 args4))))
+  ([key transform-fn args2 args3 args4 & more]
+   (fn [map]
+     (assoc map
+       key (apply transform-fn
+                  (get map
+                       key) args2 args3 args4 more)))))
 
 
-
-(defn tokenize
+(defn tokenize-line
   ([^Pattern re ^String line]
    (clojure.string/split line
                          re))
   ([^Pattern re ^String line ^PersistentVector names]
    (zipmap names
-           (clojure.string/split line
-                                 re)))
+           (clojure.string/split line re)))
   ([^Pattern re ^String line ^PersistentVector names transform-line]
    (zipmap names
-           (clojure.string/split (transform-line line)
-                                 re))))
+           (clojure.string/split (transform-line line) re))))
 
 
-(defn tokenize-type
+(defn tokenize-line-type
   ([^Pattern re ^String line ^PersistentVector names-types]
    (zipmap-types names-types
                  (clojure.string/split line
                                        re)))
   ([^Pattern re ^String line ^PersistentVector names-types transform-line]
    (zipmap-types names-types
-                 (clojure.string/split (transform-line line)
-                                       re))))
+                 (clojure.string/split (transform-line line) re))))
+
 

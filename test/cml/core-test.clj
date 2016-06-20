@@ -160,40 +160,16 @@
           :critical-value     2.2621})))
 
 
-#_(deftest data-frame-test-group
-  (is (= (group-by :isstre (data-frame "/Users/gra11/IdeaProjects/cml/resources/datasets/balloons/adult-stretch.data"
-                                      #"," [:color :size :isstre :human :type]))
-        {"STRETCH" [{:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
-                    {:color "YELLOW", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
-                    {:color "YELLOW", :size "LARGE", :isstre "STRETCH", :human "ADULT", :type "T"}
-                    {:color "YELLOW", :size "LARGE", :isstre "STRETCH", :human "CHILD", :type "T"}
-                    {:color "PURPLE", :size "SMALL", :isstre "STRETCH", :human "ADULT", :type "T"}
-                    {:color "PURPLE", :size "SMALL", :isstre "STRETCH", :human "CHILD", :type "T"}
-                    {:color "PURPLE", :size "LARGE", :isstre "STRETCH", :human "ADULT", :type "T"}
-                    {:color "PURPLE", :size "LARGE", :isstre "STRETCH", :human "CHILD", :type "T"}],
-         "DIP"     [{:color "YELLOW", :size "SMALL", :isstre "DIP", :human "ADULT", :type "T"}
-                    {:color "YELLOW", :size "SMALL", :isstre "DIP", :human "CHILD", :type "F"}
-                    {:color "YELLOW", :size "SMALL", :isstre "DIP", :human "CHILD", :type "F"}
-                    {:color "YELLOW", :size "LARGE", :isstre "DIP", :human "ADULT", :type "T"}
-                    {:color "YELLOW", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}
-                    {:color "YELLOW", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}
-                    {:color "PURPLE", :size "SMALL", :isstre "DIP", :human "ADULT", :type "T"}
-                    {:color "PURPLE", :size "SMALL", :isstre "DIP", :human "CHILD", :type "F"}
-                    {:color "PURPLE", :size "SMALL", :isstre "DIP", :human "CHILD", :type "F"}
-                    {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "ADULT", :type "T"}
-                    {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}
-                    {:color "PURPLE", :size "LARGE", :isstre "DIP", :human "CHILD", :type "F"}]})))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;TODO write tests around below functionality
 
-#_(map (fn [x] (tokenize-type #"," x [:age :integer :department :string :salary :long
-                                    :degree :string :study-time :integer :marital-status :string
-                                    :job :string :family-status :string :race :string
-                                    :gender :string :n1 :integer :n2 :integer :n3 :integer
-                                    :country :string :salary-range :string]
-                              #(clojure.string/replace % #" " "")))
+#_(map (fn [x] (tokenize-line-type #"," x [:age :integer :department :string :salary :long
+                                           :degree :string :study-time :integer :marital-status :string
+                                           :job :string :family-status :string :race :string
+                                           :gender :string :n1 :integer :n2 :integer :n3 :integer
+                                           :country :string :salary-range :string]
+                                   #(clojure.string/replace % #" " "")))
        (file-lines dataset))
 
 
@@ -201,7 +177,7 @@
     (map (comp
            (transform-by-key :race clojure.string/upper-case)
            (transform-by-key :degree clojure.string/upper-case)))
-    (map (fn [x] (tokenize
+    (map (fn [x] (tokenize-line
                    #","
                    x
                    [:age :department :salary

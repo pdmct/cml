@@ -42,8 +42,7 @@
                                              ((:size type) 0))) (- ((:size type) 0)
                                                                    1)) (/ (* (/ ((:sample-variance type) 1)
                                                                                 ((:size type) 1)) (/ ((:sample-variance type) 1)
-                                                                                                     ((:size type) 1))) (- ((:size type) 1)
-                                                                                                                           1))))))
+                                                                                                     ((:size type) 1))) (- ((:size type) 1) 1))))))
 
 
 (defmethod t-test :repeated-measure [type]
@@ -53,7 +52,6 @@
                           ((:population-mean type) 1)))
                     (/ (:standard-deviation type)
                        (Math/sqrt (:size type))))
-    :dof (- (:size type)
-            1)))
+    :dof (- (:size type) 1)))
 
 
