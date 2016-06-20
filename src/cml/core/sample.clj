@@ -11,7 +11,7 @@
     (stream/sample (range) size population)))
 
 
-(defn random-population-sample [population size]
+(defn random-population-sample [population size]            ;TODO use java api
   (let [x (atom []) p (atom population) s (atom size)]
     (while (not= @s 0)
       (do
