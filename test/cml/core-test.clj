@@ -9,7 +9,8 @@
             [cml.core.inference.hypothesis.test :refer :all]
             [cml.core.dataset :refer :all]
             [cml.core.transform :refer :all]
-            [cml.core.file :refer :all]))
+            [cml.core.file :refer :all]
+            [cml.core.extract :refer :all]))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -164,6 +165,7 @@
 
 ;TODO write tests around below functionality
 
+
 #_(map (fn [x] (tokenize-line-type #"," x [:age :integer :department :string :salary :long
                                            :degree :string :study-time :integer :marital-status :string
                                            :job :string :family-status :string :race :string
@@ -175,8 +177,12 @@
 
 #_(eduction
     (map (comp
-           (transform-by-key :race clojure.string/upper-case)
-           (transform-by-key :degree clojure.string/upper-case)))
+           (fn [y]
+             (transform-by-key y :race clojure.string/upper-case))
+           (fn [y]
+             (transform-by-key y :degree clojure.string/upper-case))
+           (fn [y]
+             (transform-by-key y :age (fn [x] (Integer/parseInt x))))))
     (map (fn [x] (tokenize-line
                    #","
                    x
@@ -186,5 +192,34 @@
                     :gender :n1 :n2 :n3 :country :salary-range]
                    #(clojure.string/replace % #" " "")))
          (file-lines dataset)))
+
+
+#_(defn zipmap-types [keys vals]                            ;TODO Remove this function and build function for specificallvy parsing data frame values
+  (loop [map (transient {})
+         ks (seq keys)
+         vs (seq vals)]
+    (if (and (apply hash-map
+                    ks)
+             vs)
+      (recur (assoc! map
+                     (first ks)
+                     (cond (= (second ks)
+                              :string)
+                           (first vs)
+                           (=  (second ks)
+                               :integer)
+                           (Integer/parseInt (first vs))
+                           (= (second ks)
+                              :long)
+                           (Long/parseLong (first vs))
+                           (= (second ks)
+                              :double)
+                           (Double/parseDouble (first vs))
+                           (= (second ks)
+                              :character)
+                           (.charAt (first vs) 0)
+                           :else (first vs)))
+             (drop 2 ks)
+             (next vs)) (persistent! map))))
 
 
