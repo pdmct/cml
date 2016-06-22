@@ -1,10 +1,9 @@
 (ns cml.core.transform
   (:require [cml.core.utils :refer [zipmap-types]])
-  (:import (java.util.regex Pattern)
-           (clojure.lang PersistentVector)))
+  (:import (java.util StringTokenizer)))
 
 
-(defn transform-values [f]
+(defn transform-values [f]                                  ;TODO Use assoc instead of reduce-kv
   (fn [m]
     (reduce-kv (fn [map key val]
                  (assoc map
@@ -12,54 +11,50 @@
                    (f val))) {} m)))
 
 
-(defn transform-by-key                                      ;TODO remove closure from functions
-  ([key transform-fn]
-   (fn [map]
-     (assoc map
-       key (transform-fn (get map
-                              key)))))
-  ([key transform-fn args2]
-   (fn [map]
-     (assoc map
-       key (transform-fn (get map
-                              key) args2))))
-  ([key transform-fn args2 args3]
-   (fn [map]
-     (assoc map
-       key (transform-fn (get map
-                              key) args2 args3))))
-  ([key transform-fn args2 args3 args4]
-   (fn [map]
-     (assoc map
-       key (transform-fn (get map
-                              key) args2 args3 args4))))
-  ([key transform-fn args2 args3 args4 & more]
-   (fn [map]
-     (assoc map
-       key (apply transform-fn
-                  (get map
-                       key) args2 args3 args4 more)))))
+(defn transform-by-key
+  ([map key transform-fn]
+   (assoc map
+     key (transform-fn (get map
+                            key))))
+  ([map key transform-fn args2]
+   (assoc map
+     key
+     (transform-fn (get map
+                        key)
+                   args2)))
+  ([map key transform-fn args2 args3]
+   (assoc map
+     key
+     (transform-fn (get map
+                        key)
+                   args2 args3)))
+  ([map key transform-fn args2 args3 args4]
+   (assoc map
+     key
+     (transform-fn (get map
+                        key)
+                   args2 args3 args4)))
+  ([map key transform-fn args2 args3 args4 & more]
+   (assoc map
+     key
+     (apply transform-fn
+            (get map
+                 key)
+            args2 args3 args4 more))))
 
 
-(defn tokenize-line
-  ([^Pattern re ^String line]
-   (clojure.string/split line
-                         re))
-  ([^Pattern re ^String line ^PersistentVector names]
-   (zipmap names
-           (clojure.string/split line re)))
-  ([^Pattern re ^String line ^PersistentVector names transform-line]
-   (zipmap names
-           (clojure.string/split (transform-line line) re))))
-
-
-(defn tokenize-line-type
-  ([^Pattern re ^String line ^PersistentVector names-types]
-   (zipmap-types names-types
-                 (clojure.string/split line
-                                       re)))
-  ([^Pattern re ^String line ^PersistentVector names-types transform-line]
-   (zipmap-types names-types
-                 (clojure.string/split (transform-line line) re))))
+(defn splitter
+  ([^String line ^String delimiter]
+   (let [st (StringTokenizer. line delimiter)
+         col (transient [])]
+     (while (.hasMoreTokens st)
+       (conj! col (.nextToken st)))
+     (persistent! col)))
+  ([^String line ^String delim ^Boolean keep-delims?]
+   (let [st (StringTokenizer. line delim keep-delims?)
+         col (transient [])]
+     (while (.hasMoreTokens st)
+       (conj! col (.nextToken st)))
+     (persistent! col))))
 
 
