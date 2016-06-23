@@ -1,34 +1,27 @@
-(ns cml.core.dataset)
+(ns cml.core.dataset
+  (:require [cml.core.utils :refer [zip]]
+            [cml.core.transform :refer [line-split]]
+            [cml.core.extract :refer [file-lines]]))
 
-;TODO Design what functionality data frame fn will have IE csv to data frame etc
 ;TODO Design how data frames will be composable with statistical functions
 
 
+(defmulti data-frame (fn [type] (:type type)))
 
-;TODO Have data frame only take a sequence of string splits and have read csv and all ather
-;import functions create a sequence of string splits hence making all other extract functions
-;composable
-
-(defn data-frame
-  ([keys vals]
-   (loop [map (transient {})
-          ks (seq keys)
-          vs (seq vals)]
-     (if (and ks vs)
-       (recur (assoc! map (first ks)
-                         (first vs))
-              (next ks)
-              (next vs))
-       (persistent! map))))
-  ([keys vals xform]
-   (loop [map (transient {})
-          ks (seq keys)
-          vs (seq vals)]
-     (if (and ks vs)
-       (recur (assoc! map (first ks)
-                         (xform (first vs)))
-              (next ks)
-              (next vs))
-       (persistent! map)))))
+(defmethod data-frame :csv [type]
+  (if-not (:parallel type)
+    (eduction
+      (if-not (:xform type)
+        (map #(zip (:column-names type) %))
+        (map #(zip (:column-names type) % (:xform type))))
+      (map #(line-split % (:delimiter type))
+           (file-lines (:file-path type))))
+    (if-not (:xform type)
+      (pmap #(zip (:column-names type) %)
+            (pmap #(line-split % (:delimiter type))
+                  (file-lines (:file-path type))))
+      (pmap #(zip (:column-names type) % (:xform type))
+            (pmap #(line-split % (:delimiter type))
+                  (file-lines (:file-path type)))))))
 
 
