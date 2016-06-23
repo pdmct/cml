@@ -1,5 +1,4 @@
 (ns cml.core.transform
-  (:require [cml.core.utils :refer [zipmap-types]])
   (:import (java.util StringTokenizer)))
 
 
@@ -43,9 +42,9 @@
             args2 args3 args4 more))))
 
 
-(defn splitter
-  ([^String line ^String delimiter]
-   (let [st (StringTokenizer. line delimiter)
+(defn line-split
+  ([^String line ^String delim]
+   (let [st (StringTokenizer. line delim)
          col (transient [])]
      (while (.hasMoreTokens st)
        (conj! col (.nextToken st)))
