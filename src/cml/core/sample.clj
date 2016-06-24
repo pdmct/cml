@@ -1,10 +1,7 @@
-(ns cml.core.sample
-  (:require [bigml.sampling.simple :as simple]
-            [bigml.sampling.reservoir :as reservoir]
-            [bigml.sampling.stream :as stream]))
+(ns cml.core.sample)
 
 
-(defn random-dummy-sample
+#_(defn random-dummy-sample
   ([population]
    (simple/sample population))
   ([population size]
