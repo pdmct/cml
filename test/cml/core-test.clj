@@ -11,7 +11,10 @@
             [cml.core.transform :refer :all]
             [cml.core.file :refer :all]
             [cml.core.extract :refer :all]
-            [cml.core.utils :refer :all]))
+            [cml.core.utils :refer :all])
+  (:import
+    (org.apache.poi.ss.usermodel Cell Row Sheet Workbook WorkbookFactory)
+    (java.io FileInputStream)))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -176,5 +179,61 @@
              :xform        (comp
                              clojure.string/upper-case
                              (fn [x] (clojure.string/replace x #" " "")))})
+
+(defn get-cell-string-value-test
+  [cell]
+  (let [ct    (.getCellType cell)
+        _     (.setCellType cell Cell/CELL_TYPE_STRING)
+        value (.getStringCellValue cell)]
+    (.setCellType cell ct)
+    value))
+
+(defn to-keyword-test
+  [s]
+  (-> (or s "")
+      clojure.string/trim
+      clojure.string/lower-case
+      (clojure.string/replace #"\s+" "-")
+      keyword))
+
+(defn read-row-test
+  [row]
+  (for [i (range 0 (.getLastCellNum row))]
+    (get-cell-string-value-test (.getCell row (.intValue i)))))
+
+
+
+(defn read-sheet-test
+  ([workbook] (read-sheet-test workbook "Sheet1" 1))
+  ([workbook sheet-name] (read-sheet-test workbook sheet-name 1))
+  ([workbook sheet-name header-row]
+   (let [sheet   (.getSheet workbook sheet-name)
+         rows    (->> sheet (.iterator) iterator-seq (drop (dec header-row)))
+         headers (map to-keyword-test (read-row (first rows)))
+         data    (map read-row-test (rest rows))]
+     (vec (map (partial zipmap headers) data)))))
+
+(defn list-sheets-test
+  [workbook]
+  (for [i (range (.getNumberOfSheets workbook))]
+    (.getSheetName workbook i)))
+
+
+(defn list-sheets-test
+  [workbook]
+  (for [i (range (.getNumberOfSheets workbook))]
+    (.getSheetName workbook i)))
+
+
+(defn sheet-headers-test
+  [workbook sheet-name]
+  (let [sheet (.getSheet workbook sheet-name)
+        rows (->> sheet (.iterator) iterator-seq)]
+    (read-row (first rows))))
+
+(defn load-workbook-test
+  [path]
+  (doto (WorkbookFactory/create (clojure.java.io/input-stream path))
+    (.setMissingCellPolicy Row/CREATE_NULL_AS_BLANK)))
 
 
