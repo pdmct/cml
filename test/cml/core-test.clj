@@ -176,64 +176,17 @@
              :delimiter    ","
              :file-path    dataset
              :type         :csv
-             :xform        (comp
-                             clojure.string/upper-case
-                             (fn [x] (clojure.string/replace x #" " "")))})
-
-(defn get-cell-string-value-test
-  [cell]
-  (let [ct    (.getCellType cell)
-        _     (.setCellType cell Cell/CELL_TYPE_STRING)
-        value (.getStringCellValue cell)]
-    (.setCellType cell ct)
-    value))
-
-(defn to-keyword-test
-  [s]
-  (-> (or s "")
-      clojure.string/trim
-      clojure.string/lower-case
-      (clojure.string/replace #"\s+" "-")
-      keyword))
-
-(defn read-row-test
-  [row]
-  (for [i (range 0 (.getLastCellNum row))]
-    (get-cell-string-value-test (.getCell row (.intValue i)))))
+             :return '()})
 
 
-
-(defn read-sheet-test
-  ([workbook] (read-sheet-test workbook "Sheet1" 1))
-  ([workbook sheet-name] (read-sheet-test workbook sheet-name 1))
-  ([workbook sheet-name header-row]
-   (let [sheet   (.getSheet workbook sheet-name)
-         rows    (->> sheet (.iterator) iterator-seq (drop (dec header-row)))
-         headers (map to-keyword-test (read-row (first rows)))
-         data    (map read-row-test (rest rows))]
-     (vec (map (partial zipmap headers) data)))))
-
-(defn list-sheets-test
-  [workbook]
-  (for [i (range (.getNumberOfSheets workbook))]
-    (.getSheetName workbook i)))
-
-
-(defn list-sheets-test
-  [workbook]
-  (for [i (range (.getNumberOfSheets workbook))]
-    (.getSheetName workbook i)))
-
-
-(defn sheet-headers-test
-  [workbook sheet-name]
-  (let [sheet (.getSheet workbook sheet-name)
-        rows (->> sheet (.iterator) iterator-seq)]
-    (read-row (first rows))))
-
-(defn load-workbook-test
-  [path]
-  (doto (WorkbookFactory/create (clojure.java.io/input-stream path))
-    (.setMissingCellPolicy Row/CREATE_NULL_AS_BLANK)))
+(data-frame {:column-names [:age :department :salary
+                            :degree :study-time :marital-status
+                            :job :family-status :race
+                            :gender :n1 :n2 :n3 :country :salary-range]
+             :delimiter    ","
+             :file-path    dataset
+             :type         :csv/xform
+             :xform clojure.string/upper-case
+             :return []})
 
 
