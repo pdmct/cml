@@ -11,7 +11,10 @@
             [cml.core.transform :refer :all]
             [cml.core.file :refer :all]
             [cml.core.extract :refer :all]
-            [cml.core.utils :refer :all]))
+            [cml.core.utils :refer :all])
+  (:import
+    (org.apache.poi.ss.usermodel Cell Row Sheet Workbook WorkbookFactory)
+    (java.io FileInputStream)))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -173,8 +176,17 @@
              :delimiter    ","
              :file-path    dataset
              :type         :csv
-             :xform        (comp
-                             clojure.string/upper-case
-                             (fn [x] (clojure.string/replace x #" " "")))})
+             :return '()})
+
+
+(data-frame {:column-names [:age :department :salary
+                            :degree :study-time :marital-status
+                            :job :family-status :race
+                            :gender :n1 :n2 :n3 :country :salary-range]
+             :delimiter    ","
+             :file-path    dataset
+             :type         :csv/xform
+             :xform clojure.string/upper-case
+             :return []})
 
 

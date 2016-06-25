@@ -4,5 +4,5 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.apache.poi/poi "3.14"]
+                 [org.apache.poi/poi-ooxml "3.13"]
                  [net.mikera/core.matrix "0.51.0"]])

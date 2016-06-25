@@ -4,7 +4,6 @@
             [cml.core.accuracy :refer :all]))
 
 
-
 (defn deviation-score [mean sample]
   (map (fn [x] (- (mean sample) x)) sample))
 
