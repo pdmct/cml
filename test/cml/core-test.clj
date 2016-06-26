@@ -175,7 +175,7 @@
                             :gender :n1 :n2 :n3 :country :salary-range]
              :delimiter    ","
              :file-path    dataset
-             :type         :csv
+             :type         :csv/read
              :return '()})
 
 
@@ -185,8 +185,9 @@
                             :gender :n1 :n2 :n3 :country :salary-range]
              :delimiter    ","
              :file-path    dataset
-             :type         :csv/xform
-             :xform clojure.string/upper-case
-             :return []})
+             :type         :csv/read
+             :xform        (comp clojure.string/upper-case
+                                 #(clojure.string/replace % #" " ""))
+             :return       []})
 
 
