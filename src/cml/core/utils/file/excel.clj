@@ -36,7 +36,7 @@
      rows)))
 
 
-(x/parse-str "<xml-fragment r=\"2\" spans=\"1:5\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" xmlns:x14ac=\"http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac\" xmlns:main=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">
+(x/parse-str "<xml-fragment r=\"2\" spans=\"1:27\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" xmlns:x14ac=\"http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac\" xmlns:main=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">
             <main:c r=\"A2\" s=\"1\">
               <main:v>999999999</main:v>
             </main:c>
@@ -51,6 +51,12 @@
             </main:c>
             <main:c r=\"E2\" s=\"1\">
               <main:v>44444444</main:v>
+            </main:c>
+            <main:c r=\"F2\" s=\"1\">
+              <main:v>1232123</main:v>
+            </main:c>
+            <main:c r=\"AA2\" s=\"1\">
+              <main:v>22</main:v>
             </main:c>
           </xml-fragment>")
 

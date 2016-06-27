@@ -8,13 +8,9 @@
             [cml.core.utils.samples :refer :all]
             [cml.core.inference.hypothesis.test :refer :all]
             [cml.core.dataset :refer :all]
-            [cml.core.transform :refer :all]
             [cml.core.file :refer :all]
             [cml.core.extract :refer :all]
-            [cml.core.utils :refer :all])
-  (:import
-    (org.apache.poi.ss.usermodel Cell Row Sheet Workbook WorkbookFactory)
-    (java.io FileInputStream)))
+            [cml.core.utils :refer :all]))
 
 
 (def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
@@ -168,13 +164,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def dataset "/Users/gra11/IdeaProjects/cml/resources/datasets/adult/adult.data")
+(def dataset_null "/Users/gra11/IdeaProjects/cml/resources/datasets/adult/adult_with_null.data")
 
 (data-frame {:column-names [:age :department :salary
                             :degree :study-time :marital-status
                             :job :family-status :race
                             :gender :n1 :n2 :n3 :country :salary-range]
              :delimiter    ","
-             :file-path    dataset
+             :file-path    dataset_null
              :type         :csv/read
              :return '()})
 

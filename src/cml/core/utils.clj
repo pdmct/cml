@@ -13,15 +13,17 @@
               (next vs))
        (persistent! map))))
   ([keys vals xform]
-   (loop [map (transient {})
-          ks (seq keys)
-          vs (seq vals)]
-     (if (and ks vs)
-       (recur (assoc! map (first ks)
-                      (xform (first vs)))
-              (next ks)
-              (next vs))
-       (persistent! map)))))
+   (if-not (nil? xform)
+     (loop [map (transient {})
+            ks (seq keys)
+            vs (seq vals)]
+       (if (and ks vs)
+         (recur (assoc! map (first ks)
+                        (xform (first vs)))
+                (next ks)
+                (next vs))
+         (persistent! map)))
+     (zip keys vals))))
 
 
 (defn zip-types [keys vals]
