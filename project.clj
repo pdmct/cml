@@ -5,5 +5,6 @@
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.apache.poi/poi-ooxml "3.13"]
+                 [com.google.guava/guava "19.0"]
                  [org.clojure/data.xml "0.0.8"]
                  [net.mikera/core.matrix "0.51.0"]])
