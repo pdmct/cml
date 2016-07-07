@@ -3,11 +3,7 @@
             [clojure.zip :as zip]
             [clojure.data.xml :as x])
   (:import (org.apache.poi.ss.usermodel Cell Row Sheet Workbook WorkbookFactory)
-           (org.apache.poi.ss.util.NumberToTextConverter)
            (org.apache.poi.ss.util NumberToTextConverter)))
-(use 'com.rpl.specter)
-(use 'com.rpl.specter.macros)
-
 
 (defn load-workbook
   "Load a workbook from a string path."
@@ -27,6 +23,7 @@
    (let [sheet   (.getSheet workbook sheet-name)]
      (while (println  (seq (.rowIterator sheet)))))))
 
+;TODO wrap poi api in protocols
 
 
 

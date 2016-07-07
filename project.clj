@@ -7,5 +7,4 @@
                  [org.apache.poi/poi-ooxml "3.13"]
                  [com.google.guava/guava "19.0"]
                  [org.clojure/data.xml "0.0.8"]
-                 [com.rpl/specter "0.11.2"]
                  [net.mikera/core.matrix "0.51.0"]])
