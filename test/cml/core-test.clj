@@ -30,7 +30,15 @@
 (deftest two-sample-t-test-equal-variance
   (is (= (t-test {:sample-mean     [(mean ballet-dancers) (mean football-players)]
                   :population-mean [0 0]
-                  :pooled-variance [(variance {:data ballet-dancers :type :pooled}) (variance {:data football-players :type :pooled})]
+                  :pooled-variance [(variance {:data   ballet-dancers
+                                               :size-1 (- (count ballet-dancers) 1)
+                                               :mean   (mean ballet-dancers)
+                                               :type   :pooled})
+
+                                    (variance {:data   football-players
+                                               :size-1 (- (count football-players) 1)
+                                               :mean   (mean football-players)
+                                               :type   :pooled})]
                   :size            [(count ballet-dancers) (count football-players)]
                   :type            :equal-variance})
 
@@ -45,7 +53,12 @@
 
 (deftest two-sample-t-test-unequal-variance
   (is (= (t-test {:mean            [(mean ballet-dancers) (mean football-players)]
-                  :sample-variance [(variance {:data ballet-dancers :type :sample}) (variance {:data football-players :type :sample})]
+                  :sample-variance [(variance {:data ballet-dancers
+                                               :mean (mean ballet-dancers)
+                                               :type :sample})
+                                    (variance {:data football-players
+                                               :mean (mean football-players)
+                                               :type :sample})]
                   :size            [(count ballet-dancers) (count football-players)]
                   :type            :welch})
 
@@ -75,7 +88,14 @@
 
 (deftest two-sample-confidence-interval-test
   (is (= (confidence-interval {:mean         [(mean ballet-dancers) (mean football-players)]
-                               :variance     [(variance {:data ballet-dancers :type :pooled}) (variance {:data football-players :type :pooled})]
+                               :variance     [(variance {:data   ballet-dancers
+                                                         :mean   (mean ballet-dancers)
+                                                         :size-1 (- (count ballet-dancers) 1)
+                                                         :type   :pooled})
+                                              (variance {:data   football-players
+                                                         :mean   (mean football-players)
+                                                         :size-1 (- (count football-players) 1)
+                                                         :type   :pooled})]
                                :size         [(count ballet-dancers) (count football-players)]
                                :critical-val 2.1009
                                :type         :two-sample})
@@ -90,10 +110,12 @@
 
 
 (deftest two-sample-repeated-measure-test
-  (is (= (t-test {:difference-mean    (mean (difference {:s1 after :s2 before}))
+  (is (= (t-test {:difference-mean    (mean (difference {:sample-one after :sample-two before}))
                   :population-mean    [0 0]                 ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
-                  :standard-deviation (standard-deviation {:data (difference {:s1 after :s2 before})
-                                                           :mean (mean (difference {:s1 after :s2 before}))
+                  :standard-deviation (standard-deviation {:data (difference {:sample-one after
+                                                                              :sample-two before})
+                                                           :mean (mean (difference {:sample-one after
+                                                                                    :sample-two before}))
                                                            :type :sample})
                   :size               (/ (+ (count after) (count before)) 2)
                   :type               :repeated-measure})
@@ -147,7 +169,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def dataset "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/adult/adult.data")
+(def dataset "/Users/gra11/IdeaProjects/cml/resources/datasets/adult/adult.data")
 
 (data-frame {:column-names [:age :department :salary
                             :degree :study-time :marital-status

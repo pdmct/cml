@@ -4,7 +4,7 @@
 
 (defn mean-1 [x] (double (/ (reduce + x) (dec (count x)))))
 
-(defn difference [{:keys [s1 s2]}] (map - s1 s2))
+(defn difference [{:keys [sample-one sample-two]}] (map - sample-one sample-two))
 
 (defmulti standard-deviation (fn [type] (:type type)))
 
@@ -20,22 +20,21 @@
 (defmulti variance (fn [type] (:type type)))
 
 (defmethod variance :population [type]
-  (let [m (mean (:data type))]
-    (/ (reduce + (map (fn [x] (* (- x m) (- x m)))
+  (/ (reduce + (map (fn [x] (* (- x (:mean type)) (- x (:mean type))))
                     (:data type)))
-       (count (:data type)))))
+     (count (:data type))))
 
 
 (defmethod variance :sample [type]
-  (let [m (mean (:data type))]
-    (/ (reduce + (map (fn [x] (* (- x m) (- x m)))
+  (/ (reduce + (map (fn [x] (* (- x (:mean type)) (- x (:mean type))))
                     (:data type)))
-       (dec (count (:data type))))))
+     (dec (count (:data type)))))
 
 
 (defmethod variance :pooled [type]
-  (let [c (- (count (:data type)) 1)]
-    (/ (* c (variance {:data (:data type) :type :sample})) c)))
+  (/ (* (:size-1 type)
+        (variance {:data (:data type) :mean (:mean type) :type :sample}))
+     (:size-1 type)))
 
 
 (defn permutations
