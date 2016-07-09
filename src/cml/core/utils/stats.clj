@@ -1,8 +1,12 @@
-(ns cml.core.utils.stats)
+(ns cml.core.utils.stats
+  (:require [clojure.core.reducers :as r]))
 
 ;TODO test the variance functions
 
-(defn mean [x] (double (/ (reduce + x) (count x))))
+(defn mean
+  [dataset] (double (/ (reduce + dataset) (count dataset))))
+
+
 
 (defn mean-1 [x] (double (/ (reduce + x) (dec (count x)))))
 
