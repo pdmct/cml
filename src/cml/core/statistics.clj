@@ -1,30 +1,20 @@
-(ns cml.core.utils.stats
-  (:require [clojure.core.reducers :as r]))
+(ns cml.core.utils.statistics)
 
-;TODO test the variance functions
-
-(defn mean
-  [dataset] (double (/ (reduce + dataset) (count dataset))))
-
-
+(defn mean [dataset] (double (/ (reduce + dataset) (count dataset))))
 
 (defn mean-1 [x] (double (/ (reduce + x) (dec (count x)))))
 
 (defn difference [{:keys [s1 s2]}] (map - s1 s2))
 
-(defn coefficient-determination [rho] (* rho rho))
-
 (defmulti standard-deviation (fn [type] (:type type)))
 
 (defmethod standard-deviation :population [type]
-  (let [m (mean (:data type))]
-    (Math/sqrt (mean (map (fn [x] (* (- m x) (- m x)))
-                          (:data type))))))
+  (Math/sqrt (mean (map (fn [x] (* (- (:mean type) x) (- (:mean type) x)))
+                        (:data type)))))
 
 
 (defmethod standard-deviation :sample [type]
-  (let [m (mean (:data type))]
-    (Math/sqrt (mean-1 (map (fn [x] (* (- m x) (- m x))) (:data type))))))
+  (Math/sqrt (mean-1 (map (fn [x] (* (- (:mean type) x) (- (:mean type) x))) (:data type)))))
 
 
 (defmulti variance (fn [type] (:type type)))

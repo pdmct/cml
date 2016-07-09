@@ -1,10 +1,8 @@
 (ns cml.core-test
   (:require [clojure.test :refer :all]
-            [cml.core.correlation :refer :all]
-            [cml.core.utils.stats :refer :all]
+            [cml.core.utils.statistics :refer :all]
             [cml.core.inference.estimation.confidence :refer :all]
             [cml.core.inference.hypothesis.critical-value :refer :all]
-            [cml.core.sample :refer :all]
             [cml.core.utils.samples :refer :all]
             [cml.core.inference.hypothesis.test :refer :all]
             [cml.core.dataset :refer :all]
@@ -13,25 +11,9 @@
             [cml.core.utils :refer :all]))
 
 
-(def sample {:x-axis (deviation-score mean [490 500 530 550 580 590 600 600 650 700])
-             :y-axis (deviation-score mean [560 500 510 600 600 620 550 630 650 750])})
-
-
-(deftest pearson-correlation-test
-  (is (= (pearson-correlation sample) 0.8702620996632292)))
-
-
-(deftest sig-pearson-correlation-test
-  (is (= (significance (pearson-correlation sample) 8))))
-
-
-(deftest coefficient-determination-pearson-test
-  (is (= (coefficient-determination (pearson-correlation sample)) 0.7573561221102523)))
-
-
 (deftest one-sample-t-test-test
   (is (= (t-test {:mean               (mean population-one)
-                  :standard-deviation (standard-deviation {:data population-one :type :sample})
+                  :standard-deviation (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
                   :hypo-mean          400
                   :size               (count population-one)
                   :type               :one-sample})
@@ -77,7 +59,7 @@
 
 (deftest one-sample-conf-inter-test
   (is (= (confidence-interval {:mean               (mean population-one)
-                               :standard-deviation (standard-deviation {:data population-one :type :sample})
+                               :standard-deviation (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
                                :size               (count population-one)
                                :critical-val       1.8331
                                :type               :one-sample})
@@ -110,7 +92,9 @@
 (deftest two-sample-repeated-measure-test
   (is (= (t-test {:difference-mean    (mean (difference {:s1 after :s2 before}))
                   :population-mean    [0 0]                 ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
-                  :standard-deviation (standard-deviation {:data (difference {:s1 after :s2 before}) :type :sample})
+                  :standard-deviation (standard-deviation {:data (difference {:s1 after :s2 before})
+                                                           :mean (mean (difference {:s1 after :s2 before}))
+                                                           :type :sample})
                   :size               (/ (+ (count after) (count before)) 2)
                   :type               :repeated-measure})
 
@@ -126,7 +110,7 @@
 
 (deftest one-tail-test-test
   (is (= (one-tail (t-test {:mean               (mean population-one)
-                            :standard-deviation (standard-deviation {:data population-one :type :sample})
+                            :standard-deviation (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
                             :hypo-mean          400
                             :size               (count population-one)
                             :type               :one-sample
@@ -144,7 +128,7 @@
 
 (deftest two-tail-test-test
   (is (= (two-tail (t-test {:mean               (mean population-one)
-                            :standard-deviation (standard-deviation {:data population-one :type :sample})
+                            :standard-deviation (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
                             :hypo-mean          400
                             :size               (count population-one)
                             :type               :one-sample
@@ -163,15 +147,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def dataset "/Users/gra11/IdeaProjects/cml/resources/datasets/adult/adult.data")
-(def dataset_null "/Users/gra11/IdeaProjects/cml/resources/datasets/adult/adult_with_null.data")
+(def dataset "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/adult/adult.data")
 
 (data-frame {:column-names [:age :department :salary
                             :degree :study-time :marital-status
                             :job :family-status :race
                             :gender :n1 :n2 :n3 :country :salary-range]
              :delimiter    ","
-             :file-path    dataset_null
+             :file-path    dataset
              :type         :csv/read
              :return '()})
 
