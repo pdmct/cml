@@ -1,6 +1,5 @@
-(ns cml.core.inference.hypothesis.test)
+(ns cml.core.inference.hypothesis)
 (use 'clojure.core.matrix)
-
 
 
 (def t-table
@@ -206,8 +205,59 @@
            [1.6525 1.9719 2.3451 2.6007 2.8385 3.1315 3.3398]]))
 
 
+(defmulti hypothesis :TTest)
 
-(defn one-tail [type]
+(defn one-tail [{:keys [dof alpha mean]}] {:TTest :OneTail
+                                           :dof dof
+                                           :alpha alpha
+                                           :mean mean})
+
+(defn two-tail [{:keys [dof alpha mean]}] {:TTest :TwoTail
+                                           :dof dof
+                                           :alpha alpha
+                                           :mean mean
+                                           })
+
+(defmethod hypothesis :OneTail [type]
+  (assoc type
+    :critical-value (mget t-table
+                          (dec (:dof type))
+                          ({0.05   0
+                            0.025  1
+                            0.01   2
+                            0.005  3
+                            0.0025 4
+                            0.001  5
+                            0.0005 6} (:alpha type)))))
+
+(defmethod hypothesis :TwoTail [type]
+  (assoc type
+    :critical-value (mget t-table
+                          (dec (:dof type))
+                          ({0.1   0
+                            0.05  1
+                            0.02  2
+                            0.01  3
+                            0.005 4
+                            0.002 5
+                            0.001 6} (:alpha type)))))
+
+(defmethod hypothesis :default [type] :map-empty)
+
+(hypothesis (one-tail {:dof 9 :alpha 0.05}))
+(hypothesis (two-tail
+              {:mean 579.0,
+               :standard-deviation 65.05553183413554,
+               :hypo-mean 400,
+               :size 10,
+               :type :one-sample,
+               :alpha 0.05,
+               :t-statistic 8.700992601418207,
+               :dof 9}))
+
+
+
+#_(defn one-tail [type]
   (assoc type
     :critical-value (mget t-table
                           (dec (:dof type))
@@ -221,7 +271,7 @@
 
 
 
-(defn two-tail [type]
+#_(defn two-tail [type]
   (assoc type
     :critical-value (mget t-table
                           (dec (:dof type))
@@ -232,3 +282,5 @@
                             0.005 4
                             0.002 5
                             0.001 6} (:alpha type)))))
+
+
