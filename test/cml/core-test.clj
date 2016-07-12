@@ -2,9 +2,9 @@
   (:require [clojure.test :refer :all]
             [cml.core.utils.statistics :refer :all]
             [cml.core.inference.estimation.confidence :refer :all]
-            [cml.core.inference.hypothesis.critical-value :refer :all]
+            [cml.core.inference.hypothesis.t-test :refer :all]
             [cml.core.utils.samples :refer :all]
-            [cml.core.inference.hypothesis :refer :all]
+            [cml.core.inference.tables :refer :all]
             [cml.core.dataset :refer :all]
             [cml.core.file :refer :all]
             [cml.core.extract :refer :all]
@@ -130,7 +130,7 @@
           :dof                9})))
 
 
-#_(deftest one-tail-test-test
+(deftest one-tail-test-test
   (is (= (one-tail (t-test {:mean               (mean population-one)
                             :standard-deviation (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
                             :hypo-mean          400
@@ -148,7 +148,7 @@
           :critical-value     1.8331})))
 
 
-#_(deftest two-tail-test-test
+(deftest two-tail-test-test
   (is (= (two-tail (t-test {:mean               (mean population-one)
                             :standard-deviation (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
                             :hypo-mean          400
