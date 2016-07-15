@@ -3,12 +3,29 @@
 (use 'clojure.core.matrix)
 
 ;TODO Have functions comply with dataframes
-(defmulti t-test (fn [type] (:type type)))
 
 (defmulti hypothesis :TTest)
 
-(defn one-sample [])
-(defmethod hypothesis :OneSample [])                        ;TODO finish abstraction refactor
+(defn one-sample [mean standard-deviation hypo-mean size]
+  {:mean               mean
+   :standard-deviation standard-deviation
+   :hypo-mean          hypo-mean
+   :size               size
+   :TTest :OneSample})
+
+
+(defmethod hypothesis :OneSample [type]
+  (assoc type
+    :t-statistic (/ (- (:mean type)
+                       (:hypo-mean type))
+                    (/ (:standard-deviation type)
+                       (Math/sqrt (:size type))))
+    :dof (dec (:size type))))
+
+
+(defmethod hypothesis :EqualVariance [])
+
+(defmulti t-test (fn [type] (:type type)))
 
 (defmethod t-test :one-sample [type]
   (assoc type
@@ -77,56 +94,41 @@
     :dof (- (:size type) 1)))
 
 
-(defmulti critical-value :SignificanceTest)
+(defmulti critical-values :SignificanceTest)                ;TODO make critical value a function instead of a meltimethod
 
-(defn one-tail-test [{:keys [dof alpha]}]                   ;change to one-tail
-  {:SignificanceTest :OneTail
-   :dof dof
-   :alpha alpha})
+(defn one-tail-test [dof] {:SignificanceTest :OneTail :dof dof})
 
-(defn two-tail-test [{:keys [dof alpha]}]                   ;change to two-tail
-  {:SignificanceTest :TwoTail
-   :dof dof
-   :alpha alpha})
+(defn two-tail-test [dof] {:SignificanceTest :TwoTail :dof dof})
 
-(defmethod critical-value :OneTail [type]
-  (mget t-table
-        (dec (:dof type))
-        ({0.05   0
-          0.025  1
-          0.01   2
-          0.005  3
-          0.0025 4
-          0.001  5
-          0.0005 6} (:alpha type))))
+(defmethod critical-values :OneTail [type]
+  (assoc type
+    :critical-values
+    (zipmap
+      [:0.05 :0.025 :0.01 :0.005 :0.0025 :0.001 :0.0005]
+      (map (fn [x] (mget t-table (dec 9) x)) [0 1 2 3 4 5 6]))))
 
-(defmethod critical-value :TwoTail [type]
-  (mget t-table
-        (dec (:dof type))
-        ({0.1   0
-          0.05  1
-          0.02  2
-          0.01  3
-          0.005 4
-          0.002 5
-          0.001 6} (:alpha type))))
+(critical-values (one-tail-test 9))
 
-;(critical-value (one-tail-test {:SignificanceTest :OneTail :dof 9 :alpha 0.05}))
-;(critical-value (two-tail-test {:SignificanceTest :OneTail :dof 9 :alpha 0.05}))
-
+(defmethod critical-values :TwoTail [type]
+  (assoc type
+    :critical-value
+    (mget t-table
+          (dec (:dof type))
+          ({0.1   0
+            0.05  1
+            0.02  2
+            0.01  3
+            0.005 4
+            0.002 5
+            0.001 6} (:alpha type)))))
 
 
 (defn one-tail [type]
   (assoc type
     :critical-value (mget t-table
                           (dec (:dof type))
-                          ({0.05   0
-                            0.025  1
-                            0.01   2
-                            0.005  3
-                            0.0025 4
-                            0.001  5
-                            0.0005 6} (:alpha type)))))
+                          ({0.05 0 0.025 1 0.01 2 0.005 3 0.0025 4 0.001 5 0.0005 6}
+                            (:alpha type)))))
 
 
 
@@ -134,11 +136,6 @@
   (assoc type
     :critical-value (mget t-table
                           (dec (:dof type))
-                          ({0.1   0
-                            0.05  1
-                            0.02  2
-                            0.01  3
-                            0.005 4
-                            0.002 5
-                            0.001 6} (:alpha type)))))
+                          ({0.1 0 0.05 1 0.02 2 0.01 3 0.005 4 0.002 5 0.001 6}
+                            (:alpha type)))))
 
