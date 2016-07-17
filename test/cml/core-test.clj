@@ -23,9 +23,14 @@
           :standard-deviation 65.05553183413554,
           :hypothetical-mean 400,
           :size 10,
+          :TTest :OneSample,
           :t-statistic 8.700992601418207,
           :dof 9,
-          :TTest :OneSample})))
+          :Type #cml.core.inference.t_test.TTest{:test {:mean 579.0,
+                                                        :standard-deviation 65.05553183413554,
+                                                        :hypothetical-mean 400,
+                                                        :size 10,
+                                                        :TTest :OneSample}}})))
 
 
 (deftest two-sample-t-test-equal-variance
@@ -47,9 +52,14 @@
           :population-mean [0 0],
           :pooled-variance [32.382777777777775 31.181000000000015],
           :size [10 10],
+          :TTest :EqualVariance,
           :t-statistic 1.094722972460392,
           :dof 18,
-          :TTest :EqualVariance})))
+          :Type #cml.core.inference.t_test.TTest{:test {:sample-mean [87.94999999999999 85.19],
+                                                        :population-mean [0 0],
+                                                        :pooled-variance [32.382777777777775 31.181000000000015],
+                                                        :size [10 10],
+                                                        :TTest :EqualVariance}}})))
 
 (deftest two-sample-t-test-unequal-variance
   (is (= (welch (TTest. (welch-t-test
@@ -65,9 +75,13 @@
          {:mean [87.94999999999999 85.19],
           :sample-variance [32.382777777777775 31.181000000000015],
           :size [10 10],
+          :TTest :Welch,
           :t-statistic 1.0947229724603922,
           :dof 17.993567997176537,
-          :TTest :Welch})))
+          :Type #cml.core.inference.t_test.TTest{:test {:mean [87.94999999999999 85.19],
+                                                        :sample-variance [32.382777777777775 31.181000000000015],
+                                                        :size [10 10],
+                                                        :TTest :Welch}}})))
 
 
 (deftest two-sample-repeated-measure-test
@@ -86,9 +100,14 @@
           :population-mean [0 0],
           :standard-deviation 13.90443574307614,
           :size 10,
+          :TTest :RepeatedMeasure,
           :t-statistic -2.5017235438103813,
           :dof 9,
-          :TTest :RepeatedMeasure})))
+          :Type #cml.core.inference.t_test.TTest{:test {:difference-mean -11.0,
+                                                        :population-mean [0 0],
+                                                        :standard-deviation 13.90443574307614,
+                                                        :size 10,
+                                                        :TTest :RepeatedMeasure}}})))
 
 
 (deftest one-sample-conf-inter-test
