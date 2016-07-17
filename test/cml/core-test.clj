@@ -8,19 +8,20 @@
             [cml.core.file :refer :all]
             [cml.core.extract :refer :all]
             [cml.core.utils :refer :all]
-            [cml.core.inference.t-test :refer [one-sample equal-variance welch repeated-measure]])
+            [cml.core.inference.t-test :refer [one-sample equal-variance welch repeated-measure one-sample-t-test equal-variance-t-test welch-t-test repeated-measure-t-test]])
   (:import [cml.core.inference.t_test TTest]))
 
 
 (deftest one-sample-t-test-test
-  (is (= (one-sample (TTest. {:mean (mean population-one)
-                              :standard-deviation (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
-                              :hypo-mean 400
-                              :size (count population-one)}))
+  (is (= (one-sample (TTest.
+                       (one-sample-t-test (mean population-one)
+                                          (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
+                                          400
+                                          (count population-one))))
 
          {:mean 579.0,
           :standard-deviation 65.05553183413554,
-          :hypo-mean 400,
+          :hypothetical-mean 400,
           :size 10,
           :t-statistic 8.700992601418207,
           :dof 9,
@@ -28,18 +29,19 @@
 
 
 (deftest two-sample-t-test-equal-variance
-  (is (= (equal-variance (TTest. {:sample-mean     [(mean ballet-dancers) (mean football-players)]
-                                  :population-mean [0 0]
-                                  :pooled-variance [(variance {:data   ballet-dancers
-                                                               :size-1 (- (count ballet-dancers) 1)
-                                                               :mean   (mean ballet-dancers)
-                                                               :type   :pooled})
+  (is (= (equal-variance (TTest. (equal-variance-t-test
+                                    [(mean ballet-dancers) (mean football-players)]
+                                    [0 0]
+                                    [(variance {:data   ballet-dancers
+                                                :size-1 (- (count ballet-dancers) 1)
+                                                :mean   (mean ballet-dancers)
+                                                :type   :pooled})
 
-                                                    (variance {:data   football-players
-                                                               :size-1 (- (count football-players) 1)
-                                                               :mean   (mean football-players)
-                                                               :type   :pooled})]
-                                  :size            [(count ballet-dancers) (count football-players)]}))
+                                     (variance {:data   football-players
+                                                :size-1 (- (count football-players) 1)
+                                                :mean   (mean football-players)
+                                                :type   :pooled})]
+                                    [(count ballet-dancers) (count football-players)])))
 
          {:sample-mean [87.94999999999999 85.19],
           :population-mean [0 0],
@@ -50,14 +52,15 @@
           :TTest :EqualVariance})))
 
 (deftest two-sample-t-test-unequal-variance
-  (is (= (welch (TTest.{:mean            [(mean ballet-dancers) (mean football-players)]
-                        :sample-variance [(variance {:data ballet-dancers
-                                                     :mean (mean ballet-dancers)
-                                                     :type :sample})
-                                          (variance {:data football-players
-                                                     :mean (mean football-players)
-                                                     :type :sample})]
-                        :size            [(count ballet-dancers) (count football-players)]}))
+  (is (= (welch (TTest. (welch-t-test
+                           [(mean ballet-dancers) (mean football-players)]
+                           [(variance {:data ballet-dancers
+                                       :mean (mean ballet-dancers)
+                                       :type :sample})
+                            (variance {:data football-players
+                                       :mean (mean football-players)
+                                       :type :sample})]
+                           [(count ballet-dancers) (count football-players)])))
 
          {:mean [87.94999999999999 85.19],
           :sample-variance [32.382777777777775 31.181000000000015],
@@ -68,14 +71,15 @@
 
 
 (deftest two-sample-repeated-measure-test
-  (is (= (repeated-measure (TTest. {:difference-mean    (mean (difference {:sample-one after :sample-two before}))
-                                    :population-mean    [0 0]                 ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
-                                    :standard-deviation (standard-deviation {:data (difference {:sample-one after
-                                                                                                :sample-two before})
-                                                                             :mean (mean (difference {:sample-one after
-                                                                                                      :sample-two before}))
-                                                                             :type :sample})
-                                    :size               (/ (+ (count after) (count before)) 2)}))
+  (is (= (repeated-measure (TTest. (repeated-measure-t-test
+                                      (mean (difference {:sample-one after :sample-two before}))
+                                      [0 0] ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
+                                      (standard-deviation {:data (difference {:sample-one after
+                                                                              :sample-two before})
+                                                           :mean (mean (difference {:sample-one after
+                                                                                    :sample-two before}))
+                                                           :type :sample})
+                                      (/ (+ (count after) (count before)) 2))))
 
 
          {:difference-mean -11.0,
@@ -86,14 +90,6 @@
           :dof 9,
           :TTest :RepeatedMeasure})))
 
-(repeated-measure (TTest. {:difference-mean    (mean (difference {:sample-one after :sample-two before}))
-                           :population-mean    [0 0]                 ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
-                           :standard-deviation (standard-deviation {:data (difference {:sample-one after
-                                                                                       :sample-two before})
-                                                                    :mean (mean (difference {:sample-one after
-                                                                                             :sample-two before}))
-                                                                    :type :sample})
-                           :size               (/ (+ (count after) (count before)) 2)}))
 
 (deftest one-sample-conf-inter-test
   (is (= (confidence-interval {:mean               (mean population-one)

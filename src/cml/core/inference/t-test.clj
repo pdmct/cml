@@ -11,17 +11,43 @@
   (welch [welch] "Welsch's t-test")
   (repeated-measure [rm] "Repeated measure t-test"))
 
+(defn one-sample-t-test [mean standard-deviation hypothetical-mean size]
+  {:mean mean
+   :standard-deviation standard-deviation
+   :hypothetical-mean hypothetical-mean
+   :size size
+   :TTest :OneSample})
+
+(defn equal-variance-t-test [sample-mean population-mean pooled-variance size]
+  {:sample-mean sample-mean
+   :population-mean population-mean
+   :pooled-variance pooled-variance
+   :size size
+   :TTest :EqualVariance})
+
+(defn welch-t-test [mean sample-variance size]
+  {:mean mean
+   :sample-variance sample-variance
+   :size size
+   :TTest :Welch})
+
+(defn repeated-measure-t-test [difference-mean population-mean standard-deviation size]
+  {:difference-mean difference-mean
+   :population-mean population-mean
+   :standard-deviation standard-deviation
+   :size size
+   :TTest :RepeatedMeasure})
+
 (defrecord TTest [type]
   Test
   (one-sample [this]
     (assoc type
       :t-statistic (/ (- (:mean type)
-                         (:hypo-mean type))
+                         (:hypothetical-mean type))
                       (/ (:standard-deviation type)
                          (Math/sqrt (:size type))))
 
-      :dof (dec (:size type))
-      :TTest :OneSample))
+      :dof (dec (:size type))))
 
   (equal-variance [this]
     (assoc type
@@ -37,8 +63,7 @@
                                        (/ 1
                                           ((:size type) 1))))))
       :dof (- (+ ((:size type) 0)
-                 ((:size type) 1)) 2)
-      :TTest :EqualVariance))
+                 ((:size type) 1)) 2)))
 
   (welch [this]
     (assoc type
@@ -67,8 +92,7 @@
                        (/ ((:sample-variance type) 1)
                           ((:size type) 1)))
                     (- ((:size type) 1)
-                       1))))
-      :TTest :Welch))
+                       1))))))
 
   (repeated-measure [this]
     (assoc type
@@ -77,8 +101,7 @@
                             ((:population-mean type) 1)))
                       (/ (:standard-deviation type)
                          (Math/sqrt (:size type))))
-      :dof (- (:size type) 1)
-      :TTest :RepeatedMeasure)))
+      :dof (- (:size type) 1))))
 
 
 (defmulti critical-value :SignificanceTest)
