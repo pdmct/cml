@@ -38,70 +38,74 @@
    :size size
    :TTest :RepeatedMeasure})
 
-(defrecord TTest [type]
+(defrecord TTest [test]
   Test
   (one-sample [this]
-    (assoc type
-      :t-statistic (/ (- (:mean type)
-                         (:hypothetical-mean type))
-                      (/ (:standard-deviation type)
-                         (Math/sqrt (:size type))))
+    (assoc test
+      :t-statistic (/ (- (:mean test)
+                         (:hypothetical-mean test))
+                      (/ (:standard-deviation test)
+                         (Math/sqrt (:size test))))
 
-      :dof (dec (:size type))))
+      :dof (dec (:size test))
+      :Type this))
 
   (equal-variance [this]
-    (assoc type
-      :t-statistic (/ (- (- ((:sample-mean type) 0)
-                            ((:sample-mean type) 1))
-                         (- ((:population-mean type) 0)
-                            ((:population-mean type) 1)))
-                      (Math/sqrt (* (/ (+ ((:pooled-variance type) 0)
-                                          ((:pooled-variance type) 1))
+    (assoc test
+      :t-statistic (/ (- (- ((:sample-mean test) 0)
+                            ((:sample-mean test) 1))
+                         (- ((:population-mean test) 0)
+                            ((:population-mean test) 1)))
+                      (Math/sqrt (* (/ (+ ((:pooled-variance test) 0)
+                                          ((:pooled-variance test) 1))
                                        2)
                                     (+ (/ 1
-                                          ((:size type) 0))
+                                          ((:size test) 0))
                                        (/ 1
-                                          ((:size type) 1))))))
-      :dof (- (+ ((:size type) 0)
-                 ((:size type) 1)) 2)))
+                                          ((:size test) 1))))))
+      :dof (- (+ ((:size test) 0)
+                 ((:size test) 1)) 2)
+      :Type this))
 
   (welch [this]
-    (assoc type
-      :t-statistic (/ (- ((:mean type) 0)
-                         ((:mean type) 1))
-                      (Math/sqrt (+ (/ ((:sample-variance type) 0)
-                                       ((:size type) 0))
-                                    (/ ((:sample-variance type) 1)
-                                       ((:size type) 1)))))
-      :dof (/ (* (+ (/ ((:sample-variance type) 0)
-                       ((:size type) 0))
-                    (/ ((:sample-variance type) 1)
-                       ((:size type) 1)))
-                 (+ (/ ((:sample-variance type) 0)
-                       ((:size type) 0))
-                    (/ ((:sample-variance type) 1)
-                       ((:size type) 1))))
-              (+ (/ (* (/ ((:sample-variance type) 0)
-                          ((:size type) 0))
-                       (/ ((:sample-variance type) 0)
-                          ((:size type) 0)))
-                    (- ((:size type) 0)
+    (assoc test
+      :t-statistic (/ (- ((:mean test) 0)
+                         ((:mean test) 1))
+                      (Math/sqrt (+ (/ ((:sample-variance test) 0)
+                                       ((:size test) 0))
+                                    (/ ((:sample-variance test) 1)
+                                       ((:size test) 1)))))
+      :dof (/ (* (+ (/ ((:sample-variance test) 0)
+                       ((:size test) 0))
+                    (/ ((:sample-variance test) 1)
+                       ((:size test) 1)))
+                 (+ (/ ((:sample-variance test) 0)
+                       ((:size test) 0))
+                    (/ ((:sample-variance test) 1)
+                       ((:size test) 1))))
+              (+ (/ (* (/ ((:sample-variance test) 0)
+                          ((:size test) 0))
+                       (/ ((:sample-variance test) 0)
+                          ((:size test) 0)))
+                    (- ((:size test) 0)
                        1))
-                 (/ (* (/ ((:sample-variance type) 1)
-                          ((:size type) 1))
-                       (/ ((:sample-variance type) 1)
-                          ((:size type) 1)))
-                    (- ((:size type) 1)
-                       1))))))
+                 (/ (* (/ ((:sample-variance test) 1)
+                          ((:size test) 1))
+                       (/ ((:sample-variance test) 1)
+                          ((:size test) 1)))
+                    (- ((:size test) 1)
+                       1))))
+      :Type this))
 
   (repeated-measure [this]
-    (assoc type
-      :t-statistic (/ (- (:difference-mean type)
-                         (- ((:population-mean type) 0)
-                            ((:population-mean type) 1)))
-                      (/ (:standard-deviation type)
-                         (Math/sqrt (:size type))))
-      :dof (- (:size type) 1))))
+    (assoc test
+      :t-statistic (/ (- (:difference-mean test)
+                         (- ((:population-mean test) 0)
+                            ((:population-mean test) 1)))
+                      (/ (:standard-deviation test)
+                         (Math/sqrt (:size test))))
+      :dof (- (:size test) 1)
+      :Type this)))
 
 
 (defmulti critical-value :SignificanceTest)
