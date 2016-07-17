@@ -2,6 +2,8 @@
 
 ;TODO Have functions comply with dataframes
 
+;TODO change from multi method to protocols
+
 (defmulti confidence-interval (fn [type] (:type type)))
 
 (defmethod confidence-interval :one-sample [type]
