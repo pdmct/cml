@@ -9,7 +9,9 @@
   (one-sample [one] "One tail t-test")
   (equal-variance [two] "Two tail t-test")
   (welch [welch] "Welsch's t-test")
-  (repeated-measure [rm] "Repeated measure t-test"))
+  (repeated-measure [rm] "Repeated measure t-test")
+  (one-tail [ot] "One tail significance test")
+  (two-tail [tt] "Two tail significance test"))
 
 (defn one-sample-t-test [mean standard-deviation hypothetical-mean size]
   {:mean mean
@@ -40,7 +42,7 @@
 
 (defrecord TTest [test]
   Test
-  (one-sample [this]
+  (one-sample [type]
     (assoc test
       :t-statistic (/ (- (:mean test)
                          (:hypothetical-mean test))
@@ -48,9 +50,9 @@
                          (Math/sqrt (:size test))))
 
       :dof (dec (:size test))
-      :Type this))
+      :Type type))
 
-  (equal-variance [this]
+  (equal-variance [type]
     (assoc test
       :t-statistic (/ (- (- ((:sample-mean test) 0)
                             ((:sample-mean test) 1))
@@ -65,9 +67,9 @@
                                           ((:size test) 1))))))
       :dof (- (+ ((:size test) 0)
                  ((:size test) 1)) 2)
-      :Type this))
+      :Type type))
 
-  (welch [this]
+  (welch [type]
     (assoc test
       :t-statistic (/ (- ((:mean test) 0)
                          ((:mean test) 1))
@@ -95,9 +97,9 @@
                           ((:size test) 1)))
                     (- ((:size test) 1)
                        1))))
-      :Type this))
+      :Type type))
 
-  (repeated-measure [this]
+  (repeated-measure [type]
     (assoc test
       :t-statistic (/ (- (:difference-mean test)
                          (- ((:population-mean test) 0)
@@ -105,60 +107,34 @@
                       (/ (:standard-deviation test)
                          (Math/sqrt (:size test))))
       :dof (- (:size test) 1)
-      :Type this)))
+      :Type type)))
 
 
-(defmulti critical-value :SignificanceTest)
-
-(defn one-tail-test [dof alpha]
+(defn one-tail-significance-test [dof alpha]
   {:dof dof
    :alpha alpha
    :SignificanceTest :OneTail})
 
-(defn two-tail-test [dof alpha]
+
+(defn two-tail-significance-test [dof alpha]
   {:dof dof
    :alpha alpha
    :SignificanceTest :TwoTail})
 
-(defmethod critical-value :OneTail [type]
-  (assoc type
-    :critical-value (mget t-table (dec (:dof type))
-                          ({0.05 0 0.025 1 0.01 2 0.005 3 0.0025 4 0.001 5 0.0005 6}
-                            (:alpha type)))))
+(defrecord SignificanceTest [test]
+  Test
+  (one-tail [type]
+    (assoc test
+      :critical-value (mget t-table (dec (:dof test))
+                            ({0.05 0 0.025 1 0.01 2 0.005 3 0.0025 4 0.001 5 0.0005 6}
+                                             (:alpha test)))
+      :Type type))
 
-(critical-value (one-tail-test 9 0.05))
-
-(defmethod critical-value :TwoTail [type]
-  (assoc type
-    :critical-value (mget t-table (dec (:dof type))
-                          ({0.1 0 0.05 1 0.02 2 0.01 3 0.005 4 0.002 5 0.001 6}
-                            (:alpha type)))))
-
-(critical-value (two-tail-test 9 0.05))
-
-
-(defn one-tail [type]
-  (assoc type
-    :critical-value (mget t-table
-                          (dec (:dof type))
-                          ({0.05 0 0.025 1 0.01 2 0.005 3 0.0025 4 0.001 5 0.0005 6}
-                            (:alpha type)))))
-
-
-
-(defn two-tail [type]
-  (assoc type
-    :critical-value (mget t-table
-                          (dec (:dof type))
-                          ({0.1 0 0.05 1 0.02 2 0.01 3 0.005 4 0.002 5 0.001 6}
-                            (:alpha type)))))
-
-
-(def test-hierarchy (-> (make-hierarchy)
-                        (derive :TTest :Test)
-                        (derive :SignificanceTest :Test)))
-
-
-
+  (two-tail [type]
+    (assoc test
+      :critical-value (mget t-table (dec (:dof test))
+                            ({0.1 0 0.05 1 0.02 2 0.01 3 0.005 4 0.002 5 0.001 6}
+                              (:alpha test)))
+      :Type type)))
 
 

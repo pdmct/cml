@@ -8,8 +8,10 @@
             [cml.core.file :refer :all]
             [cml.core.extract :refer :all]
             [cml.core.utils :refer :all]
-            [cml.core.inference.t-test :refer [one-sample equal-variance welch repeated-measure one-sample-t-test equal-variance-t-test welch-t-test repeated-measure-t-test]])
-  (:import [cml.core.inference.t_test TTest]))
+            [cml.core.inference.t-test :refer [one-sample equal-variance welch repeated-measure one-sample-t-test equal-variance-t-test
+                                               welch-t-test repeated-measure-t-test one-tail-significance-test two-tail-significance-test
+                                               one-tail two-tail]])
+  (:import [cml.core.inference.t_test TTest SignificanceTest]))
 
 
 (deftest one-sample-t-test-test
@@ -148,6 +150,26 @@
           :upper        8.05675922207777,
           :lower        -2.536759222077789})))
 
+
+(deftest one-tail-significance-test-test
+  (is (= (one-tail (SignificanceTest. (one-tail-significance-test  9 0.05)))
+         {:dof 9,
+          :alpha 0.05,
+          :SignificanceTest :OneTail,
+          :critical-value 1.8331,
+          :Type #cml.core.inference.t_test.SignificanceTest{:test {:dof 9, :alpha 0.05, :SignificanceTest :OneTail}}})))
+
+
+
+(deftest two-tail-significance-test-test
+  (is (= (two-tail (SignificanceTest. (two-tail-significance-test  9 0.05)))
+         {:dof 9,
+          :alpha 0.05,
+          :SignificanceTest :TwoTail,
+          :critical-value 2.2621,
+          :Type #cml.core.inference.t_test.SignificanceTest{:test {:dof 9, :alpha 0.05, :SignificanceTest :TwoTail}}})))
+
+;WORKSPACE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def dataset "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/adult/adult.data")

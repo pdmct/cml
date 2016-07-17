@@ -5,7 +5,7 @@
 
 ;TODO Design how data frames will be composable with statistical functions
 ;TODO Implementparallel data frame
-
+;TODO change to protocols
 
 (defmulti data-frame (fn [type] (:type type)))
 
