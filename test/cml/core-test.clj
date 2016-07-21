@@ -1,17 +1,20 @@
 (ns cml.core-test
   (:require [clojure.test :refer :all]
             [cml.core.utils.statistics :refer [mean standard-deviation variance difference]]
-            [cml.core.inference.estimation.confidence :refer [confidence-interval]]
+            [cml.core.inference.estimate.confidence-interval :refer [confidence-interval]]
             [cml.core.utils.samples :refer :all]
             [cml.core.inference.tables :refer :all]
             [cml.core.dataset :refer :all]
             [cml.core.file :refer :all]
             [cml.core.extract :refer :all]
             [cml.core.utils :refer :all]
-            [cml.core.inference.t-test :refer [one-sample equal-variance welch repeated-measure one-sample-t-test equal-variance-t-test
-                                               welch-t-test repeated-measure-t-test one-tail-significance-test two-tail-significance-test
-                                               one-tail two-tail]])
-  (:import [cml.core.inference.t_test TTest SignificanceTest]))
+            [cml.core.inference.test.t-test :refer [one-sample equal-variance welch repeated-measure one-sample-t-test equal-variance-t-test
+                                                    welch-t-test repeated-measure-t-test one-tail-significance-test two-tail-significance-test
+                                                    one-tail two-tail]]
+            [cml.core.inference.estimate.confidence-interval :refer [one-sample-confidence-interval one-sample-confidence-interval-test
+                                                                     two-sample-confidence-interval two-sample-confidence-interval-test]])
+  (:import [cml.core.inference.test.t_test TTest SignificanceTest]
+           [cml.core.inference.estimate.confidence_interval ConfidenceInterval]))
 
 
 (deftest one-sample-t-test-test
@@ -21,18 +24,13 @@
                                           400
                                           (count population-one))))
 
-         {:mean 579.0,
-          :standard-deviation 65.05553183413554,
-          :hypothetical-mean 400,
-          :size 10,
-          :TTest :OneSample,
-          :t-statistic 8.700992601418207,
-          :dof 9,
-          :Type #cml.core.inference.t_test.TTest{:test {:mean 579.0,
-                                                        :standard-deviation 65.05553183413554,
-                                                        :hypothetical-mean 400,
-                                                        :size 10,
-                                                        :TTest :OneSample}}})))
+         #cml.core.inference.test.t_test.TTest{:ttest {:mean 579.0,
+                                                 :standard-deviation 65.05553183413554,
+                                                 :hypothetical-mean 400,
+                                                 :size 10,
+                                                 :Test :OneSample},
+                                          :t-statistic 8.700992601418207,
+                                          :dof 9})))
 
 
 (deftest two-sample-t-test-equal-variance
@@ -50,18 +48,13 @@
                                                 :type   :pooled})]
                                     [(count ballet-dancers) (count football-players)])))
 
-         {:sample-mean [87.94999999999999 85.19],
-          :population-mean [0 0],
-          :pooled-variance [32.382777777777775 31.181000000000015],
-          :size [10 10],
-          :TTest :EqualVariance,
-          :t-statistic 1.094722972460392,
-          :dof 18,
-          :Type #cml.core.inference.t_test.TTest{:test {:sample-mean [87.94999999999999 85.19],
-                                                        :population-mean [0 0],
-                                                        :pooled-variance [32.382777777777775 31.181000000000015],
-                                                        :size [10 10],
-                                                        :TTest :EqualVariance}}})))
+         #cml.core.inference.test.t_test.TTest{:ttest {:sample-mean [87.94999999999999 85.19],
+                                                 :population-mean [0 0],
+                                                 :pooled-variance [32.382777777777775 31.181000000000015],
+                                                 :size [10 10],
+                                                 :Test :EqualVariance},
+                                          :t-statistic 1.094722972460392,
+                                          :dof 18})))
 
 (deftest two-sample-t-test-unequal-variance
   (is (= (welch (TTest. (welch-t-test
@@ -74,16 +67,12 @@
                                        :type :sample})]
                            [(count ballet-dancers) (count football-players)])))
 
-         {:mean [87.94999999999999 85.19],
-          :sample-variance [32.382777777777775 31.181000000000015],
-          :size [10 10],
-          :TTest :Welch,
-          :t-statistic 1.0947229724603922,
-          :dof 17.993567997176537,
-          :Type #cml.core.inference.t_test.TTest{:test {:mean [87.94999999999999 85.19],
-                                                        :sample-variance [32.382777777777775 31.181000000000015],
-                                                        :size [10 10],
-                                                        :TTest :Welch}}})))
+         #cml.core.inference.test.t_test.TTest{:ttest {:mean [87.94999999999999 85.19],
+                                                 :sample-variance [32.382777777777775 31.181000000000015],
+                                                 :size [10 10],
+                                                 :Test :Welch},
+                                          :t-statistic 1.0947229724603922,
+                                          :dof 17.993567997176537})))
 
 
 (deftest two-sample-repeated-measure-test
@@ -98,76 +87,70 @@
                                       (/ (+ (count after) (count before)) 2))))
 
 
-         {:difference-mean -11.0,
-          :population-mean [0 0],
-          :standard-deviation 13.90443574307614,
-          :size 10,
-          :TTest :RepeatedMeasure,
-          :t-statistic -2.5017235438103813,
-          :dof 9,
-          :Type #cml.core.inference.t_test.TTest{:test {:difference-mean -11.0,
-                                                        :population-mean [0 0],
-                                                        :standard-deviation 13.90443574307614,
-                                                        :size 10,
-                                                        :TTest :RepeatedMeasure}}})))
+         #cml.core.inference.test.t_test.TTest{:ttest {:difference-mean -11.0,
+                                                 :population-mean [0 0],
+                                                 :standard-deviation 13.90443574307614,
+                                                 :size 10,
+                                                 :Test :RepeatedMeasure},
+                                          :t-statistic -2.5017235438103813,
+                                          :dof 9})))
 
 
 (deftest one-sample-conf-inter-test
-  (is (= (confidence-interval {:mean               (mean population-one)
-                               :standard-deviation (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
-                               :size               (count population-one)
-                               :critical-val       1.8331
-                               :type               :one-sample})
+  (is (= (one-sample-confidence-interval-test
+           (ConfidenceInterval.
+             (one-sample-confidence-interval
+               (mean population-one)
+               (standard-deviation {:data population-one :mean (mean population-one) :type :sample})
+               (count population-one)
+               1.8331)))
 
-         {:mean               579.0,
-          :standard-deviation 65.05553183413554,
-          :size               10,
-          :critical-val       1.8331,
-          :type               :one-sample,
-          :upper              616.7112031961178,
-          :lower              541.2887968038822})))
+         #cml.core.inference.estimate.confidence_interval.ConfidenceInterval{:confidence-interval {:mean 579.0,
+                                                                                                   :standard-deviation 65.05553183413554,
+                                                                                                   :size 10,
+                                                                                                   :critical-value 1.8331,
+                                                                                                   :Estimate :OneSample},
+                                                                             :upper 616.7112031961178,
+                                                                             :lower 541.2887968038822})))
 
 
-(deftest two-sample-confidence-interval-test
-  (is (= (confidence-interval {:mean         [(mean ballet-dancers) (mean football-players)]
-                               :variance     [(variance {:data   ballet-dancers
-                                                         :mean   (mean ballet-dancers)
-                                                         :size-1 (- (count ballet-dancers) 1)
-                                                         :type   :pooled})
-                                              (variance {:data   football-players
-                                                         :mean   (mean football-players)
-                                                         :size-1 (- (count football-players) 1)
-                                                         :type   :pooled})]
-                               :size         [(count ballet-dancers) (count football-players)]
-                               :critical-val 2.1009
-                               :type         :two-sample})
+(deftest two-sample-confidence-interval-test-test
+  (is (= (two-sample-confidence-interval-test
+           (ConfidenceInterval.
+             (two-sample-confidence-interval
+               [(mean ballet-dancers) (mean football-players)]
+               [(variance {:data   ballet-dancers
+                           :mean   (mean ballet-dancers)
+                           :size-1 (- (count ballet-dancers) 1)
+                           :type   :pooled})
+                (variance {:data   football-players
+                           :mean   (mean football-players)
+                           :size-1 (- (count football-players) 1)
+                           :type   :pooled})]
+               [(count ballet-dancers) (count football-players)]
+               2.1009)))
 
-         {:mean         [87.94999999999999 85.19],
-          :variance     [32.382777777777775 31.181000000000015],
-          :size         [10 10],
-          :critical-val 2.1009,
-          :type         :two-sample,
-          :upper        8.05675922207777,
-          :lower        -2.536759222077789})))
+         #cml.core.inference.estimate.confidence_interval.ConfidenceInterval{:confidence-interval {:mean [87.94999999999999
+                                                                                                          85.19],
+                                                                                                   :variance [32.382777777777775
+                                                                                                              31.181000000000015],
+                                                                                                   :size [10 10],
+                                                                                                   :critical-value 2.1009,
+                                                                                                   :Estimate :TwoSample},
+                                                                             :upper 8.05675922207777,
+                                                                             :lower -2.536759222077789})))
 
 
 (deftest one-tail-significance-test-test
   (is (= (one-tail (SignificanceTest. (one-tail-significance-test  9 0.05)))
-         {:dof 9,
-          :alpha 0.05,
-          :SignificanceTest :OneTail,
-          :critical-value 1.8331,
-          :Type #cml.core.inference.t_test.SignificanceTest{:test {:dof 9, :alpha 0.05, :SignificanceTest :OneTail}}})))
-
+         #cml.core.inference.test.t_test.SignificanceTest{:significance-test {:dof 9, :alpha 0.05, :Test :OneTail},
+                                                     :critical-value 1.8331})))
 
 
 (deftest two-tail-significance-test-test
   (is (= (two-tail (SignificanceTest. (two-tail-significance-test  9 0.05)))
-         {:dof 9,
-          :alpha 0.05,
-          :SignificanceTest :TwoTail,
-          :critical-value 2.2621,
-          :Type #cml.core.inference.t_test.SignificanceTest{:test {:dof 9, :alpha 0.05, :SignificanceTest :TwoTail}}})))
+         #cml.core.inference.test.t_test.SignificanceTest{:significance-test {:dof 9, :alpha 0.05, :Test :TwoTail},
+                                                     :critical-value 2.2621})))
 
 ;WORKSPACE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
