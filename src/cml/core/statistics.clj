@@ -1,20 +1,27 @@
 (ns cml.core.utils.statistics)
 
-(defn mean [dataset] (double (/ (reduce + dataset) (count dataset))))
+(defn mean [data] (double (/ (reduce + data) (count data))))
 
-(defn mean-1 [x] (double (/ (reduce + x) (dec (count x)))))
+(defn mean-1 [data] (double (/ (reduce + data) (dec (count data)))))
 
 (defn difference [{:keys [sample-one sample-two]}] (map - sample-one sample-two))
 
-(defmulti standard-deviation (fn [type] (:type type)))
 
-(defmethod standard-deviation :population [type]
-  (Math/sqrt (mean (map (fn [x] (* (- (:mean type) x) (- (:mean type) x)))
-                        (:data type)))))
+(defmulti variation :StandardDeviation)
 
+(defn population [mean data] {:mean mean :data data :StandardDeviation :Population})
 
-(defmethod standard-deviation :sample [type]
-  (Math/sqrt (mean-1 (map (fn [x] (* (- (:mean type) x) (- (:mean type) x))) (:data type)))))
+(defmethod variation :Population [data]
+  (Math/sqrt (mean (map (fn [x] (* (- (:mean data) x) (- (:mean data) x))) (:data data)))))
+
+(variation (population (mean [22 4 2 5 6]) [22 4 2 5 6]))
+
+(defn sample [mean data] {:mean mean :data data :StandardDeviation :Sample})
+
+(defmethod variation :Sample [data]
+  (Math/sqrt (mean-1 (map (fn [x] (* (- (:mean data) x) (- (:mean data) x))) (:data data)))))
+
+(variation (sample (mean [22 4 2 5 6]) [22 4 2 5 6]))
 
 
 (defmulti variance (fn [type] (:type type)))
