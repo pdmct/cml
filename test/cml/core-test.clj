@@ -186,16 +186,6 @@
           1.8331)))))
 
 ;TODO add a p-os-conf-seq which pmaps this fn accross a sequence of data sets and also uses a transducer?
-(defn p-os-conf [{:keys [data critical-value]}]
-  (pvalues
-    (one-sample-estimate
-      (ConfidenceInterval.
-        (one-sample-confidence-interval
-          (mean data)
-          (variation (sample (mean data) data))
-          (count data)
-          critical-value)))))
-
 
 (defn os-conf [{:keys [data critical-value]}]
   (one-sample-estimate
@@ -205,3 +195,7 @@
         (variation (sample (mean data) data))
         (count data)
         critical-value))))
+
+(defn p-os-conf [{:keys [data critical-value]}]
+  (pvalues (os-conf {:data data :critical-value critical-value})))
+
