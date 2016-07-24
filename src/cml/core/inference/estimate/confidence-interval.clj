@@ -5,8 +5,10 @@
 ;TODO have in out map
 
 (defprotocol Estimate
-  (one-sample-estimate [os] "One sample confidence interval estimation")
-  (two-sample-estimate [ts] "Two sample confidence interval estimation"))
+  (one-sample [os] "One sample confidence interval estimation")
+  (two-sample [ts] "Two sample confidence interval estimation"))
+
+;TODO change to multimethods
 
 (defn one-sample-confidence-interval [mean standard-deviation size critical-value]
   {:mean mean
@@ -27,7 +29,7 @@
 (defrecord ConfidenceInterval [confidence-interval]
   Estimate
 
-  (one-sample-estimate [type]
+  (one-sample [type]
     (assoc type
       :upper (+ (:mean confidence-interval)
                 (* (:critical-value confidence-interval)
@@ -37,7 +39,8 @@
                 (* (:critical-value confidence-interval)
                    (/ (:standard-deviation confidence-interval)
                       (Math/sqrt (:size confidence-interval)))))))
-  (two-sample-estimate [type]
+
+  (two-sample [type]
     (assoc type
       :upper (+ (- ((:mean confidence-interval) 0)
                    ((:mean confidence-interval) 1))
