@@ -1,5 +1,7 @@
 (ns cml.core.utils.statistics)
 
+;TODO START DOCUMENTING!!
+
 (defn mean [data] (double (/ (reduce + data) (count data))))
 
 (defn mean-1 [data] (double (/ (reduce + data) (dec (count data)))))
@@ -14,14 +16,11 @@
 (defmethod variation :Population [data]
   (Math/sqrt (mean (map (fn [x] (* (- (:mean data) x) (- (:mean data) x))) (:data data)))))
 
-(variation (population (mean [22 4 2 5 6]) [22 4 2 5 6]))
 
 (defn sample [mean data] {:mean mean :data data :StandardDeviation :Sample})
 
 (defmethod variation :Sample [data]
   (Math/sqrt (mean-1 (map (fn [x] (* (- (:mean data) x) (- (:mean data) x))) (:data data)))))
-
-(variation (sample (mean [22 4 2 5 6]) [22 4 2 5 6]))
 
 
 (defmulti variance (fn [type] (:type type)))

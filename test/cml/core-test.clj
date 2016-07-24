@@ -161,7 +161,7 @@
              :type         :csv/read
              :return '()})
 
-
+; 0.121288
 (data-frame {:column-names [:age :department :salary
                             :degree :study-time :marital-status
                             :job :family-status :race
@@ -172,4 +172,30 @@
              :xform        (comp clojure.string/upper-case
                                  #(clojure.string/replace % #" " ""))
              :return       []})
+
+;TODO piece together high level API as below stored in core ns
+
+(time
+  (pvalues
+    (one-sample-estimate
+      (ConfidenceInterval.
+        (one-sample-confidence-interval
+          (mean (range 1 1000000))
+          (variation (sample (mean (range 1 1000000)) (range 1 1000000)))
+          (count (range 1 1000000))
+          1.8331)))))
+
+;TODO add a p-os-conf-seq which pmaps this fn accross a sequence of data sets and also uses a transducer?
+
+(defn os-conf [{:keys [data critical-value]}]
+  (one-sample-estimate
+    (ConfidenceInterval.
+      (one-sample-confidence-interval
+        (mean data)
+        (variation (sample (mean data) data))
+        (count data)
+        critical-value))))
+
+(defn p-os-conf [{:keys [data critical-value]}]
+  (pvalues (os-conf {:data data :critical-value critical-value})))
 
