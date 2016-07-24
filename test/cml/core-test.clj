@@ -1,6 +1,6 @@
 (ns cml.core-test
   (:require [clojure.test :refer :all]
-            [cml.core.utils.statistics :refer [mean variance difference variation population sample]]
+            [cml.core.statistics.statistics :refer [mean variance difference sample-variation population-variation pooled-variation standard-deviation]]
             [cml.core.utils.samples :refer :all]
             [cml.core.inference.tables :refer :all]
             [cml.core.dataset :refer :all]
@@ -10,16 +10,21 @@
             [cml.core.inference.test.t-test :refer [one-sample-test equal-variance-test welch-test repeated-measure-test one-sample-t-test
                                                     equal-variance-t-test welch-t-test repeated-measure-t-test one-tail-significance-test
                                                     two-tail-significance-test one-tail-test two-tail-test]]
-            [cml.core.inference.estimate.confidence-interval :refer [one-sample-confidence-interval one-sample-estimate
-                                                                     two-sample-confidence-interval two-sample-estimate]])
+            [cml.core.inference.estimate.confidence-interval :refer [one-sample-confidence-interval one-sample
+                                                                     two-sample-confidence-interval two-sample]])
   (:import [cml.core.inference.test.t_test TTest SignificanceTest]
-           [cml.core.inference.estimate.confidence_interval ConfidenceInterval]))
+           [cml.core.inference.estimate.confidence_interval ConfidenceInterval])
+  (:import [cml.core.statistics.statistics  StandardDeviation Variance]))
 
 
 (deftest one-sample-t-test-test
   (is (= (one-sample-test (TTest.
                        (one-sample-t-test (mean population-one)
-                                          (variation (sample (mean population-one) population-one))
+                                          (:sample-standard-deviation
+                                            (sample-variation (StandardDeviation.
+                                                      (standard-deviation {:mean (mean population-one)
+                                                                           :data population-one
+                                                                           :Variation :Sample}))))
                                           400
                                           (count population-one))))
 
@@ -36,15 +41,22 @@
   (is (= (equal-variance-test (TTest. (equal-variance-t-test
                                     [(mean ballet-dancers) (mean football-players)]
                                     [0 0]
-                                    [(variance {:data   ballet-dancers
-                                                :size-1 (- (count ballet-dancers) 1)
-                                                :mean   (mean ballet-dancers)
-                                                :type   :pooled})
+                                    [(:pooled-variance
+                                       (pooled-variation
+                                         (Variance.
+                                           (variance {:mean      (mean ballet-dancers)
+                                                      :data      ballet-dancers
+                                                      :size-1    (- (count ballet-dancers) 1)
+                                                      :Variation :Pooled}))))
 
-                                     (variance {:data   football-players
-                                                :size-1 (- (count football-players) 1)
-                                                :mean   (mean football-players)
-                                                :type   :pooled})]
+                                     (:pooled-variance
+                                       (pooled-variation
+                                         (Variance.
+                                           (variance {:mean      (mean football-players)
+                                                      :data      football-players
+                                                      :size-1    (- (count football-players) 1)
+                                                      :Variation :Pooled}))))
+                                     ]
                                     [(count ballet-dancers) (count football-players)])))
 
          #cml.core.inference.test.t_test.TTest{:ttest {:sample-mean [87.94999999999999 85.19],
@@ -58,12 +70,20 @@
 (deftest two-sample-t-test-unequal-variance
   (is (= (welch-test (TTest. (welch-t-test
                            [(mean ballet-dancers) (mean football-players)]
-                           [(variance {:data ballet-dancers
-                                       :mean (mean ballet-dancers)
-                                       :type :sample})
-                            (variance {:data football-players
-                                       :mean (mean football-players)
-                                       :type :sample})]
+                           [
+                            (:sample-variance
+                              (sample-variation (Variance. (variance
+                                                             {:data ballet-dancers
+                                                              :mean (mean ballet-dancers)
+                                                              :Variation :Sample}))))
+
+
+                            (:sample-variance
+                              (sample-variation (Variance. (variance
+                                                             {:data football-players
+                                                              :mean (mean football-players)
+                                                              :Variation :Sample}))))
+                            ]
                            [(count ballet-dancers) (count football-players)])))
 
          #cml.core.inference.test.t_test.TTest{:ttest {:mean [87.94999999999999 85.19],
@@ -79,9 +99,14 @@
            (TTest. (repeated-measure-t-test
                      (mean (difference {:sample-one after :sample-two before}))
                      [0 0] ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
-                     (variation (sample (mean (difference {:sample-one after :sample-two before}))
-                                        (difference {:sample-one after :sample-two before})))
-                                      (/ (+ (count after) (count before)) 2))))
+                     (:sample-standard-deviation
+                       (sample-variation (StandardDeviation. (standard-deviation
+                                                               {:mean (mean (difference {:sample-one after :sample-two before}))
+                                                                :data (difference {:sample-one after :sample-two before})
+                                                                :Variation :Sample}
+                                                               ))))
+
+                     (/ (+ (count after) (count before)) 2))))
 
 
          #cml.core.inference.test.t_test.TTest{:ttest {:difference-mean -11.0,
@@ -94,11 +119,15 @@
 
 
 (deftest one-sample-conf-inter-test
-  (is (= (one-sample-estimate
+  (is (= (one-sample
            (ConfidenceInterval.
              (one-sample-confidence-interval
                (mean population-one)
-               (variation (sample (mean population-one) population-one))
+               (:sample-standard-deviation
+                 (sample-variation (StandardDeviation. (standard-deviation
+                                                         {:mean (mean population-one)
+                                                          :data population-one
+                                                          :Variation :Sample}))))
                (count population-one)
                1.8331)))
 
@@ -112,18 +141,22 @@
 
 
 (deftest two-sample-confidence-interval-test-test
-  (is (= (two-sample-estimate
+  (is (= (two-sample
            (ConfidenceInterval.
              (two-sample-confidence-interval
                [(mean ballet-dancers) (mean football-players)]
-               [(variance {:data   ballet-dancers
-                           :mean   (mean ballet-dancers)
-                           :size-1 (- (count ballet-dancers) 1)
-                           :type   :pooled})
-                (variance {:data   football-players
-                           :mean   (mean football-players)
-                           :size-1 (- (count football-players) 1)
-                           :type   :pooled})]
+               [
+                (:sample-variance
+                  (sample-variation (Variance. (variance
+                                                 {:data ballet-dancers
+                                                  :mean (mean ballet-dancers)
+                                                  :Variation :Sample}))))
+
+                (:sample-variance
+                  (sample-variation (Variance. (variance
+                                                 {:data football-players
+                                                  :mean (mean football-players)
+                                                  :Variation :Sample}))))]
                [(count ballet-dancers) (count football-players)]
                2.1009)))
 
@@ -150,7 +183,7 @@
 ;WORKSPACE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def dataset "/Users/gregadebesin/IdeaProjects/cml/resources/datasets/adult/adult.data")
+(def dataset "/Users/gra11/IdeaProjects/cml/resources/datasets/adult/adult.data")
 
 (data-frame {:column-names [:age :department :salary
                             :degree :study-time :marital-status
@@ -175,9 +208,9 @@
 
 ;TODO piece together high level API as below stored in core ns
 
-(time
+#_(time
   (pvalues
-    (one-sample-estimate
+    (one-sample
       (ConfidenceInterval.
         (one-sample-confidence-interval
           (mean (range 1 1000000))
@@ -187,8 +220,8 @@
 
 ;TODO add a p-os-conf-seq which pmaps this fn accross a sequence of data sets and also uses a transducer?
 
-(defn os-conf [{:keys [data critical-value]}]
-  (one-sample-estimate
+#_(defn os-conf [{:keys [data critical-value]}]
+  (one-sample
     (ConfidenceInterval.
       (one-sample-confidence-interval
         (mean data)
@@ -196,6 +229,6 @@
         (count data)
         critical-value))))
 
-(defn p-os-conf [{:keys [data critical-value]}]
+#_(defn p-os-conf [{:keys [data critical-value]}]
   (pvalues (os-conf {:data data :critical-value critical-value})))
 
