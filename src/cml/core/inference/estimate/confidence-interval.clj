@@ -2,59 +2,43 @@
 
 ;TODO Have functions comply with dataframes
 
-;TODO have in out map
-
 (defprotocol Estimate
-  (one-sample [os] "One sample confidence interval estimation")
-  (two-sample [ts] "Two sample confidence interval estimation"))
-
-;TODO change to multimethods
-
-(defn one-sample-confidence-interval [mean standard-deviation size critical-value]
-  {:mean mean
-   :standard-deviation standard-deviation
-   :size size
-   :critical-value critical-value
-   :Estimate :OneSample})
+  (confidence-interval [ci] "Confidence imterval"))
 
 
-(defn two-sample-confidence-interval [mean variance size critical-value]
-  {:mean mean
-   :variance variance
-   :size size
-   :critical-value critical-value
-   :Estimate :TwoSample})
-
-
-(defrecord ConfidenceInterval [confidence-interval]
+(defrecord OneSample [sample-mean sample-standard-deviation sample-size critical-value]
   Estimate
 
-  (one-sample [type]
+  (confidence-interval [type]
     (assoc type
-      :upper (+ (:mean confidence-interval)
-                (* (:critical-value confidence-interval)
-                   (/ (:standard-deviation confidence-interval)
-                      (Math/sqrt (:size confidence-interval)))))
-      :lower (- (:mean confidence-interval)
-                (* (:critical-value confidence-interval)
-                   (/ (:standard-deviation confidence-interval)
-                      (Math/sqrt (:size confidence-interval)))))))
+      :upper (+ sample-mean
+                (* critical-value
+                   (/ sample-standard-deviation
+                      (Math/sqrt sample-size))))
+      :lower (- sample-mean
+                (* critical-value
+                   (/ sample-standard-deviation
+                      (Math/sqrt sample-size)))))))
 
-  (two-sample [type]
+
+(defrecord TwoSample [sample-mean sample-variance sample-size critical-value]
+  Estimate
+
+  (confidence-interval [type]
     (assoc type
-      :upper (+ (- ((:mean confidence-interval) 0)
-                   ((:mean confidence-interval) 1))
-                (* (:critical-value confidence-interval)
-                   (Math/sqrt (+ (/ ((:variance confidence-interval) 0)
-                                    ((:size confidence-interval) 0))
-                                 (/ ((:variance confidence-interval) 1)
-                                    ((:size confidence-interval) 1))))))
-      :lower (- (- ((:mean confidence-interval) 0)
-                   ((:mean confidence-interval) 1))
-                (* (:critical-value confidence-interval)
-                   (Math/sqrt (+ (/ ((:variance confidence-interval) 0)
-                                    ((:size confidence-interval) 0))
-                                 (/ ((:variance confidence-interval) 1)
-                                    ((:size confidence-interval) 1)))))))))
+      :upper (+ (- (first sample-mean)
+                   (second sample-mean))
+                (* critical-value
+                   (Math/sqrt (+ (/ (first sample-variance)
+                                    (first sample-size))
+                                 (/ (second sample-variance)
+                                    (second sample-size))))))
+      :lower (- (- (first sample-mean)
+                   (second sample-mean))
+                (* critical-value
+                   (Math/sqrt (+ (/ (first sample-variance)
+                                    (first sample-size))
+                                 (/ (second sample-variance)
+                                    (second sample-size)))))))))
 
 
