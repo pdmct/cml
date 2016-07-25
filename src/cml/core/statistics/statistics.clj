@@ -59,7 +59,7 @@
 (defrecord Variance [variance]
   Variation
 
-  (population-variation [type]
+  (population-variation [type]                              ;TODO change from population-variance to variance and others
     (assoc type :population-variance
       (/ (reduce + (map #(* (- % (:mean variance)) (- % (:mean variance))) (:data variance)))
          (count (:data variance)))))

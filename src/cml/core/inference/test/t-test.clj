@@ -42,7 +42,7 @@
 
 (defrecord TTest [ttest]
   Test
-  (one-sample-test [type]
+  (one-sample-test [type]                                   ;TODO change from one-sample-test to one-sample and others
     (assoc type
       :t-statistic (/ (- (:mean ttest)
                          (:hypothetical-mean ttest))
