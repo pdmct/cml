@@ -9,72 +9,53 @@
 (defn difference [{:keys [sample-one sample-two]}] (map - sample-one sample-two))
 
 
-(defmulti standard-deviation :Variation)
-
-(defmethod standard-deviation :Sample [{:keys [mean data Variation]}]
-  {:mean mean :data data :Variation Variation})
-
-(defmethod standard-deviation :Population [{:keys [mean data Variation]}]
-  {:mean mean :data data :Variation Variation})
-
-(defmethod standard-deviation :default [x] {:err x})
-
-
 (defprotocol Variation
-  (population-variation [pv] "Population variation")
-  (sample-variation [sv] "Sample variation")
-  (pooled-variation [pv] "Pooled variation"))
+  (standard-deviation [sd] "Standard deviation")
+  (variance [v] "Variance"))
 
-(defrecord StandardDeviation [standard-deviation]
+
+(defrecord Sample [sample-mean sample]
   Variation
 
-  (population-variation [type]
+  (standard-deviation [type]
     (assoc type
-      :population-standard-deviation
-      (Math/sqrt (mean (map #(* (- (:mean standard-deviation) %) (- (:mean standard-deviation) %))
-                            (:data standard-deviation))))))
+      :standard-deviation
+      (Math/sqrt (mean-1 (map #(* (- sample-mean %) (- sample-mean %))
+                              sample)))))
 
-  (sample-variation [type]
+  (variance [type]
     (assoc type
-      :sample-standard-deviation
-      (Math/sqrt (mean-1 (map #(* (- (:mean standard-deviation) %) (- (:mean standard-deviation) %))
-                              (:data standard-deviation)))))))
+      :variance
+      (/ (reduce + (map #(* (- % sample-mean) (- % sample-mean))
+                        sample))
+         (dec (count sample))))))
 
 
-
-(defmulti variance :Variation)
-
-(defmethod variance :Sample [{:keys [mean data Variation]}]
-  {:mean mean :data data :Variation Variation})
-
-(defmethod variance :Population [{:keys [mean data Variation]}]
-  {:mean mean :data data :Variation Variation})
-
-(defmethod variance :Pooled [{:keys [mean data size-1 Variation]}]
-  {:mean mean :size-1 size-1 :data data :Variation Variation})
-
-(defmethod variance :default [x] {:err x})
-
-
-(defrecord Variance [variance]
+(defrecord Population [population-mean population]
   Variation
 
-  (population-variation [type]                              ;TODO change from population-variance to variance and others
-    (assoc type :population-variance
-      (/ (reduce + (map #(* (- % (:mean variance)) (- % (:mean variance))) (:data variance)))
-         (count (:data variance)))))
+  (standard-deviation [type]
+    (assoc type
+      :standard-deviation
+      (Math/sqrt (mean (map #(* (- population-mean %)
+                                (- population-mean %)) population)))))
 
-  (sample-variation [type]
-    (assoc type :sample-variance
-      (/ (reduce + (map #(* (- % (:mean variance)) (- % (:mean variance))) (:data variance)))
-         (dec (count (:data variance))))))
+  (variance [type]
+    (assoc type :variance
+                (/ (reduce + (map #(* (- % population-mean) (- % population-mean))
+                                  population))
+                   (count population)))))
 
-  (pooled-variation [type]
-    (assoc type :pooled-variance
-                (/ (* (:size-1 variance)
-                      (/ (reduce + (map #(* (- % (:mean variance)) (- % (:mean variance))) (:data variance)))
-                         (dec (count (:data variance)))))
-                   (:size-1 variance)))))
+
+(defrecord Pooled [pooled-mean pooled-data size-1]
+  Variation
+
+  (variance [type]
+    (assoc type :variance
+                (/ (* size-1 (/ (reduce + (map #(* (- % pooled-mean) (- % pooled-mean))
+                                               pooled-data))
+                                (dec (count pooled-data))))
+                   size-1))))
 
 
 (defn permutations
