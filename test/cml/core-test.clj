@@ -1,17 +1,17 @@
 (ns cml.core-test
   (:require [clojure.test :refer :all]
-            [cml.core.statistics.statistics :refer [mean variance difference standard-deviation]]
             [cml.core.utils.samples :refer :all]
             [cml.core.inference.tables :refer :all]
             [cml.core.dataset :refer :all]
-            [cml.core.file :refer :all]
             [cml.core.extract :refer :all]
             [cml.core.utils :refer :all]
+            [cml.core.statistics.central-tendancy :refer [mean mean-1 difference]]
+            [cml.core.statistics.variation :refer [standard-deviation variance]]
             [cml.core.inference.test.t-test :refer [t-test significance]]
             [cml.core.inference.estimate.confidence-interval :refer [confidence-interval]])
   (:import [cml.core.inference.test.t_test Dependant EqualVariance Welch RepeatedMeasure OneTail TwoTail]
-           [cml.core.inference.estimate.confidence_interval OneSample TwoSample])
-  (:import [cml.core.statistics.statistics  Sample Pooled Population]))
+           [cml.core.inference.estimate.confidence_interval OneSample TwoSample]
+           [cml.core.statistics.variation Sample Population Pooled]))
 
 
 (deftest one-sample-t-test-test
