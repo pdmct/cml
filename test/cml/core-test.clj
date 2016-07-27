@@ -65,10 +65,10 @@
 (deftest two-sample-repeated-measure-test
   (is (= (t-test
            (RepeatedMeasure.
-             (mean (difference {:sample-one after :sample-two before}))
+             (mean (difference [after before]))
              [0 0]                                   ;As with the two-sample t-test, often the quantity (µ1 − µ2) is hypothesized to be 0
-             (:standard-deviation (standard-deviation (Sample. (mean (difference {:sample-one after :sample-two before}))
-                                                               (difference {:sample-one after :sample-two before}))))
+             (:standard-deviation (standard-deviation (Sample. (mean (difference [after before]))
+                                                               (difference [after before]))))
              (/ (+ (count after) (count before)) 2)))
          #cml.core.inference.test.t_test.RepeatedMeasure{:difference-mean -11.0,
                                                          :population-mean [0 0],
