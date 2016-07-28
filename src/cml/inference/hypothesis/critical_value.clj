@@ -1,10 +1,10 @@
-(ns cml.core.inference.test.t-test
-  (:require [cml.core.inference.tables :refer [t-table]]))
+(ns cml.inference.hypothesis.critical-value
+  (:require [cml.inference.tables :refer [t-table]]))
 (use 'clojure.core.matrix)
 
 ;TODO Have functions comply with dataframes
-;TODO have in out map
 
+;TODO move into file named test ie cml.core.inference.test
 
 (defprotocol Test
   (t-test [tt] "T-test")
@@ -39,7 +39,7 @@
                  (second size)) 2))))
 
 
-(defrecord Welch [mean sample-variance size]
+(defrecord Welch [mean sample-variance size]                ;TODO destructure
   Test
 
   (t-test [type]

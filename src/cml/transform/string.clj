@@ -1,4 +1,4 @@
-(ns cml.core.transform.string
+(ns cml.transform.string
   (:import (com.google.common.base Splitter)))
 
 (defn splitter

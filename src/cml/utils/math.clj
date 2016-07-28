@@ -1,4 +1,4 @@
-(ns cml.core.utils.math
+(ns cml.utils.math
   (:require [clojure.core.reducers :as r]))
 
 

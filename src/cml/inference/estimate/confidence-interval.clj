@@ -1,4 +1,4 @@
-(ns cml.core.inference.estimate.confidence-interval)
+(ns cml.inference.estimate.confidence-interval)
 
 ;TODO Have functions comply with dataframes
 

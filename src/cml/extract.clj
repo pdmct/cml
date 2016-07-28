@@ -1,4 +1,4 @@
-(ns cml.core.extract)
+(ns cml.extract)
 
 
 (defn file-lines [^String file-path]

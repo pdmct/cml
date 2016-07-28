@@ -1,4 +1,4 @@
-(ns cml.core.utils)
+(ns cml.utils)
 
 
 (defn zip
@@ -48,5 +48,10 @@
                            :else (first vs)))
              (drop 2 ks)
              (next vs)) (persistent! map))))
+
+
+(defn double-asum [a]
+  (areduce ^doubles a i ret 0.0
+           (+ ret (aget ^doubles a i))))
 
 
