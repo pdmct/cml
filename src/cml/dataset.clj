@@ -1,7 +1,7 @@
-(ns cml.core.dataset
-  (:require [cml.core.utils :refer [zip]]
-            [cml.core.extract :refer [file-lines]]
-            [cml.core.transform.string :refer [splitter]]))
+(ns cml.dataset
+  (:require [cml.utils :refer [zip]]
+            [cml.extract :refer [file-lines]]
+            [cml.transform.string :refer [splitter]]))
 
 ;TODO Design how data frames will be composable with statistical functions
 ;TODO Implementparallel data frame

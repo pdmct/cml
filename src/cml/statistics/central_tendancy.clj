@@ -1,14 +1,18 @@
-(ns cml.core.statistics.central-tendancy
+(ns cml.statistics.central-tendancy
   (:use [uncomplicate.neanderthal core native]
         [uncomplicate.fluokitten core jvm]
-        [criterium.core]))
+        [criterium.core])
+  (:require [cml.utils :refer [double-asum]]))
+
 (use 'criterium.core)
 
 (defn mean [data] (double (/ (reduce + data) (count data))))
 
 (defn mean-1 [data] (double (/ (reduce + data) (dec (count data)))))
 
+
 (defn difference [[sample-one sample-two]] (map - sample-one sample-two))
+
 
 (defn permutations
   [x xs]
@@ -25,5 +29,4 @@
   (/ (* correlation
         (Math/sqrt sample-size))
      (Math/sqrt (- 1 (* correlation correlation)))))
-
 

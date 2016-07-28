@@ -1,4 +1,4 @@
-(ns cml.core.utils.samples)
+(ns cml.utils.samples)
 
 
 (def population-one [490 500 530 550 580 590 600 600 650 700])

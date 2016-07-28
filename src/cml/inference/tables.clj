@@ -1,4 +1,4 @@
-(ns cml.core.inference.tables)
+(ns cml.inference.tables)
 (use 'clojure.core.matrix)
 
 

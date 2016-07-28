@@ -1,4 +1,4 @@
-(ns cml.core.transform.dataframe)
+(ns cml.transform.dataframe)
 
 (defn values [m f]
   (reduce-kv (fn [map key val] (assoc map key (f val))) {} m))

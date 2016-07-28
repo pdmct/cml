@@ -1,4 +1,4 @@
-(ns cml.core.parallel.central-tendancy
+(ns cml.parallel.statistics.central-tendancy
   (:require [clojure.core.reducers :as r]))
 
 (defn pmean [data] (pvalues (double (/ (r/fold + data) (count data)))))

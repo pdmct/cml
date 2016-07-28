@@ -1,17 +1,17 @@
 (ns cml.core-test
   (:require [clojure.test :refer :all]
-            [cml.core.utils.samples :refer :all]
-            [cml.core.inference.tables :refer :all]
-            [cml.core.dataset :refer :all]
-            [cml.core.extract :refer :all]
-            [cml.core.utils :refer :all]
-            [cml.core.statistics.central-tendancy :refer [mean mean-1 difference]]
-            [cml.core.statistics.variation :refer [standard-deviation variance]]
-            [cml.core.inference.test.t-test :refer [t-test significance]]
-            [cml.core.inference.estimate.confidence-interval :refer [confidence-interval]])
-  (:import [cml.core.inference.test.t_test Dependant EqualVariance Welch RepeatedMeasure OneTail TwoTail]
-           [cml.core.inference.estimate.confidence_interval OneSample TwoSample]
-           [cml.core.statistics.variation Sample Population Pooled]))
+            [cml.utils.samples :refer :all]
+            [cml.inference.tables :refer :all]
+            [cml.dataset :refer :all]
+            [cml.extract :refer :all]
+            [cml.utils :refer :all]
+            [cml.statistics.central-tendancy :refer [mean mean-1 difference]]
+            [cml.statistics.variation :refer [standard-deviation variance]]
+            [cml.inference.hypothesis.critical-value :refer [t-test significance]]
+            [cml.inference.estimate.confidence-interval :refer [confidence-interval]])
+  (:import [cml.inference.hypothesis.critical_value Dependant EqualVariance Welch RepeatedMeasure OneTail TwoTail]
+           [cml.inference.estimate.confidence_interval OneSample TwoSample]
+           [cml.statistics.variation Sample Population Pooled]))
 
 
 (deftest one-sample-t-test-test
@@ -21,8 +21,8 @@
                    400
                    (count population-one)))
 
-         #cml.core.inference.test.t_test.Dependant{:sample-mean 579.0,
-                                                   :sample-standard-deviation 65.05553183413554,
+         #cml.inference.hypothesis.critical_value.Dependant{:sample-mean 579.0,
+                                                           :sample-standard-deviation 65.05553183413554,
                                                    :sample-hypothetical-mean 400,
                                                    :sample-size 10,
                                                    :t-statistic 8.700992601418207,
@@ -37,7 +37,7 @@
                     (:variance (variance (Pooled. (mean football-players) football-players (- (count football-players) 1))))]
                    [(count ballet-dancers) (count football-players)]))
 
-         #cml.core.inference.test.t_test.EqualVariance{:mean [87.94999999999999 85.19],
+         #cml.inference.hypothesis.critical_value.EqualVariance{:mean [87.94999999999999 85.19],
                                                        :population-mean [0 0],
                                                        :pooled-variance [32.382777777777775 31.181000000000015],
                                                        :size [10 10],
@@ -55,7 +55,7 @@
 
                          [(count ballet-dancers) (count football-players)]))
 
-         #cml.core.inference.test.t_test.Welch{:mean [87.94999999999999 85.19],
+         #cml.inference.hypothesis.critical_value.Welch{:mean [87.94999999999999 85.19],
                                                :sample-variance [32.382777777777775 31.181000000000015],
                                                :size [10 10],
                                                :t-statistic 1.0947229724603922,
@@ -70,7 +70,7 @@
              (:standard-deviation (standard-deviation (Sample. (mean (difference [after before]))
                                                                (difference [after before]))))
              (/ (+ (count after) (count before)) 2)))
-         #cml.core.inference.test.t_test.RepeatedMeasure{:difference-mean -11.0,
+         #cml.inference.hypothesis.critical_value.RepeatedMeasure{:difference-mean -11.0,
                                                          :population-mean [0 0],
                                                          :standard-deviation 13.90443574307614,
                                                          :size 10,
@@ -86,7 +86,7 @@
              (count population-one)
              1.8331))
 
-         #cml.core.inference.estimate.confidence_interval.OneSample{:sample-mean 579.0,
+         #cml.inference.estimate.confidence_interval.OneSample{:sample-mean 579.0,
                                                                     :sample-standard-deviation 65.05553183413554,
                                                                     :sample-size 10,
                                                                     :critical-value 1.8331,
@@ -103,7 +103,7 @@
              [(count ballet-dancers) (count football-players)]
              2.1009))
 
-         #cml.core.inference.estimate.confidence_interval.TwoSample{:sample-mean [87.94999999999999 85.19],
+         #cml.inference.estimate.confidence_interval.TwoSample{:sample-mean [87.94999999999999 85.19],
                                                                     :sample-variance [32.382777777777775 31.181000000000015],
                                                                     :sample-size [10 10],
                                                                     :critical-value 2.1009,
@@ -113,12 +113,12 @@
 
 (deftest one-tail-significance-test-test
   (is (= (significance (OneTail. 9 0.05))
-         #cml.core.inference.test.t_test.OneTail{:dof 9, :alpha 0.05, :critical-value 1.8331})))
+         #cml.inference.hypothesis.critical_value.OneTail{:dof 9, :alpha 0.05, :critical-value 1.8331})))
 
 
 (deftest two-tail-significance-test-test
   (is (= (significance (TwoTail. 9 0.05))
-         #cml.core.inference.test.t_test.TwoTail{:dof 9, :alpha 0.05, :critical-value 2.2621})))
+         #cml.inference.hypothesis.critical_value.TwoTail{:dof 9, :alpha 0.05, :critical-value 2.2621})))
 
 ;WORKSPACE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,8 +1,5 @@
-(ns cml.core.statistics.variation
-  (:require [cml.core.statistics.central-tendancy :refer [mean mean-1]])
-  (:use [uncomplicate.neanderthal core native]
-        [uncomplicate.fluokitten core jvm]
-        [criterium.core]))
+(ns cml.statistics.variation
+  (:require [cml.statistics.central-tendancy :refer [mean mean-1]]))
 
 
 (defprotocol Variation
