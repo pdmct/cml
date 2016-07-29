@@ -5,9 +5,10 @@
   (:import [cml.inference.hypothesis.critical_value Dependant EqualVariance]
            [cml.statistics.variation Sample Pooled]))
 
+;TODO start documenting all functions
 
 (defn dep-t-test [data hypothetical-mean]
-  (let [mean (mean data)]
+  (let [mean ^double (mean data)]
     (t-test (Dependant.
               mean
               (:standard-deviation (standard-deviation (Sample. mean  data)))
@@ -15,15 +16,14 @@
               (count data)))))
 
 
-(defn eq-var-t-test2 [[data-one data-two] [mean-one mean-two]]
-  (let [mean-data-one (mean data-one)
-        mean-data-two (mean data-two)
-        count-data-one (count data-one)
-        count-data-two (count data-two)]                    ;TODO refactor
+(defn eq-var-t-test [{:keys [sample-one sample-two population-one population-two]}]
+  (let [means (map mean [sample-one sample-two population-one population-two])
+        counts (map count [sample-one sample-two])]
     (t-test (EqualVariance.
-              [mean-data-one mean-data-two]
-              [mean-one mean-two]
-              [(:variance (variance (Pooled. mean-data-one data-one (- count-data-one 1))))
-               (:variance (variance (Pooled. mean-data-two data-two  (- count-data-two 1))))]
-              [count-data-one count-data-two]))))
+              [(first means) (second means)]
+              [(nth means 2) (nth means 3)]
+              [(:variance (variance (Pooled. (first means) sample-one (- (first counts) 1))))
+               (:variance (variance (Pooled. (second means) sample-two (- (second counts) 1))))]
+              [(first counts) (second counts)]))))
+
 
