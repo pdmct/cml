@@ -6,13 +6,22 @@
            [cml.statistics.variation Sample Pooled]))
 
 
-(defn eq-var-t-test [[data-one data-two] [mean-one mean-two]]
+(defn dep-t-test [{:keys [data hypothetical-mean]}]
+  (pvalues
+    (t-test (Dependant.
+              (mean data)
+              (:standard-deviation (standard-deviation (Sample. (mean data) data)))
+               hypothetical-mean
+              (count data)))))
+
+
+(defn eq-var-t-test [{:keys [sample-one sample-two population-one population-two]}]
   (pvalues
     (t-test (EqualVariance.
-              [(mean data-one) (mean data-two)]             ;todo   ;try (pmap mean data) and try pmean with reducers
-              [mean-one mean-two]
-              [(:variance (variance (Pooled. (mean data-one) data-one (- (count data-one) 1))))
-               (:variance (variance (Pooled. (mean data-two) data-two (- (count data-two) 1))))]
-              [(count data-one) (count data-two)]))))
+              [(mean sample-one) (mean sample-two)]             ;todo   ;try (pmap mean data) and try pmean with reducers
+              [(mean population-one) (mean population-two)]
+              [(:variance (variance (Pooled. (mean sample-one) sample-one (- (count sample-one) 1))))
+               (:variance (variance (Pooled. (mean sample-two) sample-two (- (count sample-two) 1))))]
+              [(count sample-one) (count sample-two)]))))
 
 

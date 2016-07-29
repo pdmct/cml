@@ -3,19 +3,17 @@
         [uncomplicate.fluokitten core jvm]
         [criterium.core])
   (:require [cml.utils :refer [double-asum]]))
-
 (use 'criterium.core)
 
-(defn mean [data] (double (/ (reduce + data) (count data))))
+(defn ^double mean [data] (/ (reduce + data) (count data)))
 
-(defn mean-1 [data] (double (/ (reduce + data) (dec (count data)))))
-
+(defn ^double mean-1 [data] (/ (reduce + data) (dec (count data))))
 
 (defn difference [[sample-one sample-two]] (map - sample-one sample-two))
 
 
 (defn permutations
-  [x xs]
+  [x xs]                                                    ;TODO Put in respectable NS
   (letfn [(factorial [x]
             (loop [cnt (if (coll? x)
                          (count x) x) acc 1]
@@ -29,4 +27,5 @@
   (/ (* correlation
         (Math/sqrt sample-size))
      (Math/sqrt (- 1 (* correlation correlation)))))
+
 
