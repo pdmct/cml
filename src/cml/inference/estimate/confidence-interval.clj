@@ -25,20 +25,17 @@
   Estimate
 
   (confidence-interval [type]
-    (assoc type
-      :upper (+ (- (first sample-mean)
-                   (second sample-mean))
-                (* critical-value
-                   (Math/sqrt (+ (/ (first sample-variance)
-                                    (first sample-size))
-                                 (/ (second sample-variance)
-                                    (second sample-size))))))
-      :lower (- (- (first sample-mean)
-                   (second sample-mean))
-                (* critical-value
-                   (Math/sqrt (+ (/ (first sample-variance)
-                                    (first sample-size))
-                                 (/ (second sample-variance)
-                                    (second sample-size)))))))))
+    (let [[sample-mean-one sample-mean-two] sample-mean
+          [sample-variance-one sample-variance-two] sample-variance
+          [sample-size-one sample-size-two] sample-size]
+      (assoc type
+        :upper (+ (- sample-mean-one sample-mean-two)
+                  (* critical-value
+                     (Math/sqrt (+ (/ sample-variance-one sample-size-one)
+                                   (/ sample-variance-two sample-size-two)))))
+        :lower (- (- sample-mean-one sample-mean-two)
+                  (* critical-value
+                     (Math/sqrt (+ (/ sample-variance-one sample-size-one)
+                                   (/ sample-variance-two sample-size-two)))))))))
 
 

@@ -2,29 +2,46 @@
   (:require [cml.inference.hypothesis.critical-value :refer [t-test]]
             [cml.statistics.variation :refer [standard-deviation variance]]
             [cml.statistics.central-tendancy :refer [mean]])
-  (:import [cml.inference.hypothesis.critical_value Dependant EqualVariance]
-           [cml.statistics.variation Sample Pooled]))
+  (:import [cml.inference.hypothesis.critical_value Dependant EqualVariance Welch]
+           [cml.statistics.variation Sample Pooled]
+           [clojure.lang PersistentVector]))
 
 ;TODO start documenting all functions
 
-(defn dep-t-test [data hypothetical-mean]
+(defn dep-t-test [{:keys [^PersistentVector data hypothetical-mean]}]
   (let [mean ^double (mean data)]
     (t-test (Dependant.
               mean
-              (:standard-deviation (standard-deviation (Sample. mean  data)))
+              (:standard-deviation (standard-deviation
+                                     (Sample. mean data)))
               hypothetical-mean
               (count data)))))
 
 
-(defn eq-var-t-test [{:keys [sample-one sample-two population-one population-two]}]
-  (let [means (map mean [sample-one sample-two population-one population-two])
-        counts (map count [sample-one sample-two])]
+(defn eq-var-t-test [{:keys [^PersistentVector sample-one ^PersistentVector sample-two ^PersistentVector population-one ^PersistentVector population-two]}]
+  (let [[sample-mean-one sample-mean-two population-mean-one population-mean-two] (map mean [sample-one sample-two population-one population-two])
+        [sample-size-one sample-size-two] (map count [sample-one sample-two])]
     (t-test (EqualVariance.
-              [(first means) (second means)]
-              [(nth means 2) (nth means 3)]
-              [(:variance (variance (Pooled. (first means) sample-one (- (first counts) 1))))
-               (:variance (variance (Pooled. (second means) sample-two (- (second counts) 1))))]
-              [(first counts) (second counts)]))))
+              [sample-mean-one sample-mean-two]
+              [population-mean-one population-mean-two]
+              [(:variance (variance
+                            (Pooled. sample-mean-one sample-one
+                                     (- sample-size-one 1))))
+               (:variance (variance
+                            (Pooled. sample-mean-two sample-two
+                                     (- sample-size-two 1))))]
+              [sample-size-one sample-size-two]))))
 
+
+
+(defn welch-t-test [{:keys [^PersistentVector sample-one ^PersistentVector sample-two]}]
+  (let [[sample-mean-one sample-mean-two] (map mean [sample-one sample-two])
+        [sample-count-one sample-count-two] (map count [sample-one sample-two])]
+    (t-test (Welch. [sample-mean-one sample-mean-two]
+                    [(:variance (variance
+                                  (Sample. sample-mean-one sample-one)))
+                     (:variance (variance
+                                  (Sample. sample-mean-two sample-two)))]
+                    [sample-count-one sample-count-two]))))
 
 
