@@ -39,6 +39,6 @@
   (variance [type]
     (assoc type :variance
                 (/ (* size-1 (/ (reduce + (map #(* (- % pooled-mean) (- % pooled-mean)) pooled-data))
-                                (dec (count pooled-data)))) size-1))))
+                                (dec (count pooled-data)))) size-1)))) 
 
 
