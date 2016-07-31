@@ -9,7 +9,7 @@
             [cml.statistics.variation :refer [standard-deviation variance]]
             [cml.inference.hypothesis.critical-value :refer [t-test significance]]
             [cml.inference.estimate.confidence-interval :refer [confidence-interval]])
-  (:import [cml.inference.hypothesis.critical_value Dependant EqualVariance Welch RepeatedMeasure OneTail TwoTail]
+  (:import [cml.inference.hypothesis.critical_value Dependant Independant Welch RepeatedMeasure OneTail TwoTail]
            [cml.inference.estimate.confidence_interval OneSample TwoSample]
            [cml.statistics.variation Sample Population Pooled]))
 
@@ -30,19 +30,19 @@
 
 
 (deftest two-sample-t-test-equal-variance
-  (is (= (t-test (EqualVariance.
+  (is (= (t-test (Independant.
                    [(mean ballet-dancers) (mean football-players)]
                    [0 0]
                    [(:variance (variance (Pooled. (mean ballet-dancers) ballet-dancers (- (count ballet-dancers) 1))))
                     (:variance (variance (Pooled. (mean football-players) football-players (- (count football-players) 1))))]
                    [(count ballet-dancers) (count football-players)]))
 
-         #cml.inference.hypothesis.critical_value.EqualVariance{:mean [87.94999999999999 85.19],
+         #cml.inference.hypothesis.critical_value.Independant{:mean     [87.94999999999999 85.19],
                                                        :population-mean [0 0],
                                                        :pooled-variance [32.382777777777775 31.181000000000015],
-                                                       :size [10 10],
-                                                       :t-statistic 1.094722972460392,
-                                                       :dof 18})))
+                                                       :size            [10 10],
+                                                       :t-statistic     1.094722972460392,
+                                                       :dof             18})))
 
 (deftest two-sample-t-test-unequal-variance
   (is (= (t-test (Welch. [(mean ballet-dancers) (mean football-players)]
