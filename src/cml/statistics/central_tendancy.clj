@@ -2,15 +2,15 @@
   (:use [uncomplicate.neanderthal core native]
         [uncomplicate.fluokitten core jvm]
         [criterium.core])
-  (:require [cml.utils :refer [double-asum]]))
+  (:require [cml.utils :refer [double-asum]]
+            [clojure.core.reducers :as r]))
 (use 'criterium.core)
 
-(defn ^double mean [data] (/ (reduce + data) (count data)))
+(defn ^double mean [data] (/ (r/fold + data) (count data)))
 
-(defn ^double mean-1 [data] (/ (reduce + data) (dec (count data))))
+(defn ^double mean-1 [data] (/ (r/fold + data) (dec (count data))))
 
 (defn difference [[sample-one sample-two]] (map - sample-one sample-two))
-
 
 (defn permutations
   [x xs]                                                    ;TODO Put in respectable NS
