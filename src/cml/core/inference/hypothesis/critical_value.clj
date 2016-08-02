@@ -5,8 +5,11 @@
   (:import [cml.inference.hypothesis.critical_value Dependant Independant Welch RepeatedMeasure]
            [cml.statistics.variation Sample Pooled]
            [clojure.lang PersistentVector]))
+(use 'criterium.core)
 
 ;TODO start documenting all functions
+
+;TODO change function destructuring to samples etc are mapped accross
 
 (defn dependant-ttest [{:keys [^PersistentVector data hypothetical-mean]}]
   (let [mean ^double (mean data)]
@@ -47,11 +50,11 @@
                                   (Sample. sample-mean-two sample-two)))]
                     [sample-count-one sample-count-two]))))
 
-;TODO Wont compile fix double cast
+
 (defn repeated-measure-ttest [{:keys [^PersistentVector populations ^PersistentVector hypothesized-population-means]}]
   (let [[population-one population-two] populations
         [hypothesized-population-mean-one hypothesized-population-mean-two] hypothesized-population-means
-        population-mean-difference (mean (difference populations))
+        population-mean-difference ^double (mean (difference populations))
         population-means (mapv mean [[hypothesized-population-mean-one] [hypothesized-population-mean-two]])]
     (t-test
       (RepeatedMeasure.
