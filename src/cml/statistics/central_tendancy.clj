@@ -10,7 +10,7 @@
 
 (defn ^double mean-1 [data] (/ (r/fold + data) (dec (count data))))
 
-(defn difference [[sample-one sample-two]] (map - sample-one sample-two))
+(defn ^doubles difference [[sample-one sample-two]] (map - sample-one sample-two))
 
 (defn permutations
   [x xs]                                                    ;TODO Put in respectable NS
