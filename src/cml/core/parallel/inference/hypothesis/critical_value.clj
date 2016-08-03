@@ -3,24 +3,24 @@
             [cml.statistics.variation :refer [standard-deviation variance]]
             [cml.statistics.central-tendancy :refer [mean difference]]
             [clojure.core.reducers :as r])
-  (:import [cml.inference.hypothesis.critical_value Dependant Independant Welch RepeatedMeasure]
+  (:import [cml.inference.hypothesis.critical_value OneSample TwoSample Welch RepeatedMeasure]
            [cml.statistics.variation Sample Pooled]
            [clojure.lang PersistentVector]))
 
 ;TODO ammend params as non parallel versions
 
-(defn dep-t-test [{:keys [^PersistentVector data hypothetical-mean]}]
+(defn dep-t-test [{:keys [^PersistentVector data hypo-mean]}]
   (pvalues
-    (t-test (Dependant.                                     ;TODO change to OneSample
+    (t-test (OneSample.
               (mean data)
               (:standard-deviation (standard-deviation (Sample. (mean data) data)))
-               hypothetical-mean
+              hypo-mean
               (count data)))))
 
 
 (defn independant-t-test [{:keys [^PersistentVector samples ^PersistentVector populations]}]
   (pvalues
-    (t-test (Independant.                                   ;TODO change to TwoSample
+    (t-test (TwoSample.
               (map mean samples)
               (map mean (partition 1 populations))
               (map #(:variance (variance (Pooled. (mean %) % (- (count %) 1)))) samples)
@@ -34,10 +34,10 @@
                     (map count samples)))))
 
 
-(defn repeated-measure-ttest [{:keys [^PersistentVector populations ^PersistentVector hypothesized-population-means]}]
+(defn repeated-measure-ttest [{:keys [^PersistentVector populations ^PersistentVector hp-means]}]
   (pvalues
     (t-test (RepeatedMeasure. (mean (difference populations))
-                              (map mean (partition 1 hypothesized-population-means))
+                              (map mean (partition 1 hp-means))
                               (:standard-deviation (standard-deviation
                                                      (Sample. (mean (difference populations))
                                                               (difference populations))))

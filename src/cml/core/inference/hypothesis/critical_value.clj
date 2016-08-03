@@ -1,35 +1,31 @@
 (ns cml.core.inference.hypothesis.critical-value
-  (:require [cml.inference.hypothesis.critical-value :refer [t-test]]
+  (:require [cml.inference.hypothesis.critical-value :refer [t-test significance]]
             [cml.statistics.variation :refer [standard-deviation variance]]
             [cml.statistics.central-tendancy :refer [mean difference]])
-  (:import [cml.inference.hypothesis.critical_value Dependant Independant Welch RepeatedMeasure]
+  (:import [cml.inference.hypothesis.critical_value OneSample TwoSample Welch RepeatedMeasure OneTail TwoTail]
            [cml.statistics.variation Sample Pooled]
            [clojure.lang PersistentVector]))
 (use 'criterium.core)
 
 ;TODO start documenting all functions
 
-;TODO change function destructuring to samples etc are mapped accross
-
-(defn dependant-ttest [{:keys [^PersistentVector data hypothetical-mean]}]
+(defn one-sample-ttest [{:keys [^PersistentVector data h-mean]}]
   (let [mean ^double (mean data)]
-    (t-test (Dependant.
+    (t-test (OneSample.
               mean
               (:standard-deviation (standard-deviation
                                      (Sample. mean data)))
-              hypothetical-mean
+              h-mean
               (count data)))))
 
 
-(defn independant-ttest [{:keys [^PersistentVector samples ^PersistentVector hypothesized-population-means]}]
+(defn two-sample-ttest [{:keys [^PersistentVector samples ^PersistentVector hp-means]}]
   (let [[sample-one sample-two] samples
-        [hypothesized-population-mean-one hypothesized-population-mean-two] hypothesized-population-means
-        [sample-mean-one sample-mean-two population-mean-one population-mean-two]
-        (map mean [sample-one sample-two [hypothesized-population-mean-one] [hypothesized-population-mean-two]])
+        [sample-mean-one sample-mean-two] (map mean samples)
         [sample-size-one sample-size-two] (map count samples)]
-    (t-test (Independant.
+    (t-test (TwoSample.
               [sample-mean-one sample-mean-two]
-              [population-mean-one population-mean-two]
+              (map mean (partition 1 hp-means))
               [(:variance (variance
                             (Pooled. sample-mean-one sample-one
                                      (- sample-size-one 1))))
@@ -37,6 +33,7 @@
                             (Pooled. sample-mean-two sample-two
                                      (- sample-size-two 1))))]
               [sample-size-one sample-size-two]))))
+
 
 
 (defn welch-ttest [{:keys [^PersistentVector samples]}]
@@ -51,18 +48,22 @@
                     [sample-count-one sample-count-two]))))
 
 
-(defn repeated-measure-ttest [{:keys [^PersistentVector populations ^PersistentVector hypothesized-population-means]}]
+(defn rep-measure-ttest [{:keys [^PersistentVector populations ^PersistentVector hp-means]}]
   (let [[population-one population-two] populations
-        [hypothesized-population-mean-one hypothesized-population-mean-two] hypothesized-population-means
-        population-mean-difference ^double (mean (difference populations))
-        population-means (mapv mean [[hypothesized-population-mean-one] [hypothesized-population-mean-two]])]
+        population-mean-difference ^double (mean (difference populations))]
     (t-test
       (RepeatedMeasure.
         population-mean-difference
-        population-means
+        (map mean (partition 1 hp-means))
         (:standard-deviation (standard-deviation
                                (Sample. population-mean-difference
                                         (difference populations))))
         (/ (+ (count population-one) (count population-two)) 2)))))
+
+
+(defn one-tail-sig-test [{:keys [dof alpha]}] (significance (OneTail. dof alpha)))
+
+
+(defn two-tail-sig-test [{:keys [dof alpha]}] (significance (TwoTail. dof alpha)))
 
 
