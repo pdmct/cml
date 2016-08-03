@@ -9,7 +9,7 @@
   (t-test [tt] "T-test")
   (significance [s] "Significance test"))
 
-(defrecord Dependant [sample-mean sample-standard-deviation sample-hypothetical-mean sample-size]
+(defrecord OneSample [sample-mean sample-standard-deviation sample-hypothetical-mean sample-size]
   Test
 
   (t-test [type]
@@ -21,7 +21,7 @@
       :dof (dec sample-size))))
 
 
-(defrecord Independant [mean population-mean pooled-variance size]
+(defrecord TwoSample [mean population-mean pooled-variance size]
   Test
 
   (t-test [type]
