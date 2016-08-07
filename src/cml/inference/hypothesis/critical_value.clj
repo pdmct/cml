@@ -77,18 +77,16 @@
   Test
 
   (significance [type]
-    (assoc type :critical-value
-                (mget t-table (dec dof)
-                      ({0.05 0 0.025 1 0.01 2 0.005 3 0.0025 4 0.001 5 0.0005 6} alpha)))))
+    (assoc type :critical-value (mget t-table (dec dof)
+                                      ({0.05 0 0.025 1 0.01 2 0.005 3 0.0025 4 0.001 5 0.0005 6} alpha)))))
 
 
 (defrecord TwoTail [dof alpha]
   Test
 
   (significance [type]
-    (assoc type :critical-value
-                (mget t-table (dec dof)
-                      ({0.1 0 0.05 1 0.02 2 0.01 3 0.005 4 0.002 5 0.001 6} alpha)))))
+    (assoc type :critical-value (mget t-table (dec dof)
+                                      ({0.1 0 0.05 1 0.02 2 0.01 3 0.005 4 0.002 5 0.001 6} alpha)))))
 
 
 

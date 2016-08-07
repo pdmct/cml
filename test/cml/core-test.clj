@@ -19,12 +19,12 @@
                    400
                    (count population-one)))
 
-         #cml.inference.hypothesis.critical_value.OneSample{:sample-mean              579.0,
-                                                           :sample-standard-deviation 65.05553183413554,
-                                                   :sample-hypothetical-mean          400,
-                                                   :sample-size                       10,
-                                                   :t-statistic                       8.700992601418207,
-                                                   :dof                               9})))
+         #cml.inference.hypothesis.critical_value.OneSample{:sample-mean               579.0,
+                                                            :sample-standard-deviation 65.05553183413554,
+                                                            :sample-hypothetical-mean  400,
+                                                            :sample-size               10,
+                                                            :t-statistic               8.700992601418207,
+                                                            :dof                       9})))
 
 
 (deftest two-sample-t-test-equal-variance
@@ -35,12 +35,12 @@
                     (:variance (variance (Pooled. (mean football-players) football-players (- (count football-players) 1))))]
                    [(count ballet-dancers) (count football-players)]))
 
-         #cml.inference.hypothesis.critical_value.TwoSample{:mean       [87.94999999999999 85.19],
-                                                       :population-mean [0 0],
-                                                       :pooled-variance [32.382777777777775 31.181000000000015],
-                                                       :size            [10 10],
-                                                       :t-statistic     1.094722972460392,
-                                                       :dof             18})))
+         #cml.inference.hypothesis.critical_value.TwoSample{:mean            [87.94999999999999 85.19],
+                                                            :population-mean [0 0],
+                                                            :pooled-variance [32.382777777777775 31.181000000000015],
+                                                            :size            [10 10],
+                                                            :t-statistic     1.094722972460392,
+                                                            :dof             18})))
 
 (deftest two-sample-t-test-unequal-variance
   (is (= (t-test (cml.inference.hypothesis.critical_value.Welch. [(mean ballet-dancers) (mean football-players)]

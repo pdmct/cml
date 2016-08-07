@@ -9,7 +9,7 @@
 
 ;TODO ammend params as non parallel versions
 
-(defn dep-t-test [{:keys [^PersistentVector data hypo-mean]}]
+(defn one-sample-ttest [{:keys [^PersistentVector data hypo-mean]}]
   (pvalues
     (t-test (OneSample.
               (mean data)
@@ -18,7 +18,7 @@
               (count data)))))
 
 
-(defn independant-t-test [{:keys [^PersistentVector samples ^PersistentVector populations]}]
+(defn two-sample-ttest [{:keys [^PersistentVector samples ^PersistentVector populations]}]
   (pvalues
     (t-test (TwoSample.
               (map mean samples)
@@ -27,7 +27,7 @@
               (map count samples)))))
 
 
-(defn welch-t-test [{:keys [^PersistentVector samples]}]
+(defn welch-ttest [{:keys [^PersistentVector samples]}]
   (pvalues
     (t-test (Welch. (map mean samples)
                     (map #(:variance (variance (Sample. (mean %) %))) samples)
@@ -38,9 +38,7 @@
   (pvalues
     (t-test (RepeatedMeasure. (mean (difference populations))
                               (map mean (partition 1 hp-means))
-                              (:standard-deviation (standard-deviation
-                                                     (Sample. (mean (difference populations))
-                                                              (difference populations))))
+                              (:standard-deviation (standard-deviation (Sample. (mean (difference populations)) (difference populations))))
                               (/ (r/fold + (r/map count populations)) 2)))))
 
 
