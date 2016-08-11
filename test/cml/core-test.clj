@@ -9,7 +9,7 @@
             [cml.statistics.variation :refer [standard-deviation variance]]
             [cml.inference.hypothesis.critical-value :refer [t-test significance]]
             [cml.inference.estimate.confidence-interval :refer [confidence-interval]])
-  (:import [cml.statistics.variation Sample Population Pooled]))
+  (:import [cml.statistics.variation Sample Pooled]))
 
 
 (deftest one-sample-t-test-test
@@ -28,14 +28,14 @@
 
 
 (deftest two-sample-t-test-equal-variance
-  (is (= (t-test (cml.inference.hypothesis.critical_value.TwoSample.
+  (is (= (t-test (cml.inference.hypothesis.critical_value.EqualVariance.
                    [(mean ballet-dancers) (mean football-players)]
                    [0 0]
                    [(:variance (variance (Pooled. (mean ballet-dancers) ballet-dancers (- (count ballet-dancers) 1))))
                     (:variance (variance (Pooled. (mean football-players) football-players (- (count football-players) 1))))]
                    [(count ballet-dancers) (count football-players)]))
 
-         #cml.inference.hypothesis.critical_value.TwoSample{:mean            [87.94999999999999 85.19],
+         #cml.inference.hypothesis.critical_value.EqualVariance{:mean        [87.94999999999999 85.19],
                                                             :population-mean [0 0],
                                                             :pooled-variance [32.382777777777775 31.181000000000015],
                                                             :size            [10 10],

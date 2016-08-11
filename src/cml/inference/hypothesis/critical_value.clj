@@ -21,7 +21,7 @@
       :dof (dec sample-size))))
 
 
-(defrecord TwoSample [mean population-mean pooled-variance size]
+(defrecord EqualVariance [mean population-mean pooled-variance size]
   Test
 
   (t-test [type]
