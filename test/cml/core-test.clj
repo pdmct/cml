@@ -30,9 +30,9 @@
 
 (deftest two-sample-t-test-unequal-variance
   (is (= (welch-ttest {:sample [ballet-dancers football-players]})
-         #cml.inference.hypothesis.critical_value.Welch{:mean            [87.94999999999999 85.19],
-                                                        :sample-variance [32.382777777777775 31.181000000000015],
-                                                        :size            [10 10],
+         #cml.inference.hypothesis.critical_value.Welch{:mean            (87.94999999999999 85.19),
+                                                        :sample-variance (32.382777777777775 31.181000000000015),
+                                                        :size            (10 10),
                                                         :t-statistic     1.0947229724603922,
                                                         :dof             17.993567997176537})))
 
@@ -59,9 +59,9 @@
 
 (deftest two-sample-confidence-interval-test-test
   (is (= (two-sample-conf-inter {:sample [ballet-dancers football-players] :critical-value 2.1009})
-         #cml.inference.estimate.confidence_interval.TwoSample{:sample-mean     [87.94999999999999 85.19],
-                                                               :sample-variance [32.382777777777775 31.181000000000015],
-                                                               :sample-size     [10 10],
+         #cml.inference.estimate.confidence_interval.TwoSample{:sample-mean     (87.94999999999999 85.19),
+                                                               :sample-variance (32.382777777777775 31.181000000000015),
+                                                               :sample-size     (10 10),
                                                                :critical-value  2.1009,
                                                                :upper           8.05675922207777,
                                                                :lower           -2.536759222077789})))
