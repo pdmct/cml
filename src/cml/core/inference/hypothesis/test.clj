@@ -5,7 +5,7 @@
   (:import [cml.inference.hypothesis.test OneSample EqualVariance Welch RepeatedMeasure OneTail TwoTail]
            [cml.statistics.variation Sample Pooled]))
 
-;TODO start documenting all functions
+;TODO use spec to validate input instead of documentation
 
 (defn one-sample-ttest [{:keys [sample h-mean]}]
   (let [mean ^double (mean sample)]

@@ -5,8 +5,8 @@
 ;TODO Have functions comply with dataframes
 
 (defprotocol Test
-  (t-test [tt] "T-test")
-  (significance [s] "Significance test"))
+  (t-test [tt] "Conducts a TTest")
+  (significance [s] "Conducts a significance test"))
 
 (defrecord OneSample [sample-mean sample-standard-deviation sample-hypothetical-mean sample-size]
   Test

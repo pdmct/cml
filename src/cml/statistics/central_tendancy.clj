@@ -1,7 +1,5 @@
 (ns cml.statistics.central-tendancy
-  (:use [uncomplicate.neanderthal core native]
-        [uncomplicate.fluokitten core jvm]
-        [criterium.core])
+  (:use [criterium.core])
   (:require [cml.utils :refer [double-asum]]
             [clojure.core.reducers :as r]))
 (use 'criterium.core)
