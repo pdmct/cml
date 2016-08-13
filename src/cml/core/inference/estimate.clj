@@ -1,9 +1,9 @@
-(ns cml.core.inference.estimate.confidence-interval
+(ns cml.core.inference.estimate
   (:require [cml.statistics.variation :refer [standard-deviation variance]]
-            [cml.inference.estimate.confidence-interval :refer [confidence-interval]]
+            [cml.inference.estimate :refer [confidence-interval]]
             [cml.statistics.central-tendancy :refer [mean]])
   (:import [cml.statistics.variation Sample]
-           [cml.inference.estimate.confidence_interval OneSample TwoSample]))
+           [cml.inference.estimate OneSample TwoSample]))
 
 
 (defn one-sample-conf-inter [{:keys [sample critical-value]}]
