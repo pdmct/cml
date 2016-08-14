@@ -1,5 +1,5 @@
-(ns cml.inference.hypothesis.test
-  (:require [cml.inference.tables :refer [t-table]]))
+(ns cml.numerical.hypothesis.test
+  (:require [cml.numerical.tables :refer [t-table]]))
 (use 'clojure.core.matrix)
 
 ;TODO Have functions comply with dataframes

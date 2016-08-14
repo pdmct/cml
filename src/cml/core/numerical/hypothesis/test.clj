@@ -1,8 +1,8 @@
-(ns cml.core.inference.hypothesis.test
-  (:require [cml.inference.hypothesis.test :refer [t-test significance]]
+(ns cml.core.numerical.hypothesis.test
+  (:require [cml.numerical.hypothesis.test :refer [t-test significance]]
             [cml.statistics.variation :refer [standard-deviation variance]]
             [cml.statistics.central-tendancy :refer [mean difference]])
-  (:import [cml.inference.hypothesis.test OneSample EqualVariance Welch RepeatedMeasure OneTail TwoTail]
+  (:import [cml.numerical.hypothesis.test OneSample EqualVariance Welch RepeatedMeasure OneTail TwoTail]
            [cml.statistics.variation Sample Pooled]))
 
 ;TODO use spec to validate input instead of documentation
