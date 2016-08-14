@@ -1,11 +1,11 @@
-(ns cml.core.inference.hypothesis.critical-value
-  (:require [cml.inference.hypothesis.critical-value :refer [t-test significance]]
+(ns cml.core.numerical.hypothesis.test
+  (:require [cml.numerical.hypothesis.test :refer [t-test significance]]
             [cml.statistics.variation :refer [standard-deviation variance]]
             [cml.statistics.central-tendancy :refer [mean difference]])
-  (:import [cml.inference.hypothesis.critical_value OneSample EqualVariance Welch RepeatedMeasure]
+  (:import [cml.numerical.hypothesis.test OneSample EqualVariance Welch RepeatedMeasure OneTail TwoTail]
            [cml.statistics.variation Sample Pooled]))
 
-;TODO start documenting all functions
+;TODO use spec to validate input instead of documentation
 
 (defn one-sample-ttest [{:keys [sample h-mean]}]
   (let [mean ^double (mean sample)]
@@ -34,5 +34,11 @@
                               (map mean (partition 1 hp-mean))
                               (:standard-deviation (standard-deviation (Sample. population-mean-difference (difference population))))
                               (/ (+ (count population-one) (count population-two)) 2)))))
+
+
+(defn one-tail-sig [{:keys [dof alpha]}] (significance (OneTail. dof alpha)))
+
+
+(defn two-tail-sig [{:keys [dof alpha]}] (significance (TwoTail. dof alpha)))
 
 
