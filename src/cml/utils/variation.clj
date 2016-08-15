@@ -1,5 +1,5 @@
-(ns cml.statistics.variation
-  (:require [cml.statistics.central-tendancy :refer [mean mean-1]]))
+(ns cml.utils.variation
+  (:require [cml.utils.central-tendancy :refer [mean mean-1]]))
 
 
 (defprotocol Variation

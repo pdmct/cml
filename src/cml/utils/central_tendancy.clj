@@ -1,4 +1,4 @@
-(ns cml.statistics.central-tendancy
+(ns cml.utils.central-tendancy
   (:use [criterium.core])
   (:require [cml.utils :refer [double-asum]]
             [clojure.core.reducers :as r]))

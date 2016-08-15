@@ -1,4 +1,4 @@
-(ns cml.numerical.estimate)
+(ns cml.statistics.estimate)
 
 ;TODO Have functions comply with dataframes
 
