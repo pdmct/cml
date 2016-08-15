@@ -6,7 +6,7 @@
 
 (defprotocol Test
   (t-test [tt] "Conducts a TTest")
-  (sig-test [s] "Conducts a significance test"))
+  (chi-square [s] "Conducts a Chi Square test"))
 
 (defrecord OneSample [sample-mean sample-standard-deviation sample-hypothetical-mean sample-size]
   Test
@@ -66,23 +66,5 @@
                         (/ standard-deviation
                            (Math/sqrt size)))
         :dof (- size 1)))))
-
-
-(defrecord OneTail [dof alpha]
-  Test
-  (sig-test [type]
-    (assoc type :critical-value
-                (mget t-table (dec dof)
-                      ({0.05 0 0.025 1 0.01 2 0.005 3 0.0025 4 0.001 5 0.0005 6}
-                        alpha)))))
-
-
-(defrecord TwoTail [dof alpha]
-  Test
-  (sig-test [type]
-    (assoc type :critical-value
-                (mget t-table (dec dof)
-                      ({0.1 0 0.05 1 0.02 2 0.01 3 0.005 4 0.002 5 0.001 6}
-                        alpha)))))
 
 

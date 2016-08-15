@@ -5,7 +5,8 @@
             [cml.extract :refer [file-lines]]
             [cml.utils :refer [zip]]
             [cml.core.statistics.estimate :refer [one-sample-conf-inter two-sample-conf-inter]]
-            [cml.core.statistics.test :refer [one-sample-ttest equal-var-ttest welch-ttest rep-measure-ttest one-tail-sig-test two-tail-sig-test]]))
+            [cml.core.statistics.test :refer [one-sample-ttest equal-var-ttest welch-ttest rep-measure-ttest]]
+            [cml.core.statistics.critical-value :refer [one-tail-cv two-tail-cv]]))
 
 
 (deftest one-sample-t-test-test
@@ -66,14 +67,14 @@
                                                                :lower           -2.536759222077789})))
 
 
-(deftest one-tail-significance-test-test
-  (is (= (one-tail-sig-test {:dof 9 :alpha 0.05})
-         #cml.statistics.test.OneTail{:dof 9, :alpha 0.05, :critical-value 1.8331})))
-
-
 (deftest two-tail-significance-test-test
-  (is (= (two-tail-sig-test {:dof 9 :alpha 0.05})
-         #cml.statistics.test.TwoTail{:dof 9, :alpha 0.05, :critical-value 2.2621})))
+  (is (= (two-tail-cv {:dof 9 :alpha 0.05})
+         {:critical-value 2.2621, :dof 9, :alpha 0.05})))
+
+
+(deftest one-tail-significance-test-test
+  (is (= (one-tail-cv {:dof 9 :alpha 0.05})
+         {:critical-value 1.8331, :dof 9, :alpha 0.05})))
 
 ;WORKSPACE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

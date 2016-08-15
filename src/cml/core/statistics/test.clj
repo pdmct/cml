@@ -1,8 +1,8 @@
 (ns cml.core.statistics.test
-  (:require [cml.statistics.test :refer [t-test sig-test]]
+  (:require [cml.statistics.test :refer [t-test]]
             [cml.utils.variation :refer [standard-deviation variance]]
             [cml.utils.central-tendancy :refer [mean difference]])
-  (:import [cml.statistics.test OneSample EqualVariance Welch RepeatedMeasure OneTail TwoTail]
+  (:import [cml.statistics.test OneSample EqualVariance Welch RepeatedMeasure]
            [cml.utils.variation Sample Pooled]))
 
 ;TODO use spec to validate input instead of documentation
@@ -34,11 +34,4 @@
                               (map mean (partition 1 hp-mean))
                               (:standard-deviation (standard-deviation (Sample. population-mean-difference (difference population))))
                               (/ (+ (count population-one) (count population-two)) 2)))))
-
-
-(defn one-tail-sig-test [{:keys [dof alpha]}] (sig-test (OneTail. dof alpha)))
-
-
-(defn two-tail-sig-test [{:keys [dof alpha]}] (sig-test (TwoTail. dof alpha)))
-
 
