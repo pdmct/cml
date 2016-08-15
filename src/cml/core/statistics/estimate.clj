@@ -1,10 +1,10 @@
-(ns cml.core.numerical.estimate
+(ns cml.core.statistics.estimate
   (:require [clojure.spec :as s]
-            [cml.statistics.variation :refer [standard-deviation variance]]
-            [cml.numerical.estimate :refer [confidence-interval]]
-            [cml.statistics.central-tendancy :refer [mean]])
-  (:import [cml.statistics.variation Sample]
-           [cml.numerical.estimate OneSample TwoSample]))
+            [cml.utils.variation :refer [standard-deviation variance]]
+            [cml.statistics.estimate :refer [confidence-interval]]
+            [cml.utils.central-tendancy :refer [mean]])
+  (:import [cml.utils.variation Sample]
+           [cml.statistics.estimate OneSample TwoSample]))
 
 
 (defn one-sample-conf-inter [{:keys [sample critical-value]}]

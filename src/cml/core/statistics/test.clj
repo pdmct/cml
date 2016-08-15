@@ -1,9 +1,9 @@
-(ns cml.core.numerical.hypothesis.test
-  (:require [cml.numerical.hypothesis.test :refer [t-test significance]]
-            [cml.statistics.variation :refer [standard-deviation variance]]
-            [cml.statistics.central-tendancy :refer [mean difference]])
-  (:import [cml.numerical.hypothesis.test OneSample EqualVariance Welch RepeatedMeasure OneTail TwoTail]
-           [cml.statistics.variation Sample Pooled]))
+(ns cml.core.statistics.test
+  (:require [cml.statistics.test :refer [t-test sig-test]]
+            [cml.utils.variation :refer [standard-deviation variance]]
+            [cml.utils.central-tendancy :refer [mean difference]])
+  (:import [cml.statistics.test OneSample EqualVariance Welch RepeatedMeasure OneTail TwoTail]
+           [cml.utils.variation Sample Pooled]))
 
 ;TODO use spec to validate input instead of documentation
 
@@ -36,9 +36,9 @@
                               (/ (+ (count population-one) (count population-two)) 2)))))
 
 
-(defn one-tail-sig [{:keys [dof alpha]}] (significance (OneTail. dof alpha)))
+(defn one-tail-sig-test [{:keys [dof alpha]}] (sig-test (OneTail. dof alpha)))
 
 
-(defn two-tail-sig [{:keys [dof alpha]}] (significance (TwoTail. dof alpha)))
+(defn two-tail-sig-test [{:keys [dof alpha]}] (sig-test (TwoTail. dof alpha)))
 
 

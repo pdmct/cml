@@ -1,12 +1,12 @@
-(ns cml.numerical.hypothesis.test
-  (:require [cml.numerical.tables :refer [t-table]]))
+(ns cml.statistics.test
+  (:require [cml.utils.tables :refer [t-table]]))
 (use 'clojure.core.matrix)
 
 ;TODO Have functions comply with dataframes
 
 (defprotocol Test
   (t-test [tt] "Conducts a TTest")
-  (significance [s] "Conducts a significance test"))
+  (sig-test [s] "Conducts a significance test"))
 
 (defrecord OneSample [sample-mean sample-standard-deviation sample-hypothetical-mean sample-size]
   Test
@@ -70,7 +70,7 @@
 
 (defrecord OneTail [dof alpha]
   Test
-  (significance [type]
+  (sig-test [type]
     (assoc type :critical-value
                 (mget t-table (dec dof)
                       ({0.05 0 0.025 1 0.01 2 0.005 3 0.0025 4 0.001 5 0.0005 6}
@@ -79,7 +79,7 @@
 
 (defrecord TwoTail [dof alpha]
   Test
-  (significance [type]
+  (sig-test [type]
     (assoc type :critical-value
                 (mget t-table (dec dof)
                       ({0.1 0 0.05 1 0.02 2 0.01 3 0.005 4 0.002 5 0.001 6}
