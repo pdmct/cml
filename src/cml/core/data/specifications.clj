@@ -2,17 +2,22 @@
   (:require [clojure.spec :as s]))
 
 
-(s/def ::sample (s/and sequential? not-empty))
+(s/def ::sample (s/and not-empty (s/coll-of number?)))
 (s/def ::critical-value number?)
 (s/def ::one-sample-conf-inter (s/keys :req [::sample ::critical-value]))
 
 
-(defmulti data :Source)
+(defmulti data :spec)
+(defmulti explain :spec)
 
-(defmethod data :OneSampleConfInter [{:keys [sample critical-value]}]
-  (if (s/valid? ::one-sample-conf-inter
-                {::sample sample ::critical-value critical-value})
+
+(defmethod explain :one-sample-conf-inter [{:keys [sample critical-value]}]
+  (s/explain ::one-sample-conf-inter {::sample sample ::critical-value critical-value}))
+
+
+(defmethod data :one-sample-conf-inter [{:keys [sample critical-value]}]
+  (if (s/valid? ::one-sample-conf-inter {::sample sample ::critical-value critical-value})
     {:sample sample :critical-value critical-value}
-    (assert (s/explain-data ::one-sample-conf-inter
-                            {::sample sample ::critical-value critical-value}))))
+    (assert (explain {:sample sample :critical-value critical-value :spec :one-sample-conf-inter}))))
+
 
