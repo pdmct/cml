@@ -6,7 +6,7 @@
             [cml.core.data.specifications :refer [data explain]])
   (:import [cml.utils.variation Sample]
            [cml.statistics.estimate OneSample TwoSample]))
-
+(use 'criterium.core)
 
 (defn one-sample-conf-inter [{:keys [sample critical-value]}]
   (confidence-interval (OneSample. (mean sample)
@@ -23,7 +23,6 @@
   (confidence-interval (TwoSample. (map mean sample)
                                    (map #(:variance (variance (Sample. (mean %) %))) sample)
                                    (map count sample) critical-value)))
-
 
 (s/fdef two-sample-conf-inter
         :args {:sample         (or [sequential? sequential?] '(sequential? sequential?))

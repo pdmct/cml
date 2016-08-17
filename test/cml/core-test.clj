@@ -110,3 +110,8 @@
 ;((comp one-sample-conf-inter) (data {:sample (range 1 1000000) :critical-value 2 :spec :one-sample-conf-inter}))
 
 
+
+#_(defn two-sample-conf-inter2 [{:keys [sample critical-value]}]
+    (confidence-interval (TwoSample. @(future (map mean sample))
+                                     @(future (map #(:variance (variance (Sample. (mean %) %))) sample))
+                                     @(future (map count sample)) critical-value)))
