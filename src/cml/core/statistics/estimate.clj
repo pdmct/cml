@@ -2,7 +2,8 @@
   (:require [clojure.spec :as s]
             [cml.utils.variation :refer [standard-deviation variance]]
             [cml.statistics.estimate :refer [confidence-interval]]
-            [cml.utils.central-tendancy :refer [mean]])
+            [cml.utils.central-tendancy :refer [mean]]
+            [cml.core.data.specifications :refer [data explain]])
   (:import [cml.utils.variation Sample]
            [cml.statistics.estimate OneSample TwoSample]))
 
@@ -13,7 +14,7 @@
                                    (count sample) critical-value)))
 
 (s/fdef one-sample-conf-inter
-        :args {:sample         (s/and sequential? not-empty)
+        :args {:sample         (s/and not-empty (s/coll-of int?))
                :critical-value number?}
         :ret map?)
 

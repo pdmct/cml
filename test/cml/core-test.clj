@@ -76,6 +76,7 @@
   (is (= (one-tail-cv {:dof 9 :alpha 0.05})
          {:critical-value 1.8331, :dof 9, :alpha 0.05})))
 
+
 ;WORKSPACE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -101,4 +102,11 @@
              :xform        (comp clojure.string/upper-case
                                  #(clojure.string/replace % #" " ""))
              :return       []})
+
+
+;(pvalues ((comp one-sample-conf-inter) (data {:sample (range 1 1000000) :critical-value 2 :spec :one-sample-conf-inter})))
+
+;;Data is specd not functions
+;((comp one-sample-conf-inter) (data {:sample (range 1 1000000) :critical-value 2 :spec :one-sample-conf-inter}))
+
 
